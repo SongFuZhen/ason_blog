@@ -16,7 +16,7 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
       <LabHero postCount={posts.length} />
       <div className="border-t border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between gap-4 pt-8">
-          <h2 className="text-2xl font-semibold tracking-normal text-gray-950 dark:text-gray-50">
+          <h2 className="font-heading text-2xl font-semibold tracking-normal text-gray-950 dark:text-gray-50">
             最新文章
           </h2>
         </div>

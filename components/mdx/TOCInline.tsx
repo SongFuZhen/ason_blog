@@ -80,7 +80,9 @@ export default function TOCInline({
   if (asDisclosure) {
     return (
       <details open={!collapse}>
-        <summary className="ml-6 pt-2 pb-2 text-xl font-bold">Table of Contents</summary>
+        <summary className="font-heading ml-6 pt-2 pb-2 text-xl font-bold">
+          Table of Contents
+        </summary>
         <div className="ml-6">{createList(nestedList)}</div>
       </details>
     )

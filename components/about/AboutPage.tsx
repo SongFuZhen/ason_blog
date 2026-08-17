@@ -29,7 +29,7 @@ function SectionTitle({
           <Icon className="size-3.5" aria-hidden="true" />
           {eyebrow}
         </p>
-        <h2 className="text-2xl font-semibold tracking-normal text-gray-950 dark:text-gray-50">
+        <h2 className="font-heading text-2xl font-semibold tracking-normal text-gray-950 dark:text-gray-50">
           {title}
         </h2>
       </div>
@@ -48,7 +48,7 @@ function ProfileHero() {
             </Badge>
           ))}
         </div>
-        <h1 className="text-4xl leading-tight font-semibold tracking-normal text-gray-950 sm:text-5xl dark:text-gray-50">
+        <h1 className="font-heading text-4xl leading-tight font-semibold tracking-normal text-gray-950 sm:text-5xl dark:text-gray-50">
           {profile.name}
         </h1>
         <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">{profile.title}</p>

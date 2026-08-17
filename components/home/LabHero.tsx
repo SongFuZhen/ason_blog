@@ -16,7 +16,7 @@ export function LabHero({ postCount }: LabHeroProps) {
           Ason 的博客
         </p>
         <h1
-          className="animate-hero-reveal text-4xl leading-tight font-semibold tracking-normal text-gray-950 sm:text-5xl dark:text-gray-50"
+          className="animate-hero-reveal font-heading text-4xl leading-tight font-semibold tracking-normal text-gray-950 sm:text-5xl dark:text-gray-50"
           style={{ animationDelay: '80ms' }}
         >
           一个安静、适合认真写作的 Next.js 博客

@@ -9,16 +9,16 @@
 /* ── Code title bar ── */
 .remark-code-title {
   @apply rounded-t-md px-5 py-3 font-mono text-sm font-bold;
-  background: oklch(0.96 0.002 260);
-  color: oklch(0.35 0.01 260);
-  border: 1px solid oklch(0.88 0.005 260);
+  background: var(--code-title-bg);
+  color: var(--code-title-text);
+  border: 1px solid var(--code-title-border);
   border-bottom: none;
 }
 
 .dark .remark-code-title {
-  background: oklch(0.22 0.005 260);
-  color: oklch(0.75 0 0);
-  border-color: oklch(0.28 0.005 260);
+  background: var(--code-title-bg);
+  color: var(--code-title-text);
+  border-color: var(--code-title-border);
 }
 
 .remark-code-title + div > pre {
@@ -37,26 +37,26 @@
 }
 
 .code-line.inserted {
-  background: oklch(0.55 0.12 160 / 0.15);
+  background: var(--code-inserted-bg);
 }
 
 .code-line.deleted {
-  background: oklch(0.55 0.18 25 / 0.18);
+  background: var(--code-deleted-bg);
 }
 
 .highlight-line {
   @apply border-primary-500 -mx-4 border-l-4;
-  background: oklch(0.25 0.01 260 / 0.5);
+  background: var(--code-highlight-bg);
 }
 
 .line-number::before {
   @apply mr-4 -ml-2 inline-block w-4 text-right;
   content: attr(line);
-  color: oklch(0.5 0 0);
+  color: var(--code-line-number);
 }
 
 .dark .line-number::before {
-  color: oklch(0.42 0 0);
+  color: var(--code-line-number);
 }
 
 /* ═══════════════════════════════════════════════════════════════

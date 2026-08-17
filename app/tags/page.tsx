@@ -45,7 +45,7 @@ export default async function Page() {
         <div className="grid min-w-0 gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
           <div className="min-w-0">
             <p className="text-primary-600 dark:text-primary-400 text-sm font-medium">主题索引</p>
-            <h1 className="mt-3 text-4xl leading-tight font-semibold tracking-normal text-gray-950 sm:text-5xl dark:text-gray-50">
+            <h1 className="font-heading mt-3 text-4xl leading-tight font-semibold tracking-normal text-gray-950 sm:text-5xl dark:text-gray-50">
               标签
             </h1>
             <p className="mt-5 max-w-xl text-base leading-8 text-gray-600 dark:text-gray-300">
@@ -110,7 +110,7 @@ export default async function Page() {
         <div className="grid min-w-0 gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="min-w-0">
             <p className="text-primary-600 dark:text-primary-400 text-sm font-medium">矿物青</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-normal text-gray-950 dark:text-gray-50">
+            <h2 className="font-heading mt-3 text-2xl font-semibold tracking-normal text-gray-950 dark:text-gray-50">
               主题配色理念
             </h2>
             <p className="mt-4 text-sm leading-7 text-gray-600 dark:text-gray-300">

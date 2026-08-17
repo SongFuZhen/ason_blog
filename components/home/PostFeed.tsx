@@ -26,7 +26,7 @@ function PostFeedItem({ index, post }: { index: number; post: CoreContent<Blog> 
           {formatDate(date, siteMetadata.locale)}
         </time>
         <div>
-          <h2 className="text-2xl leading-8 font-semibold tracking-normal">
+          <h2 className="font-heading text-2xl leading-8 font-semibold tracking-normal">
             <Link href={`/blog/${slug}`} className="text-gray-950 dark:text-gray-50">
               {title}
             </Link>
