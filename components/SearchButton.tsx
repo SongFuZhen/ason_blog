@@ -12,7 +12,7 @@ const SearchButton = () => {
         onClick={openSearchDialog}
         type="button"
       >
-        搜索
+        〔 搜索 〕
       </button>
     )
   }

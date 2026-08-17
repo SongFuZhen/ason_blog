@@ -20,7 +20,7 @@ const ThemeSwitch = () => {
       onClick={toggle}
       className="hover:text-primary-500 dark:hover:text-primary-400 text-gray-700 transition-colors outline-none select-none dark:text-gray-300"
     >
-      {mounted ? (resolvedTheme === 'dark' ? '浅色' : '深色') : '主题'}
+      {mounted ? (resolvedTheme === 'dark' ? '〔 浅色 〕' : '〔 深色 〕') : '〔 主题 〕'}
     </button>
   )
 }

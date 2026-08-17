@@ -37,29 +37,28 @@ const Header = () => {
       {/* Path-style navigation */}
       <div className="flex items-center gap-3 sm:gap-4">
         <nav className="hidden items-center sm:flex">
-          <span className="px-1 text-gray-300 dark:text-gray-700">/</span>
-          {headerNavLinks
-            .filter((link) => link.href !== '/')
-            .map((link) => {
-              const active = pathname === link.href || pathname.startsWith(link.href + '/')
-              return (
-                <span key={link.href} className="flex items-center px-1">
-                  <Link
-                    href={link.href}
-                    aria-current={active ? 'page' : undefined}
-                    className={
-                      'transition-colors ' +
-                      (active
-                        ? 'text-primary-500 dark:text-primary-400'
-                        : 'hover:text-primary-500 dark:hover:text-primary-400 text-gray-700 dark:text-gray-300')
-                    }
-                  >
-                    {link.title}
-                  </Link>
+          {headerNavLinks.map((link, index) => {
+            const active = pathname === link.href || pathname.startsWith(link.href + '/')
+            return (
+              <span key={link.href} className="flex items-center px-1">
+                <Link
+                  href={link.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={
+                    'transition-colors ' +
+                    (active
+                      ? 'text-primary-500 dark:text-primary-400'
+                      : 'hover:text-primary-500 dark:hover:text-primary-400 text-gray-700 dark:text-gray-300')
+                  }
+                >
+                  {link.title}
+                </Link>
+                {index < headerNavLinks.length - 1 && (
                   <span className="px-1 text-gray-300 dark:text-gray-700">/</span>
-                </span>
-              )
-            })}
+                )}
+              </span>
+            )
+          })}
         </nav>
         <SearchButton />
         <ThemeSwitch />
