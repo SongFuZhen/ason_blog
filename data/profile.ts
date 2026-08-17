@@ -19,10 +19,7 @@ export const profile = {
     '关注前端开发、产品思考、AI 工具与长期个人系统，并用这个博客记录技术笔记、项目复盘与实践实验，尤其痴迷 AI Coding。',
   now: '独立开发者，网站开发，痴迷 AI Coding。这里记录技术笔记、项目复盘与实践实验，也随手记下两只猫、读书与日常。',
   quote: '从现在做起，永远不迟',
-  socialLinks: [
-    { label: 'GitHub', href: 'https://github.com/SongFuZhen' },
-    { label: '博客', href: 'https://ason.top' },
-  ] satisfies SocialLink[],
+  socialLinks: [],
   interests: ['写作', '工程', '开源', '设计系统'],
   skills: {
     languages: ['TypeScript', 'JavaScript', 'MDX', 'CSS'],
