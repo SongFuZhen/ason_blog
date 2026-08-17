@@ -1,4 +1,9 @@
 {
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--experimental-json-modules"
+    }
+  },
   "headers": [
     {
       "source": "/((?!_next/static|static|feed\\.xml|search\\.json|favicon\\.ico).*)",
