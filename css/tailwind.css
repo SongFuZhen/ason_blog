@@ -226,6 +226,14 @@
   }
 }
 
+/* ── Post detail: standardized MD body type ──
+   Scoped to .post-prose so only article pages get this base size;
+   headings keep their absolute rem scale from the .prose block above. */
+.prose.post-prose {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+}
+
 /*
  * ── Dark mode ──
  *

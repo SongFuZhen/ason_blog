@@ -3,15 +3,13 @@ import type { CoreContent } from '@/lib/content/types'
 import type { Blog, Authors } from 'contentlayer/generated'
 import Comments from '@/components/Comments'
 import Link from '@/components/Link'
-import PageTitle from '@/components/PageTitle'
 import SectionContainer from '@/components/SectionContainer'
-
-import Tag from '@/components/Tag'
+import TerminalWindow, { Prompt } from '@/components/home/TerminalWindow'
+import { slug } from 'github-slugger'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
-  weekday: 'long',
   year: 'numeric',
   month: 'long',
   day: 'numeric',
@@ -26,125 +24,105 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { path, slug, date, title, tags } = content
+  const { path, slug: postSlug, date, title, tags } = content
   const basePath = path.split('/')[0]
+  const authorNames = authorDetails.map((author) => author.name).filter(Boolean)
+  const authorLabel = authorNames.length > 0 ? authorNames.join('、') : 'ason'
+  const minutes = content.readingTime?.minutes
 
   return (
     <SectionContainer>
       <ScrollTopAndComment />
-      <article>
-        <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
-          <header className="pt-6 xl:pb-6">
-            <div className="space-y-1 text-center">
-              <dl className="space-y-10">
-                <div>
-                  <dt className="sr-only">发布于</dt>
-                  <dd className="text-base leading-6 font-medium text-gray-500 dark:text-gray-400">
-                    <time dateTime={date}>
-                      {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
-                    </time>
-                  </dd>
-                </div>
-              </dl>
-              <div>
-                <PageTitle>{title}</PageTitle>
-              </div>
+      <article className="mx-auto min-h-screen max-w-3xl pt-16 pb-16">
+        <TerminalWindow title={`~/blog/${postSlug}`} shell="less" className="animate-hero-reveal">
+          {/* command line */}
+          <div className="text-gray-400 dark:text-gray-500">
+            <Prompt>cat {postSlug}.mdx</Prompt>
+          </div>
+
+          {/* output: title + metadata + tags */}
+          <div className="space-y-2">
+            <h1 className="font-heading text-3xl leading-snug font-semibold text-gray-900 sm:text-4xl dark:text-gray-100">
+              {title}
+            </h1>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              {authorLabel}
+              {` · `}
+              {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
+              {minutes ? ` · 约 ${Math.ceil(minutes)} 分钟阅读` : ''}
             </div>
-          </header>
-          <div className="grid-rows-[auto_1fr] divide-y divide-gray-200 pb-8 lg:grid lg:grid-cols-4 lg:gap-x-6 lg:divide-y-0 dark:divide-gray-700">
-            <div className="pt-6 pb-8 lg:border-b lg:border-gray-200 lg:pt-11 lg:dark:border-gray-700">
-              <div className="flex flex-wrap justify-center gap-4 sm:space-x-12 lg:block lg:space-y-8 lg:space-x-0">
-                {authorDetails.map((author) => (
-                  <div className="space-y-0.5" key={author.name}>
-                    <p className="text-xs tracking-widest text-gray-400 uppercase dark:text-gray-500">
-                      作者
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                      {author.name}
-                    </p>
-                    {author.twitter && (
-                      <Link
-                        href={author.twitter}
-                        className="hover:text-primary-500 dark:hover:text-primary-400 text-xs text-gray-400 transition-colors dark:text-gray-500"
-                      >
-                        {author.twitter
-                          .replace('https://twitter.com/', '@')
-                          .replace('https://x.com/', '@')}
-                      </Link>
-                    )}
-                  </div>
+            {tags && tags.length > 0 && (
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                {tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/tags/${slug(tag)}`}
+                    className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+                  >
+                    #{tag}
+                  </Link>
                 ))}
               </div>
+            )}
+          </div>
+
+          <div className="text-gray-300 dark:text-gray-700">────────────────</div>
+
+          {/* body — readable typography, not forced monospace */}
+          <div className="prose dark:prose-invert post-prose max-w-none font-sans">{children}</div>
+
+          {siteMetadata.comments && (
+            <div className="pt-4 text-center text-gray-700 dark:text-gray-300" id="comment">
+              <Comments slug={postSlug} title={title} />
             </div>
-            <div className="divide-y divide-gray-200 lg:col-span-3 lg:row-span-2 lg:pb-0 dark:divide-gray-700">
-              <div className="prose dark:prose-invert max-w-none pt-10 pb-8">{children}</div>
-              {siteMetadata.comments && (
-                <div
-                  className="pt-8 pb-8 text-center text-gray-700 dark:text-gray-300"
-                  id="comment"
+          )}
+
+          {/* prev / next */}
+          {(next || prev) && (
+            <div className="grid gap-3 border-t border-gray-200 pt-4 text-xs sm:grid-cols-2 dark:border-gray-800">
+              {prev && prev.path ? (
+                <Link
+                  href={`/${prev.path}`}
+                  className="group hover:border-primary-300 dark:hover:border-primary-700 rounded-lg border border-gray-200 p-3 transition-colors hover:bg-gray-100/50 dark:border-gray-800 dark:hover:bg-gray-900/50"
                 >
-                  <Comments slug={slug} title={title} />
-                </div>
+                  <span className="text-gray-400 dark:text-gray-500">← 上一篇</span>
+                  <p className="group-hover:text-primary-600 dark:group-hover:text-primary-400 mt-1 text-gray-700 transition-colors dark:text-gray-300">
+                    {prev.title}
+                  </p>
+                </Link>
+              ) : (
+                <span />
+              )}
+              {next && next.path ? (
+                <Link
+                  href={`/${next.path}`}
+                  className="group hover:border-primary-300 dark:hover:border-primary-700 rounded-lg border border-gray-200 p-3 text-right transition-colors hover:bg-gray-100/50 dark:border-gray-800 dark:hover:bg-gray-900/50"
+                >
+                  <span className="text-gray-400 dark:text-gray-500">下一篇 →</span>
+                  <p className="group-hover:text-primary-600 dark:group-hover:text-primary-400 mt-1 text-gray-700 transition-colors dark:text-gray-300">
+                    {next.title}
+                  </p>
+                </Link>
+              ) : (
+                <span />
               )}
             </div>
-            <footer className="lg:col-start-1 lg:row-start-2">
-              <div className="text-sm leading-5 font-medium">
-                {tags && (
-                  <div className="py-4 lg:py-8">
-                    <h2 className="text-xs tracking-widest text-gray-400 uppercase dark:text-gray-500">
-                      标签
-                    </h2>
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {tags.map((tag) => (
-                        <Tag key={tag} text={tag} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {(next || prev) && (
-                  <div className="flex gap-3 py-4 lg:flex-col lg:gap-4 lg:py-8">
-                    {prev && prev.path && (
-                      <Link
-                        href={`/${prev.path}`}
-                        className="group hover:border-primary-200 dark:hover:border-primary-800 flex-1 rounded-lg border border-gray-200 p-3 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50"
-                      >
-                        <span className="text-xs tracking-widest text-gray-400 uppercase dark:text-gray-500">
-                          &larr; 上一篇
-                        </span>
-                        <p className="group-hover:text-primary-500 dark:group-hover:text-primary-400 mt-1 line-clamp-2 text-sm text-gray-700 transition-colors dark:text-gray-300">
-                          {prev.title}
-                        </p>
-                      </Link>
-                    )}
-                    {next && next.path && (
-                      <Link
-                        href={`/${next.path}`}
-                        className="group hover:border-primary-200 dark:hover:border-primary-800 flex-1 rounded-lg border border-gray-200 p-3 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50"
-                      >
-                        <span className="text-xs tracking-widest text-gray-400 uppercase dark:text-gray-500">
-                          下一篇 &rarr;
-                        </span>
-                        <p className="group-hover:text-primary-500 dark:group-hover:text-primary-400 mt-1 line-clamp-2 text-sm text-gray-700 transition-colors dark:text-gray-300">
-                          {next.title}
-                        </p>
-                      </Link>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="border-t border-gray-200 pt-4 lg:pt-6 dark:border-gray-700">
-                <Link
-                  href={`/${basePath}`}
-                  className="group hover:text-primary-500 dark:hover:text-primary-400 inline-flex items-center gap-1 text-sm text-gray-500 transition-colors dark:text-gray-400"
-                  aria-label="返回文章列表"
-                >
-                  <span className="transition-transform group-hover:-translate-x-0.5">&larr;</span>
-                  <span>返回文章列表</span>
-                </Link>
-              </div>
-            </footer>
+          )}
+
+          {/* back link + blinking prompt */}
+          <div className="flex items-center justify-between border-t border-gray-200 pt-4 text-xs dark:border-gray-800">
+            <Link
+              href={`/${basePath}`}
+              className="hover:text-primary-600 dark:hover:text-primary-400 text-gray-500 transition-colors dark:text-gray-400"
+            >
+              cd ~/{basePath}
+            </Link>
+            <div className="text-gray-400 dark:text-gray-500">
+              <Prompt path={`~/blog/${postSlug}`} />
+              <span className="animate-blink ml-0.5 inline-block h-4 w-2 translate-y-0.5 bg-gray-800 dark:bg-gray-200" />
+            </div>
           </div>
-        </div>
+        </TerminalWindow>
       </article>
     </SectionContainer>
   )

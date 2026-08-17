@@ -25,7 +25,7 @@ export default async function BlogPage() {
       posts={posts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
-      title="文章"
+      variant="blog"
     />
   )
 }
