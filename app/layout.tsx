@@ -60,6 +60,13 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     images: [siteMetadata.socialBanner],
   },
+  // 搜索引擎验证 meta（硬编码，不依赖 env；Bing/Google 要求常驻，勿移除）
+  verification: {
+    google: 'ENWkPav6SpNVqYhLgratSPLTQFhHYXlRSlSUbnOHn6s',
+    other: {
+      'msvalidate.01': 'BBA93819F2F865003D80FFBC20FD4392',
+    },
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

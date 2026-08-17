@@ -12,12 +12,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .map((post) => ({
       url: `${siteUrl}/${post.path}`,
       lastModified: post.lastmod || post.date,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
     }))
 
-  const routes = ['', 'blog', 'projects', 'tags'].map((route) => ({
-    url: `${siteUrl}/${route}`,
-    lastModified: new Date().toISOString().split('T')[0],
-  }))
+  const routes: MetadataRoute.Sitemap = [
+    {
+      url: `${siteUrl}/`,
+      lastModified: new Date().toISOString().split('T')[0],
+      changeFrequency: 'daily',
+      priority: 1.0,
+    },
+    {
+      url: `${siteUrl}/blog`,
+      lastModified: new Date().toISOString().split('T')[0],
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/projects`,
+      lastModified: new Date().toISOString().split('T')[0],
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${siteUrl}/tags`,
+      lastModified: new Date().toISOString().split('T')[0],
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
+  ]
 
   return [...routes, ...blogRoutes]
 }

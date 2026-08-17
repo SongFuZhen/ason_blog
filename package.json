@@ -5,7 +5,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "start": "cross-env INIT_CWD=$PWD next dev -p 11250",
+    "start": "cross-env INIT_CWD=$PWD next start -p 11250",
     "dev": "cross-env INIT_CWD=$PWD next dev -p 11250",
     "build": "cross-env INIT_CWD=$PWD NODE_OPTIONS='--experimental-json-modules' next build && cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/postbuild.mjs",
     "serve": "next start -p 11250",
