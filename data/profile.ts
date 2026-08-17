@@ -17,6 +17,7 @@ export const profile = {
   avatar: '/static/images/avatar.svg',
   intro:
     '我是 Ason，这个博客的作者。我关注前端开发、产品思考、AI 工具与长期个人系统，并用这个博客记录技术笔记、项目复盘和实践实验。',
+  now: '在做前端与产品，顺手用 AI 工具搭一套能长期运行的个人系统。这里记录技术笔记、项目复盘与实践实验。',
   quote: '做有用的东西，把它写下来，并不断改进这个系统。',
   socialLinks: [
     { label: 'GitHub', href: 'https://github.com/SongFuZhen' },

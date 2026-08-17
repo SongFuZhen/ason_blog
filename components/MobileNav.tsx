@@ -4,6 +4,8 @@ import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/re
 import { Fragment, useState } from 'react'
 import Link from './Link'
 import headerNavLinks from '@/data/headerNavLinks'
+import siteMetadata from '@/data/siteMetadata'
+import Image from 'next/image'
 
 const MobileNav = () => {
   const [navShow, setNavShow] = useState(false)
@@ -53,15 +55,28 @@ const MobileNav = () => {
             leaveTo="translate-x-full opacity-0"
             unmount={false}
           >
-            <DialogPanel className="fixed top-0 left-0 z-70 h-full w-full bg-white/95 duration-300 dark:bg-gray-950/98">
-              <nav className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pt-2 pl-12 text-left">
+            <DialogPanel className="fixed top-0 left-0 z-70 h-full w-full bg-white/95 font-mono duration-300 dark:bg-gray-950/98">
+              <nav className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pt-2 pl-8 text-left text-lg">
+                <span className="mb-6 flex items-center gap-2 text-sm select-none">
+                  <Image
+                    src="/static/images/logo/logo-symbol-transparent.webp"
+                    alt="ASON Logo"
+                    width={28}
+                    height={28}
+                    className="dark:invert"
+                  />
+                  <span className="font-semibold text-gray-900 dark:text-gray-100">
+                    {siteMetadata.headerTitle}
+                  </span>
+                </span>
                 {headerNavLinks.map((link) => (
                   <Link
                     key={link.title}
                     href={link.href}
-                    className="hover:text-primary-500 dark:hover:text-primary-400 mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-gray-900 outline outline-0 dark:text-gray-100"
+                    className="hover:text-primary-500 dark:hover:text-primary-400 mb-3 py-1 pr-4 text-gray-900 outline outline-0 dark:text-gray-100"
                     onClick={onToggleNav}
                   >
+                    <span className="text-gray-300 dark:text-gray-700">/ </span>
                     {link.title}
                   </Link>
                 ))}

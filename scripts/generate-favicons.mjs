@@ -5,7 +5,7 @@ import sharp from 'sharp'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
-const LOGO = join(ROOT, 'data', 'logo.svg')
+const LOGO = join(ROOT, 'public', 'static', 'images', 'logo', 'logo-symbol.webp')
 const OUT_DIR = join(ROOT, 'public', 'static', 'favicons')
 
 mkdirSync(OUT_DIR, { recursive: true })

@@ -79,13 +79,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${space_grotesk.variable} scroll-smooth`}
       suppressHydrationWarning
     >
-      <link rel="icon" type="image/svg+xml" href={`${basePath}/static/favicons/favicon.svg`} />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href={`${basePath}/static/favicons/favicon-32x32.png`}
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="16x16"
+        href={`${basePath}/static/favicons/favicon-16x16.png`}
+      />
+      <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href={`${basePath}/static/favicons/apple-touch-icon.png`}
+      />
       <link rel="manifest" href={`${basePath}/static/favicons/site.webmanifest`} />
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="preconnect" href="https://api.github.com" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
-      <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
+      <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
           <SectionContainer>
@@ -94,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Suspense>
             <SearchDialogController searchConfig={siteMetadata.search as SearchConfig} />
             <Header />
-            <main className="mb-auto">
+            <main className="mb-auto px-6 sm:px-10 lg:px-16 xl:px-20">
               <PageTransition>{children}</PageTransition>
             </main>
             <Footer />

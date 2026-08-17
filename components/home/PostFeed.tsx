@@ -10,42 +10,34 @@ type PostFeedProps = {
 }
 
 function PostFeedItem({ index, post }: { index: number; post: CoreContent<Blog> }) {
-  const { slug, date, title, summary, tags } = post
+  const { slug, date, title, tags } = post
 
   return (
-    <li
-      className="animate-item-reveal py-8 opacity-0"
-      style={{ animationDelay: `${index * 60}ms` }}
-    >
-      <article className="grid gap-4 md:grid-cols-[132px_1fr] md:items-start">
+    <li className="animate-item-reveal opacity-0" style={{ animationDelay: `${index * 60}ms` }}>
+      <article className="group flex items-baseline gap-4 py-4">
         <time
           dateTime={date}
-          className="text-sm font-medium text-gray-500 dark:text-gray-400"
+          className="shrink-0 font-mono text-xs text-gray-400 dark:text-gray-500"
           suppressHydrationWarning
         >
           {formatDate(date, siteMetadata.locale)}
         </time>
-        <div>
-          <h2 className="font-heading text-2xl leading-8 font-semibold tracking-normal">
-            <Link href={`/blog/${slug}`} className="text-gray-950 dark:text-gray-50">
+        <div className="min-w-0 flex-1">
+          <h2 className="font-heading text-base font-medium tracking-tight">
+            <Link
+              href={`/blog/${slug}`}
+              className="text-gray-900 transition-all duration-200 hover:translate-x-1 hover:underline hover:underline-offset-4 dark:text-gray-100"
+            >
               {title}
             </Link>
           </h2>
-          <div className="mt-2 flex flex-wrap">
-            {tags.map((tag) => (
-              <Tag key={tag} text={tag} />
-            ))}
-          </div>
-          {summary && (
-            <p className="mt-4 text-sm leading-7 text-gray-600 dark:text-gray-400">{summary}</p>
+          {tags.length > 0 && (
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {tags.map((tag) => (
+                <Tag key={tag} text={tag} />
+              ))}
+            </div>
           )}
-          <Link
-            href={`/blog/${slug}`}
-            className="mt-4 inline-flex text-sm font-medium text-gray-950 underline underline-offset-4 dark:text-gray-50"
-            aria-label={`阅读全文：${title}`}
-          >
-            继续阅读
-          </Link>
         </div>
       </article>
     </li>
