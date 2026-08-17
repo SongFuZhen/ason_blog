@@ -25,6 +25,20 @@ export default function Footer() {
             <SocialIcon kind="github" href={siteMetadata.github} size={5} />
             <SocialIcon kind="rss" href={`${siteMetadata.siteUrl}/feed.xml`} size={5} />
           </div>
+          <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
+            <Link
+              href="/privacy"
+              className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >
+              隐私政策
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >
+              联系
+            </Link>
+          </div>
           <div className="pt-2 text-xs text-gray-400 dark:text-gray-500">
             <span>{`© ${new Date().getFullYear()} `}</span>
             <span>{siteMetadata.author}</span>
