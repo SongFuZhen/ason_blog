@@ -2,10 +2,10 @@
   "name": "nextjs-blog-skyplume-template",
   "version": "1.0.0",
   "scripts": {
-    "start": "next dev",
-    "dev": "cross-env INIT_CWD=$PWD next dev",
+    "start": "cross-env INIT_CWD=$PWD next dev -p 11250",
+    "dev": "cross-env INIT_CWD=$PWD next dev -p 11250",
     "build": "cross-env INIT_CWD=$PWD next build && cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/postbuild.mjs",
-    "serve": "next start",
+    "serve": "next start -p 11250",
     "analyze": "cross-env ANALYZE=true next build",
     "test:local": "node --test tests/*.test.mjs",
     "lint": "next lint --dir app --dir components --dir lib --dir layouts --dir scripts",
