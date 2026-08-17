@@ -9,7 +9,7 @@ export type SiteStackNote = {
 }
 
 export const profile = {
-  name: 'Ason',
+  name: 'A Sense of Now',
   handle: 'ason',
   title: '前端开发者、写作者与创造者',
   email: '',
