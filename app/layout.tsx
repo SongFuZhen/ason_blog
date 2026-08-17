@@ -65,6 +65,7 @@ export const metadata: Metadata = {
     google: 'ENWkPav6SpNVqYhLgratSPLTQFhHYXlRSlSUbnOHn6s',
     other: {
       'msvalidate.01': 'BBA93819F2F865003D80FFBC20FD4392',
+      'google-adsense-account': 'ca-pub-1857431419637010',
     },
   },
 }
