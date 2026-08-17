@@ -13,8 +13,8 @@ export const profile = {
   handle: 'ason',
   title: '前端开发者、写作者与创造者',
   email: '',
-  location: '中国',
-  avatar: '/static/images/avatar.svg',
+  location: '中国 · 成都',
+  avatar: '/static/images/avatar.png',
   intro:
     '我是 Ason，这个博客的作者。我关注前端开发、产品思考、AI 工具与长期个人系统，并用这个博客记录技术笔记、项目复盘和实践实验。',
   now: '独立开发者，网站开发，痴迷 AI Coding。这里记录技术笔记、项目复盘与实践实验，也随手记下两只猫、读书与日常。',
