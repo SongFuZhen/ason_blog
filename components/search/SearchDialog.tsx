@@ -1,20 +1,11 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
 import { formatDate } from '@/lib/content/format-date.mjs'
 import { filterSearchDocuments } from '@/lib/search/core.mjs'
-import { AlertCircle, ArrowRight, FileText, Loader2, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 export type SearchConfig = {
   provider?: string
@@ -48,18 +39,23 @@ function getSearchUrl(searchDocumentsPath?: string) {
 export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProps) {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
+  const activeRef = useRef<HTMLButtonElement>(null)
   const requestIdRef = useRef(0)
   const [query, setQuery] = useState('')
   const [documents, setDocuments] = useState<SearchDocument[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const searchDocumentsPath = searchConfig?.kbarConfig?.searchDocumentsPath
 
   useEffect(() => {
     if (!isOpen) return
-    window.setTimeout(() => inputRef.current?.focus(), 0)
+    window.setTimeout(() => {
+      inputRef.current?.focus()
+      setSelectedIndex(0)
+    }, 0)
   }, [isOpen])
 
   useEffect(() => {
@@ -108,6 +104,14 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
     return filterSearchDocuments(documents, query)
   }, [documents, query])
 
+  useEffect(() => {
+    setSelectedIndex(0)
+  }, [query, documents])
+
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({ block: 'nearest' })
+  }, [selectedIndex])
+
   const closeSearch = () => {
     onClose()
     setQuery('')
@@ -116,6 +120,21 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
   const onSelect = (document: SearchDocument) => {
     closeSearch()
     router.push(`/${document.path}`)
+  }
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (results.length === 0) return
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setSelectedIndex((index) => Math.min(index + 1, results.length - 1))
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setSelectedIndex((index) => Math.max(index - 1, 0))
+    } else if (event.key === 'Enter') {
+      event.preventDefault()
+      const document = results[selectedIndex]
+      if (document) onSelect(document)
+    }
   }
 
   const resultLabel = query.trim() ? `${results.length} 条结果` : '最近文章'
@@ -128,77 +147,57 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
         if (!open) closeSearch()
       }}
     >
-      <DialogContent className="top-6 grid max-h-[calc(100dvh-3rem)] w-[min(calc(100%-1rem),44rem)] translate-y-0 gap-0 overflow-hidden rounded-xl border-gray-200 bg-white p-0 shadow-[0_16px_48px_rgba(15,23,42,0.16)] sm:top-16 sm:w-[min(calc(100%-2rem),44rem)] dark:border-gray-800 dark:bg-gray-950 dark:shadow-[0_16px_48px_rgba(0,0,0,0.42)]">
-        <DialogHeader className="border-b border-gray-200 px-4 pt-5 pb-4 text-left sm:px-5 dark:border-gray-800">
-          <div className="flex items-center gap-3 pr-8">
-            <span className="bg-primary-50 text-primary-700 ring-primary-100 dark:bg-primary-950 dark:text-primary-300 dark:ring-primary-800 flex size-9 shrink-0 items-center justify-center rounded-lg ring-1">
-              <Search aria-hidden="true" className="size-4" strokeWidth={1.7} />
-            </span>
-            <div className="min-w-0">
-              <DialogTitle className="text-base leading-6 font-semibold text-gray-950 dark:text-gray-50">
-                搜索文章
-              </DialogTitle>
-              <DialogDescription className="text-sm text-gray-600 dark:text-gray-400">
-                按标题、路径、摘要或标签查找文章。
-              </DialogDescription>
-            </div>
-          </div>
-        </DialogHeader>
+      <DialogContent className="top-1/2 left-1/2 grid w-[min(calc(100%-1rem),44rem)] -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border border-gray-200 bg-white p-0 font-mono text-sm shadow-[0_16px_48px_rgba(15,23,42,0.16)] dark:border-gray-800 dark:bg-gray-950 dark:shadow-[0_16px_48px_rgba(0,0,0,0.42)] [&>button]:hidden">
+        {/* Title bar */}
+        <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-100/80 px-4 py-2.5 dark:border-gray-800 dark:bg-gray-900/80">
+          <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
+          <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
+          <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
+          <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">ason@blog: ~ — grep</span>
+        </div>
 
-        <div className="border-b border-gray-200 p-4 sm:p-5 dark:border-gray-800">
+        {/* Prompt + input */}
+        <div className="relative flex items-center gap-2 border-b border-gray-200 px-4 py-3 dark:border-gray-800">
           <label className="sr-only" htmlFor="site-search-input">
             搜索文章
           </label>
-          <div className="relative">
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-gray-500 dark:text-gray-400"
-              strokeWidth={1.7}
-            />
-            <Input
-              ref={inputRef}
-              id="site-search-input"
-              aria-describedby="site-search-help"
-              className="h-11 rounded-lg border-gray-300 bg-gray-50 pr-3 pl-9 text-base shadow-none placeholder:text-gray-500 focus-visible:bg-white dark:border-gray-800 dark:bg-gray-900/80 dark:placeholder:text-gray-400 dark:focus-visible:bg-gray-950"
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="搜索文章、标签或笔记"
-              type="search"
-              value={query}
-            />
-          </div>
-          <div
-            className="mt-3 flex flex-col gap-2 text-xs text-gray-500 sm:flex-row sm:items-center sm:justify-between dark:text-gray-400"
-            id="site-search-help"
-          >
-            <span>{resultLabel}</span>
-            <span className="hidden sm:inline">按 Esc 关闭</span>
-          </div>
+          <span className="text-primary-600 dark:text-primary-400 shrink-0">ason@blog</span>
+          <span className="shrink-0 text-gray-400 dark:text-gray-500"> ~ % grep -i</span>
+          <span className="min-w-0 flex-1 truncate">
+            {query ? (
+              <>
+                <span className="text-gray-900 dark:text-gray-100">{query}</span>
+                <span className="animate-blink ml-1 inline-block h-4 w-2 translate-y-0.5 bg-gray-800 dark:bg-gray-200" />
+              </>
+            ) : (
+              <>
+                <span className="animate-blink mr-1 inline-block h-4 w-2 translate-y-0.5 bg-gray-800 dark:bg-gray-200" />
+                <span className="text-gray-400 dark:text-gray-500">搜索文章、标签或笔记…</span>
+              </>
+            )}
+          </span>
+          <input
+            ref={inputRef}
+            id="site-search-input"
+            className="absolute inset-0 h-full w-full cursor-text border-0 bg-transparent text-transparent caret-transparent outline-none focus:ring-0 focus:ring-offset-0"
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={onKeyDown}
+            type="text"
+            value={query}
+          />
         </div>
 
-        <div className="max-h-[min(60dvh,30rem)] overflow-y-auto p-2" aria-live="polite">
-          {!hasSearchConfig && (
-            <SearchState
-              icon={<AlertCircle aria-hidden="true" className="size-4" />}
-              title="搜索未配置"
-              description="添加搜索文档路径以启用本地搜索。"
-            />
-          )}
+        {/* Results */}
+        <div className="h-[min(55dvh,28rem)] overflow-y-auto p-2" aria-live="polite">
+          {!hasSearchConfig && <SearchState line="grep: 搜索未配置，未加载搜索索引。" />}
 
-          {hasSearchConfig && (isLoading || (!hasLoaded && !error)) && <SearchLoadingRows />}
+          {hasSearchConfig && (isLoading || (!hasLoaded && !error)) && <SearchLoadingLine />}
 
-          {hasSearchConfig && error && (
-            <SearchState
-              icon={<AlertCircle aria-hidden="true" className="size-4" />}
-              title="搜索索引加载失败"
-              description={error}
-            />
-          )}
+          {hasSearchConfig && error && <SearchState line={`grep: 索引加载失败：${error}`} />}
 
           {hasSearchConfig && hasLoaded && !isLoading && !error && results.length === 0 && (
             <SearchState
-              icon={<Search aria-hidden="true" className="size-4" />}
-              title="未找到文章"
-              description="尝试更宽泛的标题、标签或主题。"
+              line={query.trim() ? 'grep: no matches found.' : 'grep: 输入关键词开始搜索。'}
             />
           )}
 
@@ -206,127 +205,74 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
             hasLoaded &&
             !isLoading &&
             !error &&
-            results.map((document) => (
-              <SearchResultButton
-                document={document}
+            results.map((document, index) => (
+              <button
+                type="button"
                 key={document.path}
-                onSelect={() => onSelect(document)}
-              />
+                ref={index === selectedIndex ? activeRef : undefined}
+                className={cn(
+                  'block w-full px-3 py-1.5 text-left transition-colors',
+                  index === selectedIndex
+                    ? 'bg-primary-500/10 dark:bg-primary-400/10'
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-900'
+                )}
+                onClick={() => onSelect(document)}
+                onMouseEnter={() => setSelectedIndex(index)}
+              >
+                <span
+                  className={cn(
+                    'flex items-baseline gap-2',
+                    index === selectedIndex
+                      ? 'text-primary-700 dark:text-primary-300'
+                      : 'text-gray-800 dark:text-gray-200'
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'w-4 shrink-0 text-center',
+                      index === selectedIndex
+                        ? 'text-green-500 dark:text-green-400'
+                        : 'text-gray-400 dark:text-gray-500'
+                    )}
+                  >
+                    ►
+                  </span>
+                  <span className="shrink-0 text-gray-400 dark:text-gray-500">{document.path}</span>
+                  <span className="min-w-0 flex-1 truncate font-medium">{document.title}</span>
+                  <span className="shrink-0 text-xs text-gray-500 dark:text-gray-400">
+                    {document.date ? formatDate(document.date, 'zh-CN') : '—'}
+                  </span>
+                </span>
+                {document.summary && (
+                  <span className="block pl-6 text-xs text-gray-500 dark:text-gray-400">
+                    {document.summary}
+                  </span>
+                )}
+              </button>
             ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900/70 dark:text-gray-400">
-          <span>本地索引</span>
-          <span>{documents.length ? `已索引 ${documents.length} 篇文章` : '首次打开时就绪'}</span>
+        {/* Footer */}
+        <div className="flex items-center justify-between border-t border-gray-200 bg-gray-100/80 px-4 py-2.5 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-400">
+          <span>{resultLabel}</span>
+          <span className="hidden sm:inline">
+            [↑/↓] 选择&nbsp;&nbsp;[Enter] 打开&nbsp;&nbsp;[Esc] 关闭
+          </span>
         </div>
       </DialogContent>
     </Dialog>
   )
 }
 
-function SearchLoadingRows() {
+function SearchLoadingLine() {
   return (
-    <div className="space-y-1 p-1">
-      {[0, 1, 2].map((item) => (
-        <div
-          className="flex gap-3 rounded-lg px-3 py-3"
-          key={item}
-          aria-label="Loading search result"
-        >
-          <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md bg-gray-100 dark:bg-gray-900">
-            <Loader2
-              aria-hidden="true"
-              className="size-4 animate-spin text-gray-400 dark:text-gray-500"
-              strokeWidth={1.7}
-            />
-          </div>
-          <div className="min-w-0 flex-1 space-y-2">
-            <div className="h-4 w-2/3 rounded bg-gray-100 dark:bg-gray-900" />
-            <div className="h-3 w-1/3 rounded bg-gray-100 dark:bg-gray-900" />
-            <div className="h-3 w-full rounded bg-gray-100 dark:bg-gray-900" />
-          </div>
-        </div>
-      ))}
-    </div>
+    <p className="px-3 py-4 text-gray-500 dark:text-gray-400">
+      grep: 正在加载搜索索引
+      <span className="animate-blink ml-1 inline-block h-3.5 w-2 translate-y-0.5 bg-gray-400 dark:bg-gray-500" />
+    </p>
   )
 }
 
-function SearchState({
-  icon,
-  title,
-  description,
-}: {
-  icon: ReactNode
-  title: string
-  description: string
-}) {
-  return (
-    <div className="px-4 py-10 text-center">
-      <div className="mx-auto flex size-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-300">
-        {icon}
-      </div>
-      <p className="mt-3 text-sm font-semibold text-gray-950 dark:text-gray-50">{title}</p>
-      <p className="mx-auto mt-1 max-w-sm text-sm leading-6 text-gray-600 dark:text-gray-400">
-        {description}
-      </p>
-    </div>
-  )
-}
-
-function SearchResultButton({
-  document,
-  onSelect,
-}: {
-  document: SearchDocument
-  onSelect: () => void
-}) {
-  const tags = (document.tags || []).slice(0, 2)
-
-  return (
-    <Button
-      className="group/result hover:bg-primary-50 focus-visible:bg-primary-50 h-auto w-full justify-start rounded-lg px-3 py-3 text-left whitespace-normal dark:hover:bg-gray-900 dark:focus-visible:bg-gray-900"
-      onClick={onSelect}
-      type="button"
-      variant="ghost"
-    >
-      <span className="flex w-full min-w-0 gap-3">
-        <span className="group-hover/result:text-primary-700 dark:group-hover/result:text-primary-300 mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-600 transition-colors group-hover/result:bg-white dark:bg-gray-900 dark:text-gray-300 dark:group-hover/result:bg-gray-800">
-          <FileText aria-hidden="true" className="size-4" strokeWidth={1.7} />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="flex min-w-0 items-start justify-between gap-3">
-            <span className="min-w-0 text-sm leading-6 font-semibold text-gray-950 dark:text-gray-50">
-              {document.title}
-            </span>
-            <ArrowRight
-              aria-hidden="true"
-              className="mt-1 size-4 shrink-0 text-gray-400 opacity-0 transition group-hover/result:translate-x-0.5 group-hover/result:opacity-100 dark:text-gray-500"
-              strokeWidth={1.7}
-            />
-          </span>
-          <span className="mt-0.5 block text-xs leading-5 text-gray-500 dark:text-gray-400">
-            {document.date ? formatDate(document.date, 'zh-CN') : document.path}
-          </span>
-          {document.summary && (
-            <span className="mt-2 line-clamp-2 block text-sm leading-6 text-gray-600 dark:text-gray-300">
-              {document.summary}
-            </span>
-          )}
-          {tags.length > 0 && (
-            <span className="mt-2 flex min-w-0 flex-wrap gap-1.5">
-              {tags.map((tag) => (
-                <Badge
-                  className="bg-gray-50 text-gray-600 ring-1 ring-gray-200 dark:bg-gray-900 dark:text-gray-300 dark:ring-gray-800"
-                  key={tag}
-                  variant="secondary"
-                >
-                  {tag}
-                </Badge>
-              ))}
-            </span>
-          )}
-        </span>
-      </span>
-    </Button>
-  )
+function SearchState({ line }: { line: string }) {
+  return <p className="px-3 py-4 text-gray-500 dark:text-gray-400">{line}</p>
 }
