@@ -29,7 +29,7 @@ export function LogoBlob() {
               <stop offset="100%" stopColor="#d95e10" stopOpacity="0.04" />
             </linearGradient>
             <pattern id="blob-dots" width="9" height="9" patternUnits="userSpaceOnUse">
-              <circle cx="1.4" cy="1.4" r="1.1" fill="currentColor" fillOpacity="0.12" />
+              <circle cx="1.4" cy="1.4" r="1.1" fill="currentColor" fillOpacity="0.07" />
             </pattern>
           </defs>
 
@@ -87,7 +87,7 @@ export function LogoBlob() {
           alt="Ason Logo"
           width={340}
           height={340}
-          className="relative z-10 mx-auto aspect-square w-[60%] object-contain dark:invert"
+          className="relative z-10 mx-auto aspect-square w-[75%] object-contain dark:invert"
           priority
         />
       </div>
