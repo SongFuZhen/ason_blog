@@ -23,7 +23,7 @@ const Header = () => {
         className="group flex items-center gap-2"
       >
         <Image
-          src="/static/images/logo/logo-symbol-transparent.webp"
+          src="/static/images/logo/logo-symbol-transparent.png"
           alt="ASON Logo"
           width={28}
           height={28}

@@ -59,7 +59,7 @@ const MobileNav = () => {
               <nav className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pt-2 pl-8 text-left text-lg">
                 <span className="mb-6 flex items-center gap-2 text-sm select-none">
                   <Image
-                    src="/static/images/logo/logo-symbol-transparent.webp"
+                    src="/static/images/logo/logo-symbol-transparent.png"
                     alt="ASON Logo"
                     width={28}
                     height={28}

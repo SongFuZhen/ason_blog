@@ -427,6 +427,14 @@
   animation: blink 1s steps(1) infinite;
 }
 
+/* ── Project name brand colors (light + dark) ── */
+.project-name {
+  color: var(--proj-color, inherit);
+}
+.dark .project-name {
+  color: var(--proj-color-dark, var(--proj-color, inherit));
+}
+
 /* ── Themed scrollbar ── */
 * {
   scrollbar-width: thin;

@@ -35,6 +35,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+likedge-top.png
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# playwright mcp cache
+.playwright-mcp/
 
 /docs
 
