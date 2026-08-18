@@ -1,5 +1,5 @@
 import { defineDocumentType, ComputedFields, makeSource } from 'contentlayer2/source-files'
-import { writeFileSync } from 'fs'
+import { writeFileSync, readdirSync } from 'fs'
 import readingTime from 'reading-time'
 import { slug } from 'github-slugger'
 import path from 'path'
@@ -78,6 +78,51 @@ async function createTagCount(allBlogs) {
   })
   const formatted = await prettier.format(JSON.stringify(tagCount, null, 2), { parser: 'json' })
   writeFileSync('./app/tag-data.json', formatted)
+}
+
+/**
+ * Recursively scan the `data/blog` subdirectories (one per category/folder,
+ * nested folders become subcategories) and count how many posts live in each,
+ * then write to json file. Unlike tags, an empty folder still shows up so the
+ * category structure stays visible on the list page even before any post is
+ * added to it. Category keys use `/` as the nesting separator, e.g.
+ * `猫咪/狸花`.
+ */
+async function createCategoryCount(allBlogs) {
+  const blogDir = path.join(root, 'data', 'blog')
+  const categoryPaths: string[] = []
+  const walk = (dir: string, prefix: string) => {
+    let entries
+    try {
+      entries = readdirSync(dir, { withFileTypes: true })
+    } catch {
+      return
+    }
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        const rel = prefix ? `${prefix}/${entry.name}` : entry.name
+        categoryPaths.push(rel)
+        walk(path.join(dir, entry.name), rel)
+      }
+    }
+  }
+  walk(blogDir, '')
+  const categoryCount: Record<string, number> = {}
+  categoryPaths.forEach((c) => {
+    categoryCount[c] = 0
+  })
+  allBlogs.forEach((file) => {
+    const slug = file.slug ?? ''
+    const idx = slug.lastIndexOf('/')
+    const cat = idx >= 0 ? slug.substring(0, idx) : ''
+    if (cat && cat in categoryCount) {
+      categoryCount[cat] += 1
+    }
+  })
+  const formatted = await prettier.format(JSON.stringify(categoryCount, null, 2), {
+    parser: 'json',
+  })
+  writeFileSync('./app/category-data.json', formatted)
 }
 
 function createSearchIndex(allBlogs) {
@@ -183,6 +228,7 @@ export default makeSource({
   onSuccess: async (importData) => {
     const { allBlogs } = await importData()
     createTagCount(allBlogs)
+    createCategoryCount(allBlogs)
     createSearchIndex(allBlogs)
   },
 })
