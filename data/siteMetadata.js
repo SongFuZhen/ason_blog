@@ -13,6 +13,10 @@ const siteMetadata = {
   github: 'https://github.com/SongFuZhen',
   locale: 'zh-CN',
   stickyNav: false,
+  // IndexNow 协议（Bing 等搜索引擎快速收录）。key 文件已放在 public/<key>.txt。
+  indexNow: {
+    key: 'dedf27909dcb083b9270ea7809f50df4',
+  },
   // 搜索引擎验证 meta（硬编码，不依赖 env；Bing/Google 要求常驻，勿移除）
   verification: {
     google: 'ENWkPav6SpNVqYhLgratSPLTQFhHYXlRSlSUbnOHn6s',
