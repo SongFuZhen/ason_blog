@@ -26,6 +26,7 @@ interface LayoutProps {
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
   const { path, slug: postSlug, date, title, tags } = content
   const basePath = path.split('/')[0]
+  const folder = postSlug.includes('/') ? postSlug.split('/').slice(0, -1).join('/') : ''
   const authorNames = authorDetails.map((author) => author.name).filter(Boolean)
   const authorLabel = authorNames.length > 0 ? authorNames.join('、') : 'ason'
   const minutes = content.readingTime?.minutes
@@ -40,8 +41,16 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             <Prompt>cat {postSlug}.mdx</Prompt>
           </div>
 
-          {/* output: title + metadata + tags */}
+          {/* output: folder + title + metadata + tags */}
           <div className="space-y-2">
+            {folder && (
+              <Link
+                href={`/categories/${encodeURI(folder)}`}
+                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 inline-block text-2xl font-bold tracking-tight transition-colors"
+              >
+                {folder}/
+              </Link>
+            )}
             <h1 className="font-heading text-3xl leading-snug font-semibold text-gray-900 sm:text-4xl dark:text-gray-100">
               {title}
             </h1>
