@@ -1,3 +1,5 @@
+import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
+
 export type AnalyticsConfig = {
   plausibleAnalytics?: Record<string, unknown>
   simpleAnalytics?: Record<string, unknown>
@@ -12,5 +14,5 @@ export function Analytics({
 }: {
   analyticsConfig: AnalyticsConfig
 }) {
-  return null
+  return <VercelAnalytics />
 }
