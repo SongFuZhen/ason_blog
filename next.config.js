@@ -5,15 +5,16 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 
 // You might need to insert additional domains in script-src if you are using external services
+// AdSense 域名：script-src 放行 pagead2.googlesyndication.com，frame-src 放行 *.googlesyndication.com / googleads.g.doubleclick.net
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is pagead2.googlesyndication.com;
   style-src 'self' 'unsafe-inline' https://giscus.app;
   img-src * blob: data:;
   media-src 'self' blob: data: *.s3.amazonaws.com;
   connect-src *;
   font-src 'self' data:;
-  frame-src giscus.app music.163.com;
+  frame-src giscus.app music.163.com tpc.googlesyndication.com googleads.g.doubleclick.net *.googlesyndication.com;
 `
 
 const securityHeaders = [
