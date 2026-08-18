@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh-CN" class="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terminal 页面原型 · ason/blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: 'oklch(0.972 0.012 180)', 100: 'oklch(0.94 0.026 180)',
+              200: 'oklch(0.89 0.052 180)', 300: 'oklch(0.81 0.088 180)',
+              400: 'oklch(0.69 0.115 179)', 500: 'oklch(0.56 0.12 178)',
+              600: 'oklch(0.49 0.112 178)', 700: 'oklch(0.42 0.095 180)',
+              800: 'oklch(0.35 0.075 182)', 900: 'oklch(0.29 0.058 184)',
+              950: 'oklch(0.22 0.045 186)',
+            },
+            gray: {
+              50: 'oklch(0.985 0.004 190)', 100: 'oklch(0.965 0.006 190)',
+              200: 'oklch(0.925 0.008 190)', 300: 'oklch(0.865 0.01 190)',
+              400: 'oklch(0.695 0.014 190)', 500: 'oklch(0.545 0.016 190)',
+              600: 'oklch(0.44 0.016 190)', 700: 'oklch(0.365 0.016 190)',
+              800: 'oklch(0.285 0.015 190)', 900: 'oklch(0.205 0.014 190)',
+              950: 'oklch(0.13 0.012 190)',
+            },
+          },
+          fontFamily: {
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+            sans: ['ui-sans-serif', 'system-ui', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+    .animate-blink { animation: blink 1s steps(1) infinite; }
+    @keyframes reveal { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    .reveal { opacity:0; animation: reveal .45s cubic-bezier(.25,.1,.25,1) forwards; }
+    /* terminal window surface (mirrors LabHero) */
+    .term {
+      background: color-mix(in oklch, var(--tw-term-bg, oklch(0.985 0.004 190)) 60%, transparent);
+    }
+    html.dark .term { background: color-mix(in oklch, oklch(0.13 0.012 186) 60%, transparent); }
+    a.tlink { color: var(--tw-prose-links, oklch(0.49 0.112 178)); }
+    html.dark a.tlink { color: oklch(0.69 0.115 179); }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased dark:bg-gray-950 dark:text-gray-100">
+  <!-- sticky nav -->
+  <header class="sticky top-0 z-50 border-b border-gray-200 bg-gray-50/80 backdrop-blur dark:border-gray-800 dark:bg-gray-950/80">
+    <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+      <span class="font-mono text-sm text-gray-500 dark:text-gray-400">终端页面原型 · prototype</span>
+      <div class="flex items-center gap-2">
+        <nav class="hidden gap-1 font-mono text-xs sm:flex">
+          <a href="#post" class="rounded px-2 py-1 text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">文章详情</a>
+          <a href="#blog" class="rounded px-2 py-1 text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">文章列表</a>
+          <a href="#tags" class="rounded px-2 py-1 text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">标签聚合</a>
+          <a href="#tag" class="rounded px-2 py-1 text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">单个标签</a>
+        </nav>
+        <button id="themeToggle" class="rounded-md border border-gray-300 px-2 py-1 font-mono text-xs text-gray-600 hover:border-primary-400 hover:text-primary-600 dark:border-gray-700 dark:text-gray-300 dark:hover:border-primary-400 dark:hover:text-primary-400">🌓 切换</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl space-y-16 px-4 py-10">
+
+    <!-- ============ 1. 单篇文章详情页 ============ -->
+    <section id="post" class="scroll-mt-20 space-y-3">
+      <p class="font-mono text-xs uppercase tracking-widest text-primary-600 dark:text-primary-400">01 · 单篇文章详情页 — PostLayout</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">用 <code class="font-mono">cat &lt;slug&gt;.mdx</code> 的终端会话包裹文章：标题/元信息/tags 是「命令输出」，正文用可读排版，底部 prev/next + 闪烁光标。</p>
+
+      <div class="reveal term overflow-hidden rounded-xl border border-gray-200 font-mono text-sm shadow-sm dark:border-gray-800" style="animation-delay:0ms">
+        <!-- title bar -->
+        <div class="flex items-center gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-gray-800">
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="ml-2 text-xs text-gray-400 dark:text-gray-500">ason@blog: ~/blog/deploy-vercel — less</span>
+        </div>
+        <!-- body -->
+        <div class="space-y-5 px-4 py-5 leading-relaxed">
+          <div>
+            <div class="text-gray-400 dark:text-gray-500"><span class="text-primary-600 dark:text-primary-400">ason@blog</span><span> ~ % </span>cat deploy-vercel.mdx</div>
+          </div>
+
+          <!-- article header (output) -->
+          <div class="space-y-2">
+            <h1 class="font-heading text-2xl font-semibold leading-snug text-gray-900 dark:text-gray-100 sm:text-3xl">在 Vercel 上部署 Next.js 博客</h1>
+            <div class="text-xs text-gray-500 dark:text-gray-400">ason · 2026-08-10 · 约 8 分钟阅读</div>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="text-primary-600 dark:text-primary-400">#Next.js</span>
+              <span class="text-primary-600 dark:text-primary-400">#Vercel</span>
+              <span class="text-primary-600 dark:text-primary-400">#部署</span>
+            </div>
+          </div>
+
+          <div class="text-gray-300 dark:text-gray-700">─────── ✀ ───────</div>
+
+          <!-- prose body (readable typography, inside the window) -->
+          <div class="space-y-3 font-sans text-[15px] leading-7 text-gray-700 dark:text-gray-300">
+            <p>把博客推到 Vercel 只需要三步：连接 Git 仓库、设置构建命令、配置环境变量。本篇记录从零到上线的完整过程，以及踩过的几个坑。</p>
+            <p>最关键的一步是 <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm text-primary-700 dark:bg-gray-800 dark:text-primary-300">next build</code> 之后的输出目录设置——Contentlayer 生成的文件必须被正确纳入部署产物。</p>
+            <blockquote class="border-l-2 border-primary-400 pl-3 text-gray-500 dark:text-gray-400">小贴士：用 <code class="font-mono">vercel.json</code> 把 trailing slash 关掉，避免重复索引。</blockquote>
+          </div>
+
+          <!-- footer: prev / next -->
+          <div class="grid gap-3 border-t border-gray-200 pt-4 text-xs dark:border-gray-800 sm:grid-cols-2">
+            <a href="#" class="group rounded-lg border border-gray-200 p-3 transition-colors hover:border-primary-300 hover:bg-gray-100/50 dark:border-gray-800 dark:hover:border-primary-700 dark:hover:bg-gray-900/50">
+              <span class="text-gray-400 dark:text-gray-500">← 上一篇</span>
+              <p class="mt-1 text-gray-700 group-hover:text-primary-600 dark:text-gray-300 dark:group-hover:text-primary-400">Contentlayer2 在 Windows 上的构建坑</p>
+            </a>
+            <a href="#" class="group rounded-lg border border-gray-200 p-3 text-right transition-colors hover:border-primary-300 hover:bg-gray-100/50 dark:border-gray-800 dark:hover:border-primary-700 dark:hover:bg-gray-900/50">
+              <span class="text-gray-400 dark:text-gray-500">下一篇 →</span>
+              <p class="mt-1 text-gray-700 group-hover:text-primary-600 dark:text-gray-300 dark:group-hover:text-primary-400">用 MDX 写带交互的笔记</p>
+            </a>
+          </div>
+
+          <!-- blinking prompt -->
+          <div class="text-gray-400 dark:text-gray-500">
+            <span class="text-primary-600 dark:text-primary-400">ason@blog</span><span> ~/blog/deploy-vercel % </span>
+            <span class="ml-0.5 inline-block h-4 w-2 translate-y-0.5 bg-gray-800 animate-blink dark:bg-gray-200"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2. 文章列表 /blog ============ -->
+    <section id="blog" class="scroll-mt-20 space-y-3">
+      <p class="font-mono text-xs uppercase tracking-widest text-primary-600 dark:text-primary-400">02 · 文章列表 — /blog</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">用 <code class="font-mono">ls -la ~/blog</code> 列出全部文章，每行一条；支持按标签过滤与分页。</p>
+
+      <div class="reveal term overflow-hidden rounded-xl border border-gray-200 font-mono text-sm shadow-sm dark:border-gray-800" style="animation-delay:60ms">
+        <div class="flex items-center gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-gray-800">
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="ml-2 text-xs text-gray-400 dark:text-gray-500">ason@blog: ~/blog — zsh</span>
+        </div>
+        <div class="space-y-4 px-4 py-5 leading-relaxed">
+          <div class="text-gray-400 dark:text-gray-500"><span class="text-primary-600 dark:text-primary-400">ason@blog</span><span> ~ % </span>ls -la ~/blog</div>
+          <div class="text-xs text-gray-400 dark:text-gray-500">total 12 · 2 页</div>
+
+          <ul class="space-y-1.5 text-xs">
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">Aug 10</span><span class="tlink truncate underline underline-offset-2">在 Vercel 上部署 Next.js 博客 <span class="text-gray-400 dark:text-gray-500">#Next.js #Vercel</span></span></a></li>
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">Aug 02</span><span class="tlink truncate underline underline-offset-2">Contentlayer2 在 Windows 上的构建坑 <span class="text-gray-400 dark:text-gray-500">#Contentlayer</span></span></a></li>
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">Jul 21</span><span class="tlink truncate underline underline-offset-2">用 MDX 写带交互的笔记 <span class="text-gray-400 dark:text-gray-500">#MDX</span></span></a></li>
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">Jul 09</span><span class="tlink truncate underline underline-offset-2">终端美学：把博客做成 shell <span class="text-gray-400 dark:text-gray-500">#设计</span></span></a></li>
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">Jun 28</span><span class="tlink truncate underline underline-offset-2">我的 2026 上半年总结 <span class="text-gray-400 dark:text-gray-500">#随笔</span></span></a></li>
+          </ul>
+
+          <!-- tag filter hint -->
+          <div class="border-t border-gray-200 pt-3 text-xs dark:border-gray-800">
+            <span class="text-gray-400 dark:text-gray-500">filter: </span>
+            <a href="#" class="rounded bg-primary-50 px-2 py-0.5 text-primary-700 dark:bg-primary-950 dark:text-primary-300">#Next.js</a>
+            <a href="#" class="ml-1 rounded px-2 py-0.5 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">#MDX</a>
+            <a href="#" class="ml-1 rounded px-2 py-0.5 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">#设计</a>
+          </div>
+
+          <!-- pagination -->
+          <div class="flex items-center justify-between border-t border-gray-200 pt-3 text-xs dark:border-gray-800">
+            <span class="cursor-auto text-gray-300 dark:text-gray-600">‹ 上一页</span>
+            <span class="text-gray-400 dark:text-gray-500">page 1 / 2</span>
+            <a href="#" class="tlink hover:underline">下一页 ›</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3. 标签聚合 /tags ============ -->
+    <section id="tags" class="scroll-mt-20 space-y-3">
+      <p class="font-mono text-xs uppercase tracking-widest text-primary-600 dark:text-primary-400">03 · 标签聚合 — /tags</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">把每个标签当成 <code class="font-mono">~/tags</code> 下的一个目录：<code class="font-mono">ls -la ~/tags</code> 列出目录（带文章数），点击即「进入目录」。</p>
+
+      <div class="reveal term overflow-hidden rounded-xl border border-gray-200 font-mono text-sm shadow-sm dark:border-gray-800" style="animation-delay:120ms">
+        <div class="flex items-center gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-gray-800">
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="ml-2 text-xs text-gray-400 dark:text-gray-500">ason@blog: ~/tags — zsh</span>
+        </div>
+        <div class="space-y-4 px-4 py-5 leading-relaxed">
+          <div class="text-gray-400 dark:text-gray-500"><span class="text-primary-600 dark:text-primary-400">ason@blog</span><span> ~ % </span>ls -la ~/tags</div>
+          <div class="text-xs text-gray-400 dark:text-gray-500">total 5 tags · 18 posts</div>
+
+          <ul class="space-y-1 text-xs">
+            <li><a href="#" class="group grid grid-cols-[140px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">drwxr-xr-x 6</span><span class="tlink truncate underline underline-offset-2">Next.js/ <span class="text-gray-400 dark:text-gray-500">6 篇</span></span></a></li>
+            <li><a href="#" class="group grid grid-cols-[140px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">drwxr-xr-x 4</span><span class="tlink truncate underline underline-offset-2">MDX/ <span class="text-gray-400 dark:text-gray-500">4 篇</span></span></a></li>
+            <li><a href="#" class="group grid grid-cols-[140px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">drwxr-xr-x 3</span><span class="tlink truncate underline underline-offset-2">Vercel/ <span class="text-gray-400 dark:text-gray-500">3 篇</span></span></a></li>
+            <li><a href="#" class="group grid grid-cols-[140px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">drwxr-xr-x 3</span><span class="tlink truncate underline underline-offset-2">Contentlayer/ <span class="text-gray-400 dark:text-gray-500">3 篇</span></span></a></li>
+            <li><a href="#" class="group grid grid-cols-[140px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">drwxr-xr-x 2</span><span class="tlink truncate underline underline-offset-2">设计/ <span class="text-gray-400 dark:text-gray-500">2 篇</span></span></a></li>
+          </ul>
+
+          <div class="border-t border-gray-200 pt-3 text-xs dark:border-gray-800">
+            <span class="text-gray-400 dark:text-gray-500">hot: </span>
+            <a href="#" class="rounded bg-primary-50 px-2 py-0.5 text-primary-700 dark:bg-primary-950 dark:text-primary-300">Next.js/</a>
+            <a href="#" class="ml-1 rounded bg-primary-50 px-2 py-0.5 text-primary-700 dark:bg-primary-950 dark:text-primary-300">MDX/</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4. 单个标签页 /tags/[tag] ============ -->
+    <section id="tag" class="scroll-mt-20 space-y-3">
+      <p class="font-mono text-xs uppercase tracking-widest text-primary-600 dark:text-primary-400">04 · 单个标签页 — /tags/[tag]</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">用管道过滤：<code class="font-mono">ls -la ~/blog | grep "#next-js"</code>，只显示命中标签的文章；顶部有返回 <code class="font-mono">~/tags</code> 的链接。</p>
+
+      <div class="reveal term overflow-hidden rounded-xl border border-gray-200 font-mono text-sm shadow-sm dark:border-gray-800" style="animation-delay:180ms">
+        <div class="flex items-center gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-gray-800">
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+          <span class="ml-2 text-xs text-gray-400 dark:text-gray-500">ason@blog: ~/tags/next-js — zsh</span>
+        </div>
+        <div class="space-y-4 px-4 py-5 leading-relaxed">
+          <a href="#" class="inline-block text-xs text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">cd ~/tags</a>
+          <div class="text-gray-400 dark:text-gray-500"><span class="text-primary-600 dark:text-primary-400">ason@blog</span><span> ~/tags/next-js % </span>ls -la ~/blog | grep "#next-js"</div>
+          <div class="text-xs text-gray-400 dark:text-gray-500">~/tags/next-js/ · 共 6 篇</div>
+
+          <ul class="space-y-1.5 text-xs">
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">Aug 10</span><span class="tlink truncate underline underline-offset-2">在 Vercel 上部署 Next.js 博客</span></a></li>
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">May 14</span><span class="tlink truncate underline underline-offset-2">用 App Router 重构博客</span></a></li>
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">Mar 02</span><span class="tlink truncate underline underline-offset-2">Next.js 15 的缓存模型</span></a></li>
+            <li><a href="#" class="group grid grid-cols-[88px_1fr] items-baseline gap-3"><span class="text-gray-400 dark:text-gray-500">Feb 19</span><span class="tlink truncate underline underline-offset-2">流式渲染与 Suspense</span></a></li>
+          </ul>
+
+          <div class="border-t border-gray-200 pt-3 text-xs dark:border-gray-800">
+            <span class="text-gray-400 dark:text-gray-500">page 1 / 2 · </span>
+            <a href="#" class="tlink hover:underline">下一页 ›</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const btn = document.getElementById('themeToggle')
+    btn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark')
+    })
+  </script>
+</body>
+</html>
