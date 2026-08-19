@@ -91,5 +91,5 @@ export function GiscusComments(_props: GiscusCommentsProps) {
     )
   }
 
-  return <div ref={containerRef} className="mt-8" />
+  return <div ref={containerRef} className="mt-4" />
 }

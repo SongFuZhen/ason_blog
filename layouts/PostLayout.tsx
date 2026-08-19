@@ -80,12 +80,6 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
           {/* body — readable typography, not forced monospace */}
           <div className="prose dark:prose-invert post-prose max-w-none font-sans">{children}</div>
 
-          {siteMetadata.comments && (
-            <div className="pt-4 text-center text-gray-700 dark:text-gray-300" id="comment">
-              <Comments slug={postSlug} title={title} />
-            </div>
-          )}
-
           {/* prev / next */}
           {(next || prev) && (
             <div className="grid gap-3 border-t border-gray-200 pt-4 text-xs sm:grid-cols-2 dark:border-gray-800">
@@ -115,6 +109,16 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               ) : (
                 <span />
               )}
+            </div>
+          )}
+
+          {/* comments — terminal-styled, at the very bottom */}
+          {siteMetadata.comments && (
+            <div id="comment" className="border-t border-gray-200 pt-6 dark:border-gray-800">
+              <div className="text-gray-400 dark:text-gray-500">
+                <Prompt>cat comments</Prompt>
+              </div>
+              <Comments slug={postSlug} title={title} />
             </div>
           )}
 
