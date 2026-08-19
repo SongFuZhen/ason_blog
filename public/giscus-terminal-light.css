@@ -1,0 +1,37 @@
+/* Terminal-style Giscus theme (light) — matches the post page's terminal window. */
+body {
+  --color-canvas-default: #f6f8fa;
+  --color-canvas-subtle: #eaeef2;
+  --color-canvas-inset: #eef1f4;
+  --color-fg-default: #1f2328;
+  --color-fg-muted: #59636e;
+  --color-border-default: #d1d9e0;
+  --color-border-muted: #d8dee4;
+  --color-accent-fg: #0d9488;
+  --color-accent-emphasis: #14b8a6;
+  --color-success-fg: #1a7f37;
+  --color-attention-fg: #9a6700;
+  --color-attention-emphasis: #9e6a03;
+  --color-danger-fg: #cf222e;
+  --color-danger-emphasis: #a40e26;
+  --color-link: #0d9488;
+  --color-neutral-muted: rgba(175, 184, 193, 0.4);
+
+  background: var(--color-canvas-default);
+  color: var(--color-fg-default);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+.giscus,
+.giscus-frame {
+  background: transparent;
+}
+
+textarea,
+input[type='text'],
+input[type='email'],
+.giscus-button,
+.gsc-comment-box,
+.gsc-comment {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+}

@@ -24,8 +24,11 @@ function getGiscusConfig() {
 }
 
 function getGiscusTheme(resolvedTheme?: string): string {
-  if (resolvedTheme === 'dark') return 'dark_dimmed'
-  return 'light'
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  // Custom terminal-style themes hosted in /public, so they match the post
+  // page's terminal window and work on both localhost (dev) and the live domain.
+  if (resolvedTheme === 'dark') return `${origin}/giscus-terminal-dark.css`
+  return `${origin}/giscus-terminal-light.css`
 }
 
 function sendGiscusTheme(theme: string) {
@@ -67,7 +70,7 @@ export function GiscusComments(_props: GiscusCommentsProps) {
     script.setAttribute('data-emit-metadata', '0')
     script.setAttribute('data-input-position', 'bottom')
     script.setAttribute('data-theme', themeRef.current)
-    script.setAttribute('data-lang', 'en')
+    script.setAttribute('data-lang', 'zh-CN')
     script.setAttribute('crossorigin', 'anonymous')
     script.async = true
 

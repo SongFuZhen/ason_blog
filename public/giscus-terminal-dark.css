@@ -1,0 +1,39 @@
+/* Terminal-style Giscus theme (dark) — matches the post page's terminal window. */
+body {
+  --color-canvas-default: #0e1116;
+  --color-canvas-subtle: #161b22;
+  --color-canvas-inset: #0b0e13;
+  --color-fg-default: #c9d1d9;
+  --color-fg-muted: #8b949e;
+  --color-border-default: #30363d;
+  --color-border-muted: #21262d;
+  --color-accent-fg: #2dd4bf;
+  --color-accent-emphasis: #14b8a6;
+  --color-success-fg: #3fb950;
+  --color-attention-fg: #d29922;
+  --color-attention-emphasis: #9e6a03;
+  --color-danger-fg: #f85149;
+  --color-danger-emphasis: #da3633;
+  --color-link: #2dd4bf;
+  --color-neutral-muted: rgba(110, 118, 129, 0.4);
+
+  background: var(--color-canvas-default);
+  color: var(--color-fg-default);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+/* Let the comment box blend into the terminal window shell. */
+.giscus,
+.giscus-frame {
+  background: transparent;
+}
+
+/* Monospace + teal-tinted inputs to match the terminal aesthetic. */
+textarea,
+input[type='text'],
+input[type='email'],
+.giscus-button,
+.gsc-comment-box,
+.gsc-comment {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+}
