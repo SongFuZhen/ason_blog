@@ -4,7 +4,7 @@ Project notes for AI agents working in this repo (ason_blog — personal blog on
 
 ## Blog post rendering pipeline
 
-Posts are written as **MDX**, not plain Markdown. The chain is:
+Posts are written as **MDX**, not plain Markdown (both `.md` and `.mdx` extensions are accepted — Contentlayer processes them identically through the MDX pipeline). The chain is:
 
 1. Source: `data/blog/<category>/<slug>.mdx` (frontmatter: `title`, `date`, `tags`, `categories`, `authors`, `summary`, `layout`).
 2. `contentlayer.config.ts` defines the `Blog` (and `Authors`) document schema. At dev/build time **Contentlayer2** compiles each MDX into JS (`post.body.code`) and emits the generated collections in `contentlayer/generated` (`allBlogs`, `allAuthors`).
