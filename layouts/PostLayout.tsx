@@ -24,9 +24,10 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { path, slug: postSlug, date, title, tags } = content
+  const { path, slug: postSlug, date, title, tags, filePath } = content
   const basePath = path.split('/')[0]
   const folder = postSlug.includes('/') ? postSlug.split('/').slice(0, -1).join('/') : ''
+  const fileName = filePath?.replace(/^blog\//, '') ?? `${postSlug}.mdx`
   const authorNames = authorDetails.map((author) => author.name).filter(Boolean)
   const authorLabel = authorNames.length > 0 ? authorNames.join('、') : 'ason'
   const minutes = content.readingTime?.minutes
@@ -38,7 +39,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
         <TerminalWindow title={`~/blog/${postSlug}`} shell="less" className="animate-hero-reveal">
           {/* command line */}
           <div className="text-gray-400 dark:text-gray-500">
-            <Prompt>cat {postSlug}.mdx</Prompt>
+            <Prompt>cat {fileName}</Prompt>
           </div>
 
           {/* output: folder + title + metadata + tags */}
@@ -46,12 +47,12 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             {folder && (
               <Link
                 href={`/categories/${encodeURI(folder)}`}
-                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 inline-block text-2xl font-bold tracking-tight transition-colors"
+                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 inline-block font-mono text-lg font-semibold transition-colors"
               >
                 {folder}/
               </Link>
             )}
-            <h1 className="font-heading text-3xl leading-snug font-semibold text-gray-900 sm:text-4xl dark:text-gray-100">
+            <h1 className="font-mono text-xl leading-snug font-semibold text-gray-900 sm:text-2xl dark:text-gray-100">
               {title}
             </h1>
             <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -77,8 +78,8 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
 
           <div className="text-gray-300 dark:text-gray-700">────────────────</div>
 
-          {/* body — readable typography, not forced monospace */}
-          <div className="prose dark:prose-invert post-prose max-w-none font-sans">{children}</div>
+          {/* body — terminal-scale mono typography */}
+          <div className="prose dark:prose-invert post-prose max-w-none font-mono">{children}</div>
 
           {/* prev / next */}
           {(next || prev) && (

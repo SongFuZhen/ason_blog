@@ -44,7 +44,7 @@ export default function TerminalWindow({
     <div
       className={`overflow-hidden rounded-xl border border-gray-200 bg-gray-50/60 font-mono text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900/60 ${className}`}
     >
-      <div className="flex items-center gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-gray-800">
+      <div className="flex items-center gap-2 border-b border-gray-200 px-6 py-2.5 dark:border-gray-800">
         <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
         <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
         <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
@@ -60,7 +60,7 @@ export default function TerminalWindow({
           )}
         </span>
       </div>
-      <div className={`space-y-5 px-4 py-5 leading-relaxed ${bodyClassName}`}>{children}</div>
+      <div className={`space-y-5 px-6 py-5 leading-relaxed ${bodyClassName}`}>{children}</div>
     </div>
   )
 }
