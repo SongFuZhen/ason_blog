@@ -31,7 +31,7 @@ const siteMetadata = {
   },
   // 评论默认关闭。如需启用，将 provider 改为 'giscus' 并在 .env 中配置 Giscus 参数。
   comments: {
-    provider: '',
+    provider: 'giscus',
   },
   search: {
     provider: 'kbar',
