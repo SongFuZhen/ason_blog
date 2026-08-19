@@ -29,7 +29,7 @@ const siteMetadata = {
   newsletter: {
     provider: '',
   },
-  // 评论默认关闭。如需启用，将 provider 改为 'giscus' 并在 .env 中配置 Giscus 参数。
+  // 评论已通过 Giscus 启用（provider: 'giscus'）。Giscus 参数在 .env 中配置（NEXT_PUBLIC_GISCUS_*）。
   comments: {
     provider: 'giscus',
   },
