@@ -27,6 +27,50 @@ body {
   background: transparent;
 }
 
+/* ── De-box: flat terminal layout, no rounded bordered boxes ──
+   Strip every box border/radius/shadow; keep only hairline separators. */
+.gsc-comment-box,
+.gsc-comment-box-write,
+.gsc-comment-box-preview,
+.gsc-comment,
+.gsc-comment-box-tabs,
+.gsc-comment-box-textarea,
+.gsc-comment-box-textarea-extras,
+.gsc-pagination-button,
+.gsc-reaction,
+.gsc-reaction-button,
+.gsc-btn,
+.btn {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Keep hairline separators: tab-bar underline + textarea input line */
+.gsc-comment-box-tabs,
+.gsc-comment-box-textarea {
+  border-bottom: 1px solid var(--color-border-muted) !important;
+}
+
+/* Tabs: flat buttons; active tab keeps its accent tint */
+.gsc-comment-box-tabs button {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+/* Flatten shaded panels: tab bar + textarea area blend into the page */
+.gsc-comment-box-tabs,
+.gsc-comment-box-textarea,
+.gsc-comment-box-textarea-extras {
+  background: transparent !important;
+}
+
+/* Comments: flat, separated by a top hairline instead of boxes */
+.gsc-comment + .gsc-comment {
+  border-top: 1px solid var(--color-border-muted) !important;
+}
+
 textarea,
 input[type='text'],
 input[type='email'],
