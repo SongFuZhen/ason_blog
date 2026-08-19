@@ -39,3 +39,15 @@ If a local page shows raw MDX: stop the dev server, delete `.contentlayer` and `
 - Posts under non-ASCII category folders (e.g. `产品/`, `AI/`) work; slugs are URL-encoded. Don't rename folders without updating `categories/[...category]` links.
 - Images in MDX without explicit `width`/`height` fall back to a native `<img>` in `components/mdx/ProseImage.tsx` (so they bypass `next/image` remote-pattern restrictions and won't 404 on domain config).
 - **Live-site "md 显示不对" is usually a stale CSS cache, NOT a code bug.** If `curl` shows the `prose` wrapper class in the HTML and `prose`/`tw-prose-body` rules exist in the deployed CSS, the server output is correct — the user is almost certainly seeing a cached old CSS (browser, or Vercel edge). Tell them to hard-refresh (Ctrl/Cmd+Shift+R) and re-check before touching any code. This is the #1 false alarm for "渲染不对" reports on ason.top.
+
+## Comments (Giscus)
+
+Comments are powered by **Giscus** (GitHub Discussions backend). Notes for maintainers:
+
+- **Enabled via** `data/siteMetadata.js` → `comments.provider: 'giscus'`. The `Comments` component renders `null` unless provider is exactly `'giscus'`.
+- **Config source**: environment variables `NEXT_PUBLIC_GISCUS_REPO` / `_REPOSITORY_ID` / `_CATEGORY` / `_CATEGORY_ID` (see `.env.example`). `.env` is gitignored — these must also be set in **Vercel → Settings → Environment Variables** for the live build (Vercel does not read local `.env`).
+- **Mapping**: `data-mapping="title"` — discussions are keyed by the page `<title>` (not the URL pathname). GitHub Discussions titles become the post title. Keep post titles stable; renaming a post starts a fresh discussion. (Comments were empty at switch time, so no data was lost.)
+- **UI language**: `data-lang="zh-CN"` (Chinese UI, matching the rest of the site).
+- **Theme**: custom terminal-style themes in `public/giscus-terminal-dark.css` / `public/giscus-terminal-light.css`, wired in `components/comments/GiscusComments.tsx` via a `window.location.origin`-based `data-theme` URL (works on both localhost and the live domain) and switched on light/dark via `postMessage`.
+- **Auto-load**: `components/Comments.tsx` renders `GiscusComments` directly (no click-to-load button) — the Giscus script is injected client-side, so it never appears in server-rendered / `curl` HTML (only the "not configured" fallback message would).
+- **Requires GitHub login to post** (Giscus limitation). Waline / Twikoo were evaluated 2026-08-19 as anonymous-friendly alternatives but Giscus was kept.
