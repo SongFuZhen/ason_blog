@@ -11,7 +11,7 @@ export type SiteStackNote = {
 export const profile = {
   name: 'A Sense of Now',
   handle: 'ason',
-  title: '前端开发者、写作者与创造者',
+  title: '一人公司、前端开发者、写作者、铲屎官',
   email: '',
   location: '中国 · 成都',
   avatar: '/static/images/avatar.png',
