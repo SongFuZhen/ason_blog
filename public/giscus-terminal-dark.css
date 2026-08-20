@@ -17,7 +17,7 @@ body {
   --color-link: #2dd4bf;
   --color-neutral-muted: rgba(110, 118, 129, 0.4);
 
-  background: var(--color-canvas-default);
+  background: transparent;
   color: var(--color-fg-default);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 }
@@ -70,6 +70,40 @@ body {
 /* Comments: flat, separated by a top hairline instead of boxes */
 .gsc-comment + .gsc-comment {
   border-top: 1px solid var(--color-border-muted) !important;
+}
+
+/* ── No gray panels: every surface transparent ── */
+.gsc-comment-box,
+.gsc-comment,
+.gsc-signin,
+.gsc-reactions,
+.gsc-reaction,
+.gsc-pagination-button,
+.gsc-btn {
+  background: transparent !important;
+}
+
+/* Counts: normal weight, left-aligned with the input text below */
+.gsc-count,
+.gsc-comments-count,
+.gsc-reactions-count {
+  font-weight: 400 !important;
+}
+.gsc-comments-count,
+.gsc-reactions-count {
+  margin-left: 16px !important;
+}
+
+/* Input focus + text selection use the theme accent */
+.gsc-comment-box-textarea:focus,
+.gsc-comment-box-textarea:focus-visible {
+  border-bottom-color: var(--color-accent-fg) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.gsc-comment-box-textarea::selection {
+  background: var(--color-accent-emphasis);
+  color: #fff;
 }
 
 /* Monospace + teal-tinted inputs to match the terminal aesthetic. */
