@@ -2,6 +2,7 @@ import type React from 'react'
 import siteMetadata from '@/data/siteMetadata'
 import SocialIcon from '@/components/social-icons'
 import Link from './Link'
+import Image from './Image'
 import projectsData from '@/data/projectsData'
 import { profile } from '@/data/profile'
 
@@ -15,7 +16,7 @@ const prompt = (
 export default function Footer() {
   return (
     <footer className="border-t border-gray-200 font-mono text-sm dark:border-gray-800">
-      <div className="grid gap-8 px-6 py-10 sm:px-10 md:grid-cols-[2fr_1fr] md:gap-0 md:divide-x md:divide-gray-200 lg:px-16 xl:px-20 md:dark:divide-gray-800">
+      <div className="grid gap-8 px-6 py-10 sm:px-10 md:grid-cols-[2fr_1fr_1fr] md:gap-0 md:divide-x md:divide-gray-200 lg:px-16 xl:px-20 md:dark:divide-gray-800">
         {/* Left: whoami + contacts + copyright */}
         <div className="space-y-4 md:pr-8">
           <div className="text-gray-400 dark:text-gray-500">{prompt}whoami</div>
@@ -77,6 +78,24 @@ export default function Footer() {
             <span>{`© ${new Date().getFullYear()} `}</span>
             <span>{siteMetadata.author}</span>
           </div>
+        </div>
+
+        {/* Middle: mini-program */}
+        <div className="space-y-3 md:px-8">
+          <div className="text-gray-400 dark:text-gray-500">~/miniapp</div>
+          <Link href="/blog/产品/陇中乡音词典" className="block text-center transition-colors">
+            <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+              小程序 · 陇中乡音词典
+            </div>
+            <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">微信扫码体验</div>
+            <Image
+              src="/static/images/longzhong-miniapp.jpg"
+              alt="陇中乡音词典小程序二维码"
+              width={160}
+              height={160}
+              className="mx-auto mt-3 h-auto w-40 rounded-sm"
+            />
+          </Link>
         </div>
 
         {/* Right: products */}
