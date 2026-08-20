@@ -113,3 +113,24 @@ input[type='email'],
 .gsc-comment {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
 }
+
+/* ── Comment box frame + tab button borders ── */
+.gsc-comment-box {
+  border-left: 1px solid var(--color-border-muted) !important;
+  border-right: 1px solid var(--color-border-muted) !important;
+}
+.gsc-comment-box-tabs button {
+  border: 1px solid var(--color-border-muted) !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+}
+
+/* Relabel the submit button 评论 -> 发表评论 (giscus text is not editable) */
+.gsc-comment-box:not(.gsc-comment-box-is-reply) .gsc-comment-box-bottom button.btn-primary {
+  font-size: 0 !important;
+}
+.gsc-comment-box:not(.gsc-comment-box-is-reply) .gsc-comment-box-bottom button.btn-primary::after {
+  content: '发表评论';
+  font-size: 0.875rem;
+  font-weight: 500;
+}
