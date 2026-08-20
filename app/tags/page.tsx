@@ -1,6 +1,8 @@
 import Link from '@/components/Link'
 import { slug } from 'github-slugger'
 import tagData from 'app/tag-data.json'
+import { allCoreContent } from '@/lib/content/core.mjs'
+import { allBlogs } from 'contentlayer/generated'
 import { genPageMetadata } from 'app/seo'
 import TerminalWindow, { Prompt } from '@/components/home/TerminalWindow'
 
@@ -13,7 +15,9 @@ export default async function Page() {
   const tagCounts = tagData as Record<string, number>
   const tagKeys = Object.keys(tagCounts)
   const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
-  const totalTaggedPosts = sortedTags.reduce((total, tag) => total + tagCounts[tag], 0)
+  const totalTaggedPosts = allCoreContent(allBlogs).filter(
+    (post) => post.tags && post.tags.length > 0
+  ).length
   const topTags = sortedTags.slice(0, 3)
 
   return (
