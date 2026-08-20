@@ -143,6 +143,15 @@ input[type='email'],
   border-radius: 0 !important;
 }
 
+/* Remove the markdown hint icon under the input */
+.gsc-comment-box-markdown-hint {
+  display: none !important;
+}
+.gsc-comment-box-textarea-extras {
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+
 /* Relabel the submit button 评论 -> 发表评论 (giscus text is not editable) */
 .gsc-comment-box:not(.gsc-comment-box-is-reply) .gsc-comment-box-bottom button.btn-primary {
   font-size: 0 !important;
