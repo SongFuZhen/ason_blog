@@ -84,7 +84,7 @@ export function LogoBlob() {
 
         <Image
           src="/static/images/logo/logo-full-transparent.png"
-          alt="Ason Logo"
+          alt="ASoN Logo"
           width={340}
           height={340}
           className="relative z-10 mx-auto aspect-square w-[75%] object-contain dark:invert"
