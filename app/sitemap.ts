@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const blogRoutes = allBlogs
     .filter((post) => !post.draft)
     .map((post) => ({
-      url: `${siteUrl}/${post.path}`,
+      url: `${siteUrl}/${post.path.split('/').map(encodeURIComponent).join('/')}`,
       lastModified: post.lastmod || post.date,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
