@@ -1,175 +1,94 @@
 import Image from 'next/image'
-import { Code2, ExternalLink, History, Mail, MapPin } from 'lucide-react'
+import Link from '@/components/Link'
 import Comments from '@/components/Comments'
-import ScrollReveal from '@/components/ScrollReveal'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
+import TerminalWindow, { Prompt } from '@/components/home/TerminalWindow'
 import { profile } from '@/data/profile'
 
-const skillGroups = [
-  { title: '语言', items: profile.skills.languages },
-  { title: '前端', items: profile.skills.frontend },
-  { title: '内容', items: profile.skills.content },
-  { title: '部署', items: profile.skills.deployment },
+const skillLines = [
+  { key: 'language', items: profile.skills.languages },
+  { key: 'frontend', items: profile.skills.frontend },
+  { key: 'content', items: profile.skills.content },
+  { key: 'deploy', items: profile.skills.deployment },
 ]
-
-function SectionTitle({
-  icon: Icon,
-  title,
-  eyebrow,
-}: {
-  icon: typeof Code2
-  title: string
-  eyebrow: string
-}) {
-  return (
-    <div className="mb-6 flex items-end justify-between gap-4">
-      <div>
-        <p className="mb-2 flex items-center gap-2 text-xs font-medium tracking-widest text-gray-500 uppercase dark:text-gray-400">
-          <Icon className="size-3.5" aria-hidden="true" />
-          {eyebrow}
-        </p>
-        <h2 className="font-heading text-2xl font-semibold tracking-normal text-gray-950 dark:text-gray-50">
-          {title}
-        </h2>
-      </div>
-    </div>
-  )
-}
-
-function ProfileHero() {
-  return (
-    <section className="grid gap-8 pt-10 pb-12 md:grid-cols-[1fr_280px] md:items-end">
-      <div className="max-w-3xl">
-        <div className="mb-5 flex flex-wrap gap-2">
-          {profile.interests.map((interest) => (
-            <Badge key={interest} variant="outline" className="h-6 rounded-md">
-              {interest}
-            </Badge>
-          ))}
-        </div>
-        <h1 className="font-heading text-4xl leading-tight font-semibold tracking-normal text-gray-950 sm:text-5xl dark:text-gray-50">
-          {profile.name}
-        </h1>
-        <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">{profile.title}</p>
-        <p className="mt-6 max-w-2xl text-base leading-8 text-gray-700 dark:text-gray-300">
-          {profile.intro}
-        </p>
-        <blockquote className="mt-8 border-l border-gray-300 pl-4 text-sm leading-7 text-gray-500 dark:border-gray-700 dark:text-gray-400">
-          {profile.quote}
-        </blockquote>
-        <div className="mt-8 flex flex-wrap gap-3">
-          {profile.socialLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-200 dark:hover:border-gray-700 dark:hover:bg-gray-900"
-            >
-              <ExternalLink className="size-4" aria-hidden="true" />
-              {link.label}
-            </a>
-          ))}
-          {profile.email ? (
-            <a
-              href={`mailto:${profile.email}`}
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-200 dark:hover:border-gray-700 dark:hover:bg-gray-900"
-            >
-              <Mail className="size-4" aria-hidden="true" />
-              邮箱
-            </a>
-          ) : null}
-        </div>
-      </div>
-      <div className="justify-self-start md:justify-self-end">
-        <div className="relative size-36 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-gray-900">
-          <Image src={profile.avatar} alt="" fill className="object-cover" />
-        </div>
-        <p className="mt-4 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-          <MapPin className="size-4" aria-hidden="true" />
-          {profile.location}
-        </p>
-      </div>
-    </section>
-  )
-}
-
-function SkillMatrix() {
-  return (
-    <section className="py-10">
-      <SectionTitle icon={Code2} eyebrow="技术栈" title="模板技术栈" />
-      <div className="grid gap-px overflow-hidden rounded-lg border border-gray-200 bg-gray-200 md:grid-cols-2 dark:border-gray-800 dark:bg-gray-800">
-        {skillGroups.map((group) => (
-          <div key={group.title} className="bg-white p-5 dark:bg-gray-950">
-            <h3 className="mb-4 text-sm font-semibold text-gray-950 dark:text-gray-50">
-              {group.title}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {group.items.map((item) => (
-                <Badge key={item} variant="secondary" className="h-6 rounded-md">
-                  {item}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function SiteHistory() {
-  return (
-    <section className="py-10">
-      <SectionTitle icon={History} eyebrow="指南" title="如何基于本模板改造" />
-      <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-        <ol className="space-y-4 border-l border-gray-200 pl-5 dark:border-gray-800">
-          {profile.siteHistory.map((item) => (
-            <li key={item} className="relative text-sm leading-7 text-gray-700 dark:text-gray-300">
-              <span className="absolute top-2 -left-[25px] size-2 rounded-full bg-gray-950 dark:bg-gray-50" />
-              {item}
-            </li>
-          ))}
-        </ol>
-        <div className="space-y-3">
-          {profile.siteStackNotes.map((note) => (
-            <div
-              key={note.title}
-              className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950"
-            >
-              <h3 className="text-sm font-semibold text-gray-950 dark:text-gray-50">
-                {note.title}
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
-                {note.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
 
 export function AboutPage() {
   return (
-    <div className="mx-auto max-w-5xl">
-      <ScrollReveal>
-        <ProfileHero />
-      </ScrollReveal>
-      <Separator />
-      <ScrollReveal delay={0.1}>
-        <SkillMatrix />
-      </ScrollReveal>
-      <ScrollReveal delay={0.1}>
-        <SiteHistory />
-      </ScrollReveal>
-      <ScrollReveal delay={0.1}>
-        <section id="comment" className="py-10 text-center">
+    <article className="mx-auto min-h-screen max-w-3xl px-6 pt-16 pb-16 sm:px-10">
+      <TerminalWindow title="~/about" shell="less" className="animate-hero-reveal">
+        <div className="text-gray-400 dark:text-gray-500">
+          <Prompt>cat ~/about.md</Prompt>
+        </div>
+
+        <div className="flex items-start gap-4">
+          <div className="relative size-14 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-gray-900">
+            <Image src={profile.avatar} alt="" fill className="object-cover" />
+          </div>
+          <div>
+            <h1 className="font-heading text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              {profile.name}
+            </h1>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {profile.title} · {profile.location}
+            </p>
+          </div>
+        </div>
+
+        <p className="text-sm leading-7 text-gray-700 dark:text-gray-300">{profile.intro}</p>
+
+        <blockquote className="border-l-2 border-gray-300 pl-3 text-xs leading-6 text-gray-500 dark:border-gray-700 dark:text-gray-400">
+          {profile.quote}
+        </blockquote>
+
+        {profile.interests.length > 0 && (
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            {profile.interests.map((interest) => `#${interest}`).join('  ')}
+          </p>
+        )}
+
+        <div>
+          <div className="text-gray-400 dark:text-gray-500">
+            <Prompt>cat ~/skills</Prompt>
+          </div>
+          <ul className="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+            {skillLines.map((line) => (
+              <li key={line.key} className="flex gap-3">
+                <span className="w-24 shrink-0 text-gray-400 dark:text-gray-500">{line.key}</span>
+                <span>{line.items.join(', ')}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <div className="text-gray-400 dark:text-gray-500">
+            <Prompt>ls ~/blog --guide</Prompt>
+          </div>
+          <ol className="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+            {profile.siteHistory.map((item, i) => (
+              <li key={item} className="flex gap-3">
+                <span className="w-6 shrink-0 text-gray-400 dark:text-gray-500">{i + 1}.</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div id="comment" className="border-t border-gray-200 pt-4 dark:border-gray-800">
+          <div className="text-gray-400 dark:text-gray-500">
+            <Prompt>cat comments</Prompt>
+          </div>
           <Comments slug="about" title="关于" />
-        </section>
-      </ScrollReveal>
-    </div>
+        </div>
+
+        <div className="flex items-center justify-between border-t border-gray-200 pt-4 text-xs dark:border-gray-800">
+          <Link
+            href="/"
+            className="hover:text-primary-600 dark:hover:text-primary-400 text-gray-500 transition-colors dark:text-gray-400"
+          >
+            cd ~/
+          </Link>
+        </div>
+      </TerminalWindow>
+    </article>
   )
 }

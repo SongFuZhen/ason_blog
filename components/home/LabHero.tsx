@@ -145,34 +145,6 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
           </div>
         </div>
       </div>
-
-      {/* Contact */}
-      <div
-        className="animate-hero-reveal mt-6 flex flex-col gap-3 font-mono text-sm"
-        style={{ animationDelay: '240ms' }}
-      >
-        {profile.email && (
-          <Link
-            href={`mailto:${profile.email}`}
-            className="hover:border-primary-500 hover:text-primary-600 dark:hover:border-primary-400 dark:hover:text-primary-400 inline-flex w-fit items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 transition-colors dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-              />
-            </svg>
-            Email
-          </Link>
-        )}
-      </div>
     </div>
   )
 }

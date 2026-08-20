@@ -9,7 +9,7 @@ const siteMetadata = {
   // 站点地址（影响 SEO、RSS、sitemap、canonical）。首选 ason.top；www.ason.top 在 Vercel 中配置重定向。
   siteUrl: 'https://ason.top',
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/skyplume-card.svg`,
-  email: '',
+  email: 'ason.fuzhen@gmail.com',
   // 作者的 GitHub（footer 社交图标）。
   github: 'https://github.com/SongFuZhen',
   locale: 'zh-CN',

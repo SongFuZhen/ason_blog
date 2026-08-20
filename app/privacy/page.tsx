@@ -23,7 +23,7 @@ export default function Page() {
         </h1>
         <p className="text-xs text-gray-500 dark:text-gray-400">最后更新：{LAST_UPDATED}</p>
 
-        <div className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+        <div className="prose dark:prose-invert post-prose max-w-none text-gray-700 dark:text-gray-300">
           <h2>我们是谁</h2>
           <p>
             本网站（{siteMetadata.siteUrl}）由 {siteMetadata.author} 运营，是一个记录 AI

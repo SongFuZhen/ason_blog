@@ -3,16 +3,11 @@ export type SocialLink = {
   href: string
 }
 
-export type SiteStackNote = {
-  title: string
-  description: string
-}
-
 export const profile = {
   name: 'A Sense of Now',
   handle: 'ason',
   title: '一人公司、前端开发者、写作者、铲屎官',
-  email: '',
+  email: 'ason.fuzhen@gmail.com',
   location: '中国 · 成都',
   avatar: '/static/images/avatar.png',
   intro:
@@ -28,23 +23,9 @@ export const profile = {
     deployment: ['Vercel', '静态导出', 'GitHub Actions 就绪'],
   },
   siteHistory: [
-    '从编辑 data/siteMetadata.js 与 data/profile.ts 开始。',
-    '在 data/blog 中编写 MDX 文章，使用 frontmatter 填写标题、日期、标签、摘要与作者。',
-    '将文章配图放在 public/static/blog/<slug> 目录下，并在 MDX 中引用。',
-    '部署到 Vercel、Netlify 或任何支持 Next.js 的平台。',
+    '编辑 data/siteMetadata.js 与 data/profile.ts 更新站点与作者信息。',
+    '在 data/blog/<分类>/ 下写 MDX 文章，frontmatter 填标题、日期、标签、摘要与作者。',
+    '配图放 public/static/blog/<slug>/，MDX 中直接引用。',
+    '部署到 Vercel、Netlify 等 Next.js 平台。',
   ],
-  siteStackNotes: [
-    {
-      title: '框架',
-      description: '基于 Next.js App Router，使用 TypeScript 与 React 19。',
-    },
-    {
-      title: '内容',
-      description: '由 Contentlayer 驱动的 MDX 文章，自动计算 slug、阅读时间与目录。',
-    },
-    {
-      title: '发布',
-      description: '内置 RSS、sitemap、robots、本地搜索、暗色模式，以及可选的 Giscus 评论。',
-    },
-  ] satisfies SiteStackNote[],
 }
