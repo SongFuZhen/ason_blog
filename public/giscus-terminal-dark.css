@@ -67,9 +67,9 @@ body {
   background: transparent !important;
 }
 
-/* Comments: flat, separated by a top hairline instead of boxes */
+/* Comments: flat and borderless; add breathing room between items */
 .gsc-comment + .gsc-comment {
-  border-top: 1px solid var(--color-border-muted) !important;
+  margin-top: 24px !important;
 }
 
 /* ── No gray panels: every surface transparent ── */
