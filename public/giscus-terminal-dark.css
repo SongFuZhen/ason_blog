@@ -119,12 +119,12 @@ input[type='email'],
 /* ── Comment box frame + tab button borders ── */
 .gsc-comment-box {
   border: 1px solid var(--color-border-muted) !important;
-  border-radius: 0 !important;
+  border-radius: 6px !important;
 }
 .gsc-comment-box-tabs button {
   border: 1px solid var(--color-border-muted) !important;
   border-bottom: none !important;
-  border-radius: 0 !important;
+  border-radius: 4px 4px 0 0 !important;
 }
 /* Selected (write) tab turns theme green */
 .gsc-comment-box-tabs button.color-text-primary {

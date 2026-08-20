@@ -28,8 +28,8 @@ function getGiscusTheme(resolvedTheme?: string): string {
   // Custom terminal-style themes hosted in /public, so they match the post
   // page's terminal window and work on both localhost (dev) and the live domain.
   // ?v=N busts giscus's theme cache — bump it whenever the theme files change.
-  if (resolvedTheme === 'dark') return `${origin}/giscus-terminal-dark.css?v=7`
-  return `${origin}/giscus-terminal-light.css?v=7`
+  if (resolvedTheme === 'dark') return `${origin}/giscus-terminal-dark.css?v=8`
+  return `${origin}/giscus-terminal-light.css?v=8`
 }
 
 function sendGiscusTheme(theme: string) {
