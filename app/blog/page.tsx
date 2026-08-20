@@ -7,7 +7,8 @@ const POSTS_PER_PAGE = 5
 
 export const metadata = genPageMetadata({
   title: '文章',
-  description: '使用 Skyplume Next.js 博客模板发布的所有文章。',
+  description:
+    'Ason 的个人博客：记录 AI Coding、独立开发与前端技术的实践，分享 AI 打造的产品与日常思考。',
 })
 
 export default async function BlogPage() {

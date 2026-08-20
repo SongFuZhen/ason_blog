@@ -39,8 +39,8 @@ console.log('  generated favicon.ico')
 writeFileSync(join(OUT_DIR, 'favicon.svg'), logoBuffer)
 
 const manifest = {
-  name: 'Skyplume Blog',
-  short_name: 'Skyplume',
+  name: 'ASON Blog',
+  short_name: 'ASON',
   icons: [
     { src: '/static/favicons/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
     { src: '/static/favicons/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
@@ -57,4 +57,4 @@ const manifest = {
 }
 
 writeFileSync(join(OUT_DIR, 'site.webmanifest'), JSON.stringify(manifest, null, 2) + '\n')
-console.log('Done: favicons regenerated for Skyplume.')
+console.log('Done: favicons regenerated for ASON Blog.')

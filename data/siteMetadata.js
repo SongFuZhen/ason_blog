@@ -2,7 +2,8 @@ const siteMetadata = {
   title: 'Ason 的博客',
   author: 'Ason',
   headerTitle: 'Ason',
-  description: '一个干净、以内容为先的 Next.js 博客，使用 Contentlayer、Tailwind CSS 和 MDX 构建。',
+  description:
+    'Ason 的个人博客：记录 AI Coding、独立开发与前端技术的实践，分享 AI 打造的产品与日常思考。',
   language: 'zh-CN',
   theme: 'system',
   // 站点地址（影响 SEO、RSS、sitemap、canonical）。首选 ason.top；www.ason.top 在 Vercel 中配置重定向。

@@ -26,8 +26,8 @@ export default function Page() {
         <div className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
           <h2>我们是谁</h2>
           <p>
-            本网站（{siteMetadata.siteUrl}）由 {siteMetadata.author}{' '}
-            运营，是一个以内容为先的个人博客。
+            本网站（{siteMetadata.siteUrl}）由 {siteMetadata.author} 运营，是一个记录 AI
+            Coding、独立开发与前端技术实践的个人博客。
             我们重视您的隐私，本政策说明我们如何收集、使用与保护您在使用本网站时的信息。
           </p>
 
