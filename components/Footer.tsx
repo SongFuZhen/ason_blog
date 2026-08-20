@@ -20,6 +20,40 @@ export default function Footer() {
         <div className="space-y-4 md:pr-8">
           <div className="text-gray-400 dark:text-gray-500">{prompt}whoami</div>
           <p className="text-gray-800 dark:text-gray-200">{profile.title}</p>
+          {/* Thanks */}
+          <div>
+            <div className="text-gray-400 dark:text-gray-500">{prompt}cat THANKS</div>
+            <p className="mt-1 text-gray-800 dark:text-gray-200">
+              感谢{' '}
+              <Link
+                href="https://vercel.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+              >
+                Vercel
+              </Link>{' '}
+              的免费托管、
+              <Link
+                href="https://github.com/ruoduan-hub/next-blog-skyplume-template"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+              >
+                Skyplume
+              </Link>{' '}
+              框架，以及{' '}
+              <Link
+                href="https://opencode.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+              >
+                OpenCode
+              </Link>
+              ——这个网站就是这样搭建起来的。
+            </p>
+          </div>
           <div className="flex items-center gap-5">
             <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={5} />
             <SocialIcon kind="github" href={siteMetadata.github} size={5} />
