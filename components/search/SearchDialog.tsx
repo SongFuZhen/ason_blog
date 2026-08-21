@@ -147,7 +147,7 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
         if (!open) closeSearch()
       }}
     >
-      <DialogContent className="top-1/2 left-1/2 grid w-[min(calc(100%-1rem),44rem)] -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border border-gray-200 bg-white p-0 font-mono text-sm shadow-[0_16px_48px_rgba(15,23,42,0.16)] dark:border-gray-800 dark:bg-gray-950 dark:shadow-[0_16px_48px_rgba(0,0,0,0.42)] [&>button]:hidden">
+      <DialogContent className="top-4 left-1/2 grid max-h-[calc(100dvh-2rem)] w-[min(calc(100%-1rem),44rem)] -translate-x-1/2 gap-0 overflow-hidden rounded-xl border border-gray-200 bg-white p-0 font-mono text-sm shadow-[0_16px_48px_rgba(15,23,42,0.16)] sm:top-1/2 sm:-translate-y-1/2 dark:border-gray-800 dark:bg-gray-950 dark:shadow-[0_16px_48px_rgba(0,0,0,0.42)] [&>button]:hidden">
         {/* Title bar */}
         <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-100/80 px-4 py-2.5 dark:border-gray-800 dark:bg-gray-900/80">
           <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
@@ -188,7 +188,10 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
         </div>
 
         {/* Results */}
-        <div className="h-[min(55dvh,28rem)] overflow-y-auto p-2" aria-live="polite">
+        <div
+          className="h-[min(48dvh,28rem)] overflow-y-auto p-2 sm:h-[min(55dvh,28rem)]"
+          aria-live="polite"
+        >
           {!hasSearchConfig && <SearchState line="grep: 搜索未配置，未加载搜索索引。" />}
 
           {hasSearchConfig && (isLoading || (!hasLoaded && !error)) && <SearchLoadingLine />}

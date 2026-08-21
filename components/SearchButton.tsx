@@ -12,7 +12,10 @@ const SearchButton = () => {
         onClick={openSearchDialog}
         type="button"
       >
-        〔 搜索 〕
+        <span className="hidden sm:inline">〔 搜索 〕</span>
+        <span className="sm:hidden" aria-hidden>
+          搜索
+        </span>
       </button>
     )
   }
