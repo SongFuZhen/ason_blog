@@ -19,7 +19,7 @@ const projectsData: Project[] = [
   },
   {
     title: '画廊',
-    description: '作品与影像展示',
+    description: 'AI作品与影像展示',
     href: 'https://gallery.ason.top',
     color: '#d95e10',
     colorDark: '#f59e0b',

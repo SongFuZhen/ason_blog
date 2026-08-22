@@ -15,17 +15,12 @@ export const profile = {
   now: '独立开发者，网站开发，痴迷 AI Coding。这里记录技术笔记、项目复盘与实践实验，也随手记下两只猫、读书与日常。',
   quote: '从现在做起，永远不迟',
   socialLinks: [] as SocialLink[],
-  interests: ['写作', '工程', '开源', '设计系统'],
+  interests: ['写作', '产品', '开源', '设计系统'],
   skills: {
-    languages: ['TypeScript', 'JavaScript', 'MDX', 'CSS'],
-    frontend: ['Next.js', 'React', 'Tailwind CSS', 'shadcn/ui'],
-    content: ['Contentlayer', 'RSS', '本地搜索', 'SEO 元数据'],
-    deployment: ['Vercel', '静态导出', 'GitHub Actions 就绪'],
+    languages: ['HTML', 'JavaScript', 'CSS', 'Markdown'],
+    frontend: ['Next.js', 'React', 'Vue2/3', 'Tailwind CSS', 'shadcn/ui', 'Antd', 'UMI'],
+    content: ['SEO', '0-1全干'],
+    deployment: ['Vercel', 'Cloudflare'],
   },
-  siteHistory: [
-    '编辑 data/siteMetadata.js 与 data/profile.ts 更新站点与作者信息。',
-    '在 data/blog/<分类>/ 下写 MDX 文章，frontmatter 填标题、日期、标签、摘要与作者。',
-    '配图放 public/static/blog/<slug>/，MDX 中直接引用。',
-    '部署到 Vercel、Netlify 等 Next.js 平台。',
-  ],
+  siteHistory: ['随便发发牢骚，谢谢东西'],
 }
