@@ -8,7 +8,7 @@ const MAX_DISPLAY = 5
 
 export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
   return (
-    <div className="relative min-h-screen pt-16 pb-16">
+    <div className="relative min-h-[60vh] pt-16 pb-16">
       <div className="lg:grid lg:grid-cols-[400px_1fr] lg:items-start">
         {/* Left: logo (hidden when there isn't room for the right column) */}
         <aside className="hidden lg:flex">
