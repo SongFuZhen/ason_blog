@@ -22,5 +22,5 @@ export const profile = {
     content: ['SEO', '0-1全干'],
     deployment: ['Vercel', 'Cloudflare'],
   },
-  siteHistory: ['随便发发牢骚，谢谢东西'],
+  siteHistory: ['随便发发牢骚，写写东西'],
 }
