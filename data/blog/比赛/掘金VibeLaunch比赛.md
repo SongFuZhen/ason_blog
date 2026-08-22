@@ -3,7 +3,7 @@ title: 参加了掘金的 VibeLaunch 比赛
 date: 2026-08-21
 tags: [掘金, VibeLaunch, 作品]
 categories: [比赛]
-authories: [default]
+authors: [default]
 summary: 将最近自己的 Vibe Coding 成果展示出来，参加一下比赛，也算是抛头露面了。
 ---
 
