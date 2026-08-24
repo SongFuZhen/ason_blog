@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
-import { formatDate } from '@/lib/content/format-date.mjs'
+import { formatDateShort } from '@/lib/content/format-date.mjs'
 import { filterSearchDocuments } from '@/lib/search/core.mjs'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -147,22 +147,25 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
         if (!open) closeSearch()
       }}
     >
-      <DialogContent className="top-4 left-1/2 grid max-h-[calc(100dvh-2rem)] w-[min(calc(100%-1rem),44rem)] -translate-x-1/2 gap-0 overflow-hidden rounded-xl border border-gray-200 bg-white p-0 font-mono text-sm shadow-[0_16px_48px_rgba(15,23,42,0.16)] sm:top-1/2 sm:-translate-y-1/2 dark:border-gray-800 dark:bg-gray-950 dark:shadow-[0_16px_48px_rgba(0,0,0,0.42)] [&>button]:hidden">
-        {/* Title bar */}
-        <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-100/80 px-4 py-2.5 dark:border-gray-800 dark:bg-gray-900/80">
-          <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
-          <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
-          <span className="h-2.5 w-2.5 rounded-full bg-gray-300 dark:bg-gray-700" />
-          <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">ason@blog: ~ — grep</span>
-        </div>
-
-        {/* Prompt + input */}
+      <DialogContent className="top-0 left-0 grid max-h-dvh w-full gap-0 overflow-hidden rounded-none border-0 bg-white p-0 font-mono text-sm shadow-none sm:top-1/2 sm:left-1/2 sm:w-[min(calc(100%-1rem),36rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:border sm:border-gray-200 sm:shadow-[0_16px_48px_rgba(15,23,42,0.16)] dark:bg-gray-950 sm:dark:border-gray-800 sm:dark:shadow-[0_16px_48px_rgba(0,0,0,0.42)] [&>button]:hidden">
+        {/* Input */}
         <div className="relative flex items-center gap-2 border-b border-gray-200 px-4 py-3 dark:border-gray-800">
           <label className="sr-only" htmlFor="site-search-input">
             搜索文章
           </label>
-          <span className="text-primary-600 dark:text-primary-400 shrink-0">ason@blog</span>
-          <span className="shrink-0 text-gray-400 dark:text-gray-500"> ~ % grep -i</span>
+          <svg
+            className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
           <span className="min-w-0 flex-1 truncate">
             {query ? (
               <>
@@ -172,7 +175,7 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
             ) : (
               <>
                 <span className="animate-blink mr-1 inline-block h-4 w-2 translate-y-0.5 bg-gray-800 dark:bg-gray-200" />
-                <span className="text-gray-400 dark:text-gray-500">搜索文章、标签或笔记…</span>
+                <span className="text-gray-400 dark:text-gray-500">搜索文章、标签…</span>
               </>
             )}
           </span>
@@ -189,19 +192,17 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
 
         {/* Results */}
         <div
-          className="h-[min(48dvh,28rem)] overflow-y-auto p-2 sm:h-[min(55dvh,28rem)]"
+          className="h-[calc(100dvh-10rem)] overflow-y-auto p-2 sm:h-[min(50dvh,26rem)]"
           aria-live="polite"
         >
-          {!hasSearchConfig && <SearchState line="grep: 搜索未配置，未加载搜索索引。" />}
+          {!hasSearchConfig && <SearchState line="搜索未配置" />}
 
           {hasSearchConfig && (isLoading || (!hasLoaded && !error)) && <SearchLoadingLine />}
 
-          {hasSearchConfig && error && <SearchState line={`grep: 索引加载失败：${error}`} />}
+          {hasSearchConfig && error && <SearchState line={`索引加载失败：${error}`} />}
 
           {hasSearchConfig && hasLoaded && !isLoading && !error && results.length === 0 && (
-            <SearchState
-              line={query.trim() ? 'grep: no matches found.' : 'grep: 输入关键词开始搜索。'}
-            />
+            <SearchState line={query.trim() ? '没有匹配结果' : '输入关键词开始搜索'} />
           )}
 
           {hasSearchConfig &&
@@ -214,7 +215,7 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
                 key={document.path}
                 ref={index === selectedIndex ? activeRef : undefined}
                 className={cn(
-                  'block w-full px-3 py-1.5 text-left transition-colors',
+                  'flex w-full items-baseline gap-3 px-3 py-1.5 text-left transition-colors',
                   index === selectedIndex
                     ? 'bg-primary-500/10 dark:bg-primary-400/10'
                     : 'hover:bg-gray-100 dark:hover:bg-gray-900'
@@ -222,41 +223,32 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
                 onClick={() => onSelect(document)}
                 onMouseEnter={() => setSelectedIndex(index)}
               >
-                <span
-                  className={cn(
-                    'flex items-baseline gap-2',
-                    index === selectedIndex
-                      ? 'text-primary-700 dark:text-primary-300'
-                      : 'text-gray-800 dark:text-gray-200'
-                  )}
-                >
+                <span className="min-w-0 flex-1 truncate">
                   <span
                     className={cn(
-                      'w-4 shrink-0 text-center',
+                      'font-medium',
                       index === selectedIndex
-                        ? 'text-green-500 dark:text-green-400'
-                        : 'text-gray-400 dark:text-gray-500'
+                        ? 'text-primary-700 dark:text-primary-300'
+                        : 'text-gray-800 dark:text-gray-200'
                     )}
                   >
-                    ►
+                    {document.title}
                   </span>
-                  <span className="shrink-0 text-gray-400 dark:text-gray-500">{document.path}</span>
-                  <span className="min-w-0 flex-1 truncate font-medium">{document.title}</span>
-                  <span className="shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                    {document.date ? formatDate(document.date, 'zh-CN') : '—'}
-                  </span>
+                  {document.tags && document.tags.length > 0 && (
+                    <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">
+                      {document.tags.slice(0, 2).join(' / ')}
+                    </span>
+                  )}
                 </span>
-                {document.summary && (
-                  <span className="block pl-6 text-xs text-gray-500 dark:text-gray-400">
-                    {document.summary}
-                  </span>
-                )}
+                <span className="shrink-0 text-xs text-gray-400 dark:text-gray-500">
+                  {formatDateShort(document.date)}
+                </span>
               </button>
             ))}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-gray-200 bg-gray-100/80 px-4 py-2.5 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-400">
+        <div className="flex items-center justify-between border-t border-gray-200 bg-gray-100/80 px-4 py-2 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-400">
           <span>{resultLabel}</span>
           <span className="hidden sm:inline">
             [↑/↓] 选择&nbsp;&nbsp;[Enter] 打开&nbsp;&nbsp;[Esc] 关闭
@@ -270,7 +262,7 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
 function SearchLoadingLine() {
   return (
     <p className="px-3 py-4 text-gray-500 dark:text-gray-400">
-      grep: 正在加载搜索索引
+      正在加载索引
       <span className="animate-blink ml-1 inline-block h-3.5 w-2 translate-y-0.5 bg-gray-400 dark:bg-gray-500" />
     </p>
   )

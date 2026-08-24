@@ -58,15 +58,12 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
             </div>
           </div>
 
-          {/* ls -la ~/projects */}
+          {/* ls -la ~/products */}
           {projectsData.length > 0 && (
             <div>
-              <div className="text-gray-400 dark:text-gray-500">{prompt}ls -la ~/projects</div>
+              <div className="text-gray-400 dark:text-gray-500">{prompt}ls -la ~/products</div>
               <div className="mt-1 space-y-1 text-gray-800 dark:text-gray-200">
                 <div className="text-gray-400 dark:text-gray-500">total {projectsData.length}</div>
-                <div className="text-gray-400 dark:text-gray-500">
-                  drwxr-xr-x ason staff ~/projects
-                </div>
                 <ul className="space-y-0.5 pt-0.5 font-mono text-xs">
                   {projectsData.map((project) => (
                     <li key={project.title}>

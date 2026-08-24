@@ -10,7 +10,9 @@ export const metadata = genPageMetadata({
 
 export default async function Page() {
   const categoryCounts = categoryData as Record<string, number>
-  const categoryKeys = Object.keys(categoryCounts)
+  const categoryKeys = Object.keys(categoryCounts).sort((a, b) =>
+    a.localeCompare(b, 'zh-CN', { numeric: true })
+  )
   const totalPosts = categoryKeys.reduce((total, cat) => total + categoryCounts[cat], 0)
 
   return (
