@@ -147,7 +147,7 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
         if (!open) closeSearch()
       }}
     >
-      <DialogContent className="top-0 left-0 grid max-h-dvh w-full gap-0 overflow-hidden rounded-none border-0 bg-white p-0 font-mono text-sm shadow-none sm:top-1/2 sm:left-1/2 sm:w-[min(calc(100%-1rem),36rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:border sm:border-gray-200 sm:shadow-[0_16px_48px_rgba(15,23,42,0.16)] dark:bg-gray-950 sm:dark:border-gray-800 sm:dark:shadow-[0_16px_48px_rgba(0,0,0,0.42)] [&>button]:hidden">
+      <DialogContent className="animate-slide-up top-auto bottom-0 left-0 grid max-h-[80dvh] w-full -translate-x-0 -translate-y-0 gap-0 overflow-hidden rounded-t-xl border-0 bg-white p-0 font-mono text-sm shadow-none sm:top-1/2 sm:bottom-auto sm:left-1/2 sm:max-h-dvh sm:w-[min(calc(100%-1rem),36rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:border sm:border-gray-200 sm:shadow-[0_16px_48px_rgba(15,23,42,0.16)] dark:bg-gray-950 sm:dark:border-gray-800 sm:dark:shadow-[0_16px_48px_rgba(0,0,0,0.42)] [&>button]:hidden">
         {/* Input */}
         <div className="relative flex items-center gap-2 border-b border-gray-200 px-4 py-3 dark:border-gray-800">
           <label className="sr-only" htmlFor="site-search-input">
