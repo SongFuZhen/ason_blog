@@ -80,28 +80,49 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Middle: mini-program */}
+        {/* Middle: mini-program + 公众号 */}
         <div className="space-y-3 md:px-8">
           <div className="text-gray-400 dark:text-gray-500">~/miniapp</div>
-          <Link href="/blog/产品/陇中乡音词典" className="block text-center transition-colors">
-            <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
-              小程序 · 陇中乡音词典
-            </div>
-            <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">微信扫码体验</div>
-            <Image
-              src="/static/images/longzhong-miniapp.jpg"
-              alt="陇中乡音词典小程序二维码"
-              width={160}
-              height={160}
-              className="mx-auto mt-3 h-auto w-40 rounded-sm"
-            />
-          </Link>
+          <div className="flex gap-4">
+            <Link
+              href="/blog/产品/陇中乡音词典"
+              className="block flex-1 text-center transition-colors"
+            >
+              <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
+                小程序 · 陇中乡音词典
+              </div>
+              <Image
+                src="/static/images/longzhong-miniapp.jpg"
+                alt="陇中乡音词典小程序二维码"
+                width={160}
+                height={160}
+                className="mx-auto mt-2 h-auto w-24 rounded-sm"
+              />
+              <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码体验</div>
+            </Link>
+            <Link
+              href="/blog/产品/产品公众号介绍"
+              className="block flex-1 text-center transition-colors"
+            >
+              <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
+                公众号 · 轻前端
+              </div>
+              <Image
+                src="/static/images/qrcode_for_gh_ec1c60eb836a_258.jpg"
+                alt="ason产品公众号二维码"
+                width={160}
+                height={160}
+                className="mx-auto mt-2 h-auto w-24 rounded-sm"
+              />
+              <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码关注</div>
+            </Link>
+          </div>
         </div>
 
         {/* Right: products */}
         <div className="space-y-3 md:px-8">
           <div className="text-gray-400 dark:text-gray-500">~/products</div>
-          <ul className="space-y-2">
+          <ul className="grid grid-cols-2 gap-2">
             {projectsData.map((project) => (
               <li key={project.title}>
                 <Link

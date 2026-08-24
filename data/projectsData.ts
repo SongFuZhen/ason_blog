@@ -33,6 +33,14 @@ const projectsData: Project[] = [
     colorDark: '#818cf8',
     perms: '-rw-r--r--',
   },
+  {
+    title: '临盘',
+    description: '实时盘面数据与分析',
+    href: 'https://pan.ason.top',
+    color: '#10b981',
+    colorDark: '#34d399',
+    perms: '-rw-r--r--',
+  },
 ]
 
 export default projectsData
