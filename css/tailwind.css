@@ -126,7 +126,7 @@
   --tw-prose-td-borders: var(--prose-td-border);
 
   font-size: 1.125rem;
-  line-height: 1.75;
+  line-height: 1.85;
 
   & h1 {
     font-family: var(--font-wenkai);
@@ -203,6 +203,12 @@
     font-style: normal;
     color: var(--prose-quote-text);
     background: transparent;
+    /* The typography plugin injects open/close quotes via ::before/::after;
+       drop them so blockquote text shows without auto double quotes. */
+    & p:first-of-type::before,
+    & p:last-of-type::after {
+      content: none;
+    }
   }
 
   & :where(code):not(pre code) {
@@ -224,6 +230,40 @@
     border: 1px solid var(--prose-pre-border);
     border-radius: 0.625rem;
   }
+
+  /* ── Tables: clearly visible, terminal-friendly grid ──
+     The @tailwindcss/typography defaults draw borders with
+     --tw-prose-*-borders, which resolve to near-invisible grays here
+     (oklch ~0.9 in light / ~0.2 in dark). We override with an explicit
+     grid + tinted header so the table reads as a real table. */
+  & table {
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  & thead {
+    border-bottom: none;
+  }
+  & thead th {
+    background: color-mix(in oklch, var(--color-primary-500) 9%, transparent);
+    border: 1px solid var(--prose-th-border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--prose-heading);
+    vertical-align: bottom;
+  }
+  & tbody tr {
+    border-bottom: none;
+  }
+  & tbody td {
+    border: 1px solid var(--prose-td-border);
+    padding: 0.5rem 0.75rem;
+    vertical-align: top;
+  }
 }
 
 /* ── Post detail: standardized MD body type ──
@@ -232,7 +272,8 @@
    to compact terminal-style weights. */
 .prose.post-prose {
   font-size: 0.875rem;
-  line-height: 1.75;
+  /* Looser leading for CJK body text — Chinese reads better around 1.9. */
+  line-height: 1.9;
 
   & h1,
   & h2,
@@ -400,12 +441,32 @@
 
   /*
    * ── Tables ──
+   * Replace the near-invisible default borders with an explicit
+   * full grid + tinted header that matches the terminal theme.
    */
+  & table {
+    font-size: 0.8125rem !important;
+    line-height: 1.7 !important;
+    border-collapse: collapse !important;
+  }
   & thead {
-    border-bottom-color: var(--prose-th-border) !important;
+    border-bottom: none !important;
+  }
+  & thead th {
+    background: color-mix(in oklch, var(--color-primary-400) 14%, transparent) !important;
+    border: 1px solid var(--prose-th-border) !important;
+    padding: 0.5rem 0.75rem !important;
+    font-weight: 600 !important;
+    color: var(--prose-heading) !important;
   }
   & tbody tr {
-    border-bottom-color: var(--prose-td-border) !important;
+    border-bottom: none !important;
+  }
+  & tbody td {
+    border: 1px solid var(--prose-td-border) !important;
+    padding: 0.5rem 0.75rem !important;
+    color: var(--prose-body) !important;
+    vertical-align: top !important;
   }
 
   /*

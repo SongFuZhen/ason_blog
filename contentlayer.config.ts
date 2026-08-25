@@ -8,6 +8,7 @@ import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import { remarkAlert } from 'remark-github-blockquote-alert'
+import { remarkCjkEmphasis } from './lib/mdx/remarkCjkEmphasis.mjs'
 import {
   remarkExtractFrontmatter,
   remarkCodeTitles,
@@ -205,6 +206,7 @@ export default makeSource({
       remarkMath,
       remarkImgToJsx,
       remarkAlert,
+      remarkCjkEmphasis,
     ],
     rehypePlugins: [
       rehypeSlug,
