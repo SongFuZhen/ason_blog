@@ -100,10 +100,7 @@ export default function Footer() {
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码体验</div>
             </Link>
-            <Link
-              href="/blog/产品/产品公众号介绍"
-              className="block flex-1 text-center transition-colors"
-            >
+            <div className="block flex-1 text-center">
               <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
                 公众号 · 轻前端
               </div>
@@ -115,7 +112,7 @@ export default function Footer() {
                 className="mx-auto mt-2 h-auto w-24 rounded-sm"
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码关注</div>
-            </Link>
+            </div>
           </div>
         </div>
 
