@@ -220,6 +220,11 @@
     font-weight: 500;
   }
 
+  & :where(code):not(pre code)::before,
+  & :where(code):not(pre code)::after {
+    content: none;
+  }
+
   & hr {
     border-color: var(--prose-hr);
     margin: 2.5rem 0;
@@ -406,6 +411,11 @@
     font-size: 0.875em;
     font-weight: 500;
     border: 1px solid var(--prose-code-border);
+  }
+
+  & :where(code):not(pre code)::before,
+  & :where(code):not(pre code)::after {
+    content: none;
   }
 
   /*
