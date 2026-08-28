@@ -80,7 +80,7 @@ function PostItem({ post, index }: { post: CoreContent<Blog>; index: number }) {
   return (
     <li
       key={path}
-      className="animate-item-reveal opacity-0"
+      className="animate-item-reveal ml-1.5 opacity-0"
       style={{ animationDelay: `${index * 40}ms` }}
     >
       <Link
