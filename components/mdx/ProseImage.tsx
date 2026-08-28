@@ -17,6 +17,20 @@ function getZoomWidth(zoom?: string) {
 /**
  * Hybrid image renderer: uses next/image when dimensions are known, falls back to native img for legacy content.
  */
+function parseStyleString(s: string): CSSProperties {
+  const result: Record<string, string> = {}
+  for (const part of s.split(';')) {
+    const trimmed = part.trim()
+    if (!trimmed) continue
+    const colonIdx = trimmed.indexOf(':')
+    if (colonIdx === -1) continue
+    const key = trimmed.slice(0, colonIdx).trim()
+    const value = trimmed.slice(colonIdx + 1).trim()
+    if (key && value) result[key] = value
+  }
+  return result as CSSProperties
+}
+
 export function ProseImage({
   alt = '',
   className,
@@ -25,10 +39,12 @@ export function ProseImage({
   height,
   ...props
 }: ProseImageProps) {
+  const resolvedStyle: CSSProperties =
+    typeof style === 'string' ? parseStyleString(style) : (style ?? {})
   const widthFromZoom = getZoomWidth(props['data-zoom'])
   const imageStyle: CSSProperties = {
-    ...style,
-    width: widthFromZoom || style?.width,
+    ...resolvedStyle,
+    width: widthFromZoom || resolvedStyle.width,
     maxWidth: '100%',
     height: 'auto',
   }
