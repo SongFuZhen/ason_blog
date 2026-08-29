@@ -42,7 +42,7 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
           {/* whoami */}
           <div>
             <div className="text-gray-400 dark:text-gray-500">{prompt}whoami</div>
-            <div className="mt-1 text-gray-800 dark:text-gray-200">{profile.title}</div>
+            <h1 className="mt-1 text-gray-800 dark:text-gray-200">{profile.title}</h1>
           </div>
 
           {/* cat now.md */}
