@@ -1,9 +1,29 @@
 'use client'
 
 import { Check, Copy } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { isValidElement, useRef, useState } from 'react'
+import Mermaid from '@/components/mdx/Mermaid'
 
-export default function Pre({ children }: { children: React.ReactNode }) {
+function nodeToText(node: React.ReactNode): string {
+  if (node == null || typeof node === 'boolean') return ''
+  if (typeof node === 'string' || typeof node === 'number') return String(node)
+  if (Array.isArray(node)) return node.map(nodeToText).join('')
+  if (isValidElement(node)) {
+    return nodeToText((node.props as { children?: React.ReactNode }).children)
+  }
+  return ''
+}
+
+function extractMermaid(children: React.ReactNode): string | null {
+  const child = Array.isArray(children) ? children[0] : children
+  if (!isValidElement(child)) return null
+  const className = (child.props as { className?: unknown }).className
+  if (typeof className !== 'string' || !/\blanguage-mermaid\b/.test(className)) return null
+  const chart = nodeToText((child.props as { children?: React.ReactNode }).children)
+  return chart.trim() ? chart : null
+}
+
+function CodeBlock({ children }: { children: React.ReactNode }) {
   const textInput = useRef<HTMLDivElement>(null)
   const [hovered, setHovered] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -44,4 +64,10 @@ export default function Pre({ children }: { children: React.ReactNode }) {
       <pre>{children}</pre>
     </div>
   )
+}
+
+export default function Pre({ children }: { children: React.ReactNode }) {
+  const mermaidChart = extractMermaid(children)
+  if (mermaidChart) return <Mermaid chart={mermaidChart} />
+  return <CodeBlock>{children}</CodeBlock>
 }
