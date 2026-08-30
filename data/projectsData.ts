@@ -35,7 +35,7 @@ const projectsData: Project[] = [
   },
   {
     title: '临盘',
-    description: '实时盘面数据与分析',
+    description: '临时网盘分享，定时删',
     href: 'https://pan.ason.top',
     color: '#10b981',
     colorDark: '#34d399',
