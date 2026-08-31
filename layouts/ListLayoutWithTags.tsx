@@ -6,17 +6,11 @@ import { useState } from 'react'
 import type { CoreContent } from '@/lib/content/types'
 import type { Blog } from 'contentlayer/generated'
 import Link from '@/components/Link'
+import ExternalPosts from '@/components/ExternalPosts'
 import TerminalWindow from '@/components/home/TerminalWindow'
 import tagData from 'app/tag-data.json'
 import categoryData from 'app/category-data.json'
-
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-function termDate(iso: string): string {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return ''
-  return `${MONTHS[d.getUTCMonth()]} ${String(d.getUTCDate()).padStart(2, ' ')} ${d.getUTCFullYear()}`
-}
+import { termDate } from '@/lib/utils'
 
 interface PaginationProps {
   totalPages: number
@@ -271,6 +265,8 @@ export default function ListLayoutWithTags({
                 </section>
               )
             })}
+            {/* external posts from other platforms (公众号 / 掘金 / 小红书 / 知乎...) */}
+            <ExternalPosts startIndex={runIndex} />
           </div>
         ) : (
           <ul className="text-xs [&>li:last-child_a>div]:border-b-0">
