@@ -89,7 +89,9 @@ export default function Footer() {
               className="block flex-1 text-center transition-colors"
             >
               <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
-                小程序 · 陇中乡音词典
+                小程序
+                <br />
+                陇中乡音词典
               </div>
               <Image
                 src="/static/images/longzhong-miniapp.jpg"
@@ -102,7 +104,9 @@ export default function Footer() {
             </Link>
             <div className="block flex-1 text-center">
               <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
-                公众号 · 轻前端
+                公众号
+                <br />
+                轻前端
               </div>
               <Image
                 src="/static/images/qrcode_for_gh_ec1c60eb836a_258.jpg"
@@ -115,7 +119,9 @@ export default function Footer() {
             </div>
             <div className="block flex-1 text-center">
               <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
-                闲鱼 · 轻前端ASoN
+                闲鱼
+                <br />
+                轻前端ASoN
               </div>
               <Image
                 src="/static/images/xianyu-qrcode.jpg"
