@@ -11,8 +11,25 @@ export interface Resource {
 }
 
 // 在这里维护你挂在闲鱼 / 小红书上的内容，改完保存即可热更新
-// 数据来源：闲鱼卖家工作台「商品管理」（2026-08-30 同步）
+// 数据来源：闲鱼卖家工作台「商品管理」（2026-09-01 同步）
 const resourcesData: Resource[] = [
+  {
+    title: '原创手绘 | 二十四节气国潮高清壁纸',
+    description:
+      '原创手绘二十四节气主题，国潮风高清壁纸，适配手机锁屏与桌面，传统节气美学一键换上。',
+    price: '¥3.99',
+    platform: '闲鱼',
+    href: 'https://www.goofish.com/item?id=1081191172341',
+    status: '在售',
+  },
+  {
+    title: '原创手绘 | 十二生肖主题 - 国潮风',
+    description: '原创手绘十二生肖主题，国潮风高清图，适合头像 / 壁纸 / 手账贴纸 / 潮玩参考。',
+    price: '¥1.99',
+    platform: '闲鱼',
+    href: 'https://www.goofish.com/item?id=1078840738694',
+    status: '在售',
+  },
   {
     title: '12 只国潮盲盒风生肖 3D 图',
     description:
@@ -85,7 +102,7 @@ const resourcesData: Resource[] = [
     price: '¥2.90',
     platform: '闲鱼',
     href: 'https://www.goofish.com/item?id=1065568488221',
-    status: '在售',
+    status: '已下架',
   },
   {
     title: '墨帖 · 书法碑帖检索',
