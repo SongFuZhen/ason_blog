@@ -1,6 +1,6 @@
 ---
 title: 11亿Tokens，547次提交、花费0元：一个上班族的AI编程“免费午餐”账单
-date: 2026-08-18
+date: 2026-09-03
 tags: [AI, 免费模型, CodeBuddy, OpenCode, DeepSeek]
 categories: [AI]
 authors: [default]
