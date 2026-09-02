@@ -2,7 +2,7 @@ import externalPosts, { type ExternalPost } from '@/data/externalPosts'
 import { termDate } from '@/lib/utils'
 
 const PLATFORM_STYLES: Record<string, string> = {
-  公众号: 'text-green-700 dark:text-green-400',
+  公众号·图文: 'text-blue-700 dark:text-blue-400',
   掘金: 'text-blue-700 dark:text-blue-400',
   小红书: 'text-red-600 dark:text-red-400',
   知乎: 'text-sky-700 dark:text-sky-400',

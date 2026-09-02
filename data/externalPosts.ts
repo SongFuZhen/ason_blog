@@ -21,7 +21,7 @@ const externalPosts: ExternalPost[] = [
   {
     title: '甲方要“免费商用”字体？这 18 款我替你试过',
     url: 'https://mp.weixin.qq.com/s/aM02TT6i8Gmde8Wm4FBQQg',
-    platform: '公众号',
+    platform: '公众号·图文',
     date: '2026-08-30',
   },
 ]
