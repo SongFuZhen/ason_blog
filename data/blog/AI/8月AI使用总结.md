@@ -28,7 +28,7 @@ summary: 11亿Token，547次提交，产出4个网站+1个小程序，账单金�
 - 总 Token：11 亿左右（输入 8.49 亿、输出 2.29 亿）
 - 按市价折算值：63.88 美元（约 460 人民币），实际支付 0 元
 
-![Image](https://mmbiz.qpic.cn/mmbiz_png/pn1epRicvicqibTjGicHkVibotTZ1GA9xJ2gLibSet56hmaa4LEIESMVF3glJUllhLXfiatia3X9Nq8rygwesl6u5525kKtWq7MztmpFdibuBIx3sovQ/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=0)
+![8月 AI 用量概览：$63.88、1.1B Token、848.9M 输入、229.3M 输出](/static/images/posts/2026-08-ai-summary/tokens-overview.webp)
 
 拆到每个平台看：
 
