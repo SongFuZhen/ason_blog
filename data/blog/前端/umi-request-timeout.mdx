@@ -1,0 +1,284 @@
+---
+title: umi-request 的 timeout 是个「假超时」，超时后请求压根没取消
+date: 2026-09-04
+tags: [前端, umi-request, fetch, AbortController, 请求超时, 性能优化]
+categories: [前端]
+authors: [default]
+summary: umi-request 的 timeout 只是用 Promise.race 让 Promise 提前 reject，底层的 fetch 依然在跑。本文从源码讲清楚这个问题会带来什么后果，并给出一套在 request 里统一用 AbortController 真取消的完整方案。
+draft: true
+---
+
+前阵子排查一个"接口很慢"的问题，现象挺迷惑的：前端 3 秒就弹了"请求超时"，可后端日志里这个请求照样被完整执行了，耗时 12 秒。再一看 Chrome 的 Network 面板，那条请求还挂在 pending 上。
+
+翻了一遍 `umi-request` 的源码才反应过来——它的 `timeout` 压根不会取消请求。
+
+### 一句话结论
+
+- `umi-request` 的 `timeout` 只是让 JS 侧的 Promise 提前 reject，**底层那条 fetch 请求没有被中断**，连接继续占着、服务端继续处理。
+- 它自带的 `CancelToken` 也一样，只是 reject，不是取消。
+- 想真的把请求掐断，必须把 `AbortController` 的 `signal` 传进 options，并在超时时调用 `controller.abort()`。
+
+### 源码里其实写得明明白白
+
+umi-request 基于 fetch（依赖 `isomorphic-fetch`），超时逻辑在核心的 fetch 中间件里，1.4.0 版本 `dist/index.js` 第 709 行附近：
+
+```js
+// 超时处理、取消请求处理
+if (timeout > 0) {
+  response = Promise.race([
+    cancel2Throw(options),
+    adapter(url, options),
+    timeout2Throw(timeout, timeoutMessage, ctx.req),
+  ])
+} else {
+  response = Promise.race([cancel2Throw(options), adapter(url, options)])
+}
+```
+
+`adapter` 就是 `fetch`，而 `timeout2Throw` 长这样：
+
+```js
+function timeout2Throw(msec, timeoutMessage, request) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(
+        new RequestError(timeoutMessage || `timeout of ${msec}ms exceeded`, request, 'Timeout')
+      )
+    }, msec)
+  })
+}
+```
+
+关键就在 `Promise.race` 的语义上：**race 只决定"谁先 settle"，它不会去取消其他参与者**。`timeout2Throw` 到点了就自己 reject 一个 `RequestError`，而 `adapter(url, options)` 那条 fetch 拿不到任何"你被淘汰了"的通知，只能老老实实跑到服务端返回为止。
+
+顺带看一眼 `cancel2Throw`：
+
+```js
+function cancel2Throw(opt) {
+  return new Promise(function (_, reject) {
+    if (opt.cancelToken) {
+      opt.cancelToken.promise.then(function (cancel) {
+        reject(cancel)
+      })
+    }
+  })
+}
+```
+
+同样只是 reject。所以很多人以为"我配了 `cancelToken` 就等于取消了请求"，其实也只是在 JS 侧提前结束等待，`fetch` 该跑还是跑。这也是为什么 umi-request 官方 README 把 `CancelToken` 标成 legacy、推荐改用 `AbortController`——因为 `signal` 是唯一能穿透到 fetch 底层的取消手段。
+
+对比一下 axios：浏览器端 axios 的 `timeout` 最终会走到 `xhr.abort()`，是真的把连接断掉。所以从 axios 转过来的人，很容易默认 umi-request 的 `timeout` 也是这个行为。
+
+### 这个"假超时"会惹出哪些事
+
+**1. 连接被白占。** HTTP/1.1 下同域并发通常只有 6 个连接。假超时的请求虽然前端"放弃"了，但连接要一直挂到服务端返回。慢接口一多，后面的正常请求全部排队，弱网环境下特别容易滚雪球。
+
+**2. 服务端在白干活。** 客户端已经提示超时了，服务端还在查库、调下游、写日志。如果前端再带个"失败自动重试"，一次用户点击就变成 N 次真实请求，流量直接被放大——慢接口被重试打死，基本就是这个套路。
+
+**3. 竞态和脏数据。** A 请求超时 → 用户点了重试 → B 发出 → A 这时候才姗姗来迟返回。要是还有地方在 A 的回调里 `setState`，就会用旧数据覆盖 B 的新结果。这类 bug 极难复现。
+
+**4. 响应体没人消费。** 被 race 淘汰的 fetch 返回后，它的 body 没有任何人去读，对应的内存和连接要等到响应彻底结束才释放。
+
+**5. 监控数据失真。** 前端埋点统计到的"超时率"是 30%，服务端那边看成功率是 100%。两边对不上账，排查方向直接被带偏。
+
+### 怎么确认自己中招了
+
+最简单的办法：给接口人为加个 `sleep(10000)`，前端设 `timeout: 3000`，然后：
+
+- 看 DevTools 的 Network 面板——如果超时后那条请求还在 pending，就是假超时；真的取消了会显示 `canceled`。
+- 看后端 access log——如果每次前端超时后端都完整处理了一遍，就是假超时。
+
+### 正确的做法：把 signal 交给 fetch
+
+fetch 原生就支持 `signal`，`controller.abort()` 会真正中断传输。而 umi-request 的 `RequestOptionsInit` 是继承自 `RequestInit` 的，合并后的 options 会原样传给 `fetch(url, options)`，所以 `signal` 能一路透传到底层。官方 README 里的例子也是这么写的。
+
+但光传 `signal` 没用——你还得在超时那一刻有人去调 `abort()`，而 umi-request 自己的 `timeout` 不会帮你调。所以这件事得我们在 request 层自己接管。
+
+### 统一在 request 里处理
+
+下面这份 `request.ts` 是我在项目里用的版本，思路是：**关掉 umi-request 的内置 timeout，改由我们自己的 AbortController 统一管超时、管取消、管回收**。业务侧调用方式完全不变，超时后请求是真的被掐断的。
+
+```ts:src/utils/request.ts
+import { extend, type RequestOptionsInit } from 'umi-request'
+
+/** 全局默认超时时间（毫秒） */
+const DEFAULT_TIMEOUT = 10_000
+
+/** 自定义错误名，方便 errorHandler 区分「超时中断」和「手动取消」 */
+const TIMEOUT_ERROR = 'UmiRequestTimeoutError'
+const CANCEL_ERROR = 'UmiRequestCancelError'
+
+interface PendingItem {
+  controller: AbortController
+  timer: ReturnType<typeof setTimeout> | null
+}
+
+/** 所有在途请求：key -> item */
+const pending = new Map<string, PendingItem>()
+
+/** method + url + 参数，拼一个稳定的 key */
+export const buildRequestKey = (url: string, options: RequestOptionsInit = {}) => {
+  const { method = 'get', params, data } = options
+  return [method.toUpperCase(), url, JSON.stringify(params ?? null), JSON.stringify(data ?? null)].join('|')
+}
+
+/** 回收定时器 + 从在途表里移除 */
+const dispose = (key?: string) => {
+  if (!key) return
+  const item = pending.get(key)
+  if (!item) return
+  if (item.timer) clearTimeout(item.timer)
+  pending.delete(key)
+}
+
+/** 按 key 中断一个在途请求 */
+const abortByKey = (key: string, name: string, message: string) => {
+  const item = pending.get(key)
+  if (!item) return false
+  const error = new Error(message)
+  error.name = name
+  // abort 时带上 reason，errorHandler 里就能直接拿到中断原因
+  // signal 的 abort 事件会自动 dispose，这里不用重复清理
+  item.controller.abort(error)
+  return true
+}
+
+/** 主动取消某个请求 */
+export const cancelRequest = (url: string, options: RequestOptionsInit = {}) =>
+  abortByKey(buildRequestKey(url, options), CANCEL_ERROR, 'request canceled')
+
+/** 取消全部在途请求：路由切换、页面卸载时调用 */
+export const cancelAllRequests = () => {
+  ;[...pending.keys()].forEach((key) => abortByKey(key, CANCEL_ERROR, 'request canceled'))
+}
+
+const request = extend({
+  prefix: '/api',
+  credentials: 'include',
+  // 注意：这里刻意不传 timeout。内置的 timeout 不会中断 fetch，
+  // 属于「假超时」，超时统一交给下面的 AbortController 接管。
+  errorHandler: (error: any) => {
+    // 兜底回收（abort 场景已经在 abort 事件里清理过了，这里是幂等的）
+    dispose(error?.request?.options?.__requestKey__)
+
+    if (error?.name === TIMEOUT_ERROR) {
+      error.type = 'Timeout'
+      error.message = '请求超时，请稍后重试'
+    } else if (error?.name === CANCEL_ERROR || error?.name === 'AbortError') {
+      // 主动取消不是错误，打个标记让业务侧好判断，一般直接静默
+      error.isCancel = true
+    }
+    throw error
+  },
+})
+
+request.interceptors.request.use((url, options) => {
+  const key = buildRequestKey(url, options)
+  const controller = new AbortController()
+  const item: PendingItem = { controller, timer: null }
+
+  pending.set(key, item)
+
+  // 不管是超时中断还是手动取消，signal 一 abort 就立刻回收资源
+  controller.signal.addEventListener('abort', () => dispose(key))
+
+  const timeout = options.timeout === undefined ? DEFAULT_TIMEOUT : options.timeout
+  if (timeout > 0) {
+    item.timer = setTimeout(() => {
+      const error = new Error(`timeout of ${timeout}ms exceeded`)
+      error.name = TIMEOUT_ERROR
+      controller.abort(error)
+    }, timeout)
+  }
+
+  return {
+    url,
+    options: {
+      ...options,
+      timeout: 0, // 关掉内置的「假超时」
+      __requestKey__: key,
+      signal: controller.signal, // 这个字段才是真取消的关键
+    },
+  }
+})
+
+request.interceptors.response.use((response, options) => {
+  dispose(options.__requestKey__)
+  return response
+})
+
+export default request
+```
+
+改完之后，业务代码一行都不用动，该怎么写还怎么写：
+
+```ts
+// 用默认 10s 超时，超时后 fetch 会被真正中断
+const list = await request('/user/list', { params: { page: 1 } })
+
+// 单独指定超时，或者传 0 表示不超时（比如下载大文件）
+const file = await request('/report/export', { timeout: 60_000 })
+const pkg = await request('/big-file.zip', { timeout: 0, responseType: 'blob' })
+```
+
+几个实现上的点，值得单独说一下：
+
+**为什么在 `extend` 里不传 `timeout`。** 因为一旦设了，`options.timeout` 就永远有值，拦截器里没法区分"用户没配"和"用户配了"。留空之后用 `options.timeout === undefined` 判断，默认超时和"显式不超时"就都能支持了。最后在拦截器里把它覆写成 `0`，彻底关掉内置那条 race。
+
+**为什么用 `abort(reason)`。** `controller.abort()` 可以带一个参数作为 reject 出去的 error。我们塞一个自定义 `name` 的 Error 进去，`errorHandler` 里就能直接区分是超时中断还是手动取消，不用额外维护映射表。如果运行环境比较老不支持 abort reason，会退化成通用的 `AbortError`，上面的 `errorHandler` 也已经兜住了。
+
+**为什么在 `signal` 上挂 abort 监听做回收。** 因为超时和手动取消走的是完全不同的代码路径，但两者最终都会触发同一个 `abort` 事件。把清理收敛到一个地方，就不用在两条路径上各写一遍，也不会漏。
+
+### 顺手能一起做的两件事
+
+既然在途请求都已经登记在 `pending` 里了，再往前走一步就很便宜：
+
+**重复请求自动取消。** 提交按钮被连点、Tab 快速切换时，同一个接口连发好几次，除了浪费还容易出竞态。可以在拦截器开头加一句：
+
+```ts
+// key 已存在说明同样的请求还在飞，先把旧的掐掉
+if (options.cancelPrevious !== false) {
+  abortByKey(key, CANCEL_ERROR, 'canceled by a newer request')
+}
+```
+
+建议默认关掉（用 `cancelPrevious: false` 显式跳过），只在确定幂等的列表接口上开，免得误伤。
+
+**路由切换时清空。** SPA 里页面都卸载了请求还在跑，回调里再 `setState` 就是典型的内存泄漏警告来源。在路由守卫或者 `useEffect` 的清理函数里调一次 `cancelAllRequests()` 就行：
+
+```ts
+useEffect(() => {
+  loadDetail()
+  return () => cancelAllRequests()
+}, [id])
+```
+
+### 几个容易踩的坑
+
+**客户端取消不等于服务端回滚。** `abort()` 之后，请求可能早就到服务端了，写操作也执行完了。客户端取消只是不再等这个响应而已。所以涉及写接口，得靠幂等设计（比如 `Idempotency-Key`）来保证重试安全，别指望前端取消能兜底。
+
+**被 abort 的请求不要重试。** 有些项目会在拦截器里加失败重试，一定要把 `TIMEOUT_ERROR` 和 `isCancel` 的请求排除掉，否则"超时自动重试"又变成了一次真实请求，正好把我们想解决的问题放大回去。要重试也只对幂等的 GET、并且加上退避和次数上限。
+
+**大文件要单独放宽超时。** 上传下载走的是同一套拦截器，一刀切 10 秒会误杀。这类接口单独传 `timeout: 0` 或者给个很大的值更稳妥。
+
+**老环境记得打 polyfill。** `AbortController` 在 IE 和很老的浏览器上没有，官方 README 推荐的是 `yet-another-abortcontroller-polyfill`。如果确实要覆盖这类环境，可以保留 umi-request 的内置 `timeout` 作为兜底（设成比我们的超时稍大一点，比如 `timeout + 500`），这样即便 `signal` 不生效，前端至少还能正常报错。
+
+**用 `AbortSignal.timeout()` 可以更省事。** 如果不需要手动取消，只想纯超时，一行就够了：
+
+```ts
+options: { ...options, signal: AbortSignal.timeout(timeout) }
+```
+
+两者都要的话，`AbortSignal.any([controller.signal, AbortSignal.timeout(timeout)])` 也能组合起来用。
+
+### 最后
+
+问题本身不大，源码也就三行，但它是那种"不查就一直错下去"的细节。核心就两点：**`Promise.race` 不负责取消；`fetch` 只认 `signal`**。
+
+把这件事收在统一的 request 层里处理，业务代码零改动，超时、取消、重复请求、卸载清理全都在一个地方，比在每个页面里各处补 `AbortController` 要靠谱得多。
+
+改完之后记得去 Network 面板验收一下——超时那条请求显示成 `canceled`，才算真的搞定了。
+
+### 欢迎共同交流
+
+如果你也在用 umi-request，或者遇到过更奇葩的超时问题，欢迎在评论区聊聊。
