@@ -8,6 +8,7 @@ import TerminalWindow, { Prompt } from '@/components/home/TerminalWindow'
 import { slug } from 'github-slugger'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+import PrintButton from '@/components/PrintButton'
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   year: 'numeric',
@@ -35,10 +36,15 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
   return (
     <SectionContainer>
       <ScrollTopAndComment />
-      <article className="mx-auto min-h-screen max-w-3xl pt-16 pb-16">
-        <TerminalWindow title={`~/blog/${postSlug}`} shell="less" className="animate-hero-reveal">
+      {/* 屏幕上用 4xl 宽度；打印时收缩回 A4 纸宽，配合打印样式输出 A4 版式 */}
+      <article className="mx-auto min-h-screen max-w-4xl pt-16 pb-16 print:max-w-[210mm]">
+        <TerminalWindow
+          title={`~/blog/${postSlug}`}
+          shell="less"
+          className="animate-hero-reveal print-window"
+        >
           {/* command line */}
-          <div className="text-gray-400 dark:text-gray-500">
+          <div className="text-gray-400 dark:text-gray-500 print:hidden">
             <Prompt>cat {fileName}</Prompt>
           </div>
 
@@ -55,11 +61,14 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             <h1 className="font-mono text-xl leading-snug font-semibold text-gray-900 sm:text-2xl dark:text-gray-100">
               {title}
             </h1>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
-              {authorLabel}
-              {` · `}
-              {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
-              {minutes ? ` · 约 ${Math.ceil(minutes)} 分钟阅读` : ''}
+            <div className="flex items-center justify-between gap-3 text-xs text-gray-500 dark:text-gray-400">
+              <span>
+                {authorLabel}
+                {` · `}
+                {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
+                {minutes ? ` · 约 ${Math.ceil(minutes)} 分钟阅读` : ''}
+              </span>
+              <PrintButton />
             </div>
             {tags && tags.length > 0 && (
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
@@ -76,14 +85,14 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             )}
           </div>
 
-          <div className="text-gray-300 dark:text-gray-700">────────────────</div>
+          <div className="text-gray-300 dark:text-gray-700 print:hidden">────────────────</div>
 
           {/* body — terminal-scale mono typography */}
           <div className="prose dark:prose-invert post-prose max-w-none font-mono">{children}</div>
 
           {/* prev / next */}
           {(next || prev) && (
-            <div className="grid gap-3 border-t border-gray-200 pt-4 text-xs sm:grid-cols-2 dark:border-gray-800">
+            <div className="grid gap-3 border-t border-gray-200 pt-4 text-xs sm:grid-cols-2 dark:border-gray-800 print:hidden">
               {prev && prev.path ? (
                 <Link
                   href={`/${prev.path}`}
@@ -115,7 +124,10 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
 
           {/* comments — terminal-styled, at the very bottom */}
           {siteMetadata.comments && (
-            <div id="comment" className="border-t border-gray-200 pt-6 dark:border-gray-800">
+            <div
+              id="comment"
+              className="border-t border-gray-200 pt-6 dark:border-gray-800 print:hidden"
+            >
               <div className="text-gray-400 dark:text-gray-500">
                 <Prompt>cat comments</Prompt>
               </div>
@@ -124,7 +136,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
           )}
 
           {/* back link + blinking prompt */}
-          <div className="flex items-center justify-between border-t border-gray-200 pt-4 text-xs dark:border-gray-800">
+          <div className="flex items-center justify-between border-t border-gray-200 pt-4 text-xs dark:border-gray-800 print:hidden">
             <Link
               href={`/${basePath}`}
               className="hover:text-primary-600 dark:hover:text-primary-400 text-gray-500 transition-colors dark:text-gray-400"

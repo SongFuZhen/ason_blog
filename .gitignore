@@ -50,3 +50,6 @@ tsconfig.tsbuildinfo
 
 # local agent tooling state
 .workbuddy/
+
+# local debug scripts
+__contrast*.js

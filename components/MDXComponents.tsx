@@ -7,6 +7,7 @@ import CustomLink from './Link'
 import TableWrapper from './TableWrapper'
 import { ProseIframe } from './mdx/ProseIframe'
 import { ProseImage } from './mdx/ProseImage'
+import FAQ from './mdx/FAQ'
 
 export const components: MDXComponents = {
   Image,
@@ -17,4 +18,5 @@ export const components: MDXComponents = {
   pre: Pre,
   table: TableWrapper,
   BlogNewsletterForm,
+  FAQ,
 }

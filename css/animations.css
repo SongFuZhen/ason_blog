@@ -11,7 +11,9 @@
 }
 
 .page-transition {
-  animation: page-enter 0.15s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  /* 不能用 both/forwards fill：会永久保留 transform，使内部 position:fixed
+     （如文章页右下角悬浮按钮）相对该 div 定位而不是视口 */
+  animation: page-enter 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 /* ── Staggered item reveal ── */

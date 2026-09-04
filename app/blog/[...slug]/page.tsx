@@ -106,6 +106,39 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
     }
   })
 
+  const category = [...(post.categories ?? [])][0]
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: siteMetadata.title,
+        item: siteMetadata.siteUrl,
+      },
+      category
+        ? {
+            '@type': 'ListItem',
+            position: 2,
+            name: category,
+            item: encodeURI(`${siteMetadata.siteUrl}/categories/${category}`),
+          }
+        : {
+            '@type': 'ListItem',
+            position: 2,
+            name: siteMetadata.title,
+            item: `${siteMetadata.siteUrl}/blog`,
+          },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: encodeURI(jsonLd['url'] as string),
+      },
+    ],
+  }
+
   const Layout = layouts[post.layout || defaultLayout]
 
   return (
@@ -113,6 +146,10 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
         <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />

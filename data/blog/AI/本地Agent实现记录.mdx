@@ -1,0 +1,123 @@
+---
+title: 弱模型 + 强约束 + 真数据：一个本地 Agent 的实现
+date: 2026-09-04
+tags: [AI, AI Agent, Ollama, Agent, 本地模型]
+categories: [AI]
+authors: [default]
+summary: AI Agent 的热点叙事集中在自主完成复杂任务、多智能体协同、自我进化。这些叙事有个共同前提：底座模型足够强，且能联网。在内网断网环境里用 7B 模型把 Agent 跑起来，要先解决另一件事——让它别瞎编。
+draft: true
+---
+
+Agent 是今年 AI 方向热度最高的词，讨论集中在三个方向：能自主完成复杂任务的数字员工、从单智能体走向多智能体协同、让智能体具备自我进化能力。
+
+这三个方向有个共同前提：底座模型足够强，并且能访问外部服务。在内网断网环境里，前提不成立——没有云端 API，本地只有一张消费级显卡，能跑动的是 7B 量级模型。
+
+[ollama_agent](https://github.com/SongFuZhen/ollama_agent) 是在这个约束下写的本地 Agent 客户端。README 里那句话概括了整体思路：弱模型 + 强约束 + 真数据 = 不瞎编。
+
+### 运行环境
+
+- Ollama 本地推理，默认模型 `qwen2.5-coder:7b`，对话中可随时切换，可用 `MODEL_CODER` / `MODEL_DEBUG` / `MODEL_GENERAL` 分场景覆盖
+- 除 `sql.js`（已 vendored 到 `public/lib`）外全部是 Node 内置模块，克隆后 `npm start` 直接跑
+- `scripts/build-offline-pack.sh` 打包成 U 盘直拷的离线部署包，Windows / macOS / Linux 三端同一入口
+
+### 结构
+
+四个子系统：LLM 集成、Memory 管理、Tool Use、Agent Loop。链路：
+
+```
+用户输入 → HTTP SSE → Agent Loop → Ollama /api/chat
+                          ↓
+                    工具调用解析（JSON 容错）
+                          ↓
+                    工具执行（单目录沙箱）
+                          ↓
+                    结果截断 → 注入消息列表 → 下一轮
+```
+
+主循环：
+
+```
+messages = [system, ...history, userInput]
+truncateMessages(messages)
+
+for step = 1 to MAX_STEPS:
+    if 超时 → 强制收尾，break
+    raw  = chatStream(model, messages)
+    text = answerBuffer || stripThink(raw).rest
+    call = parseToolCall(text)
+    if 无工具调用 → 返回 text 作为最终回答
+    if 工具不存在 → 拒绝并提示换工具，continue
+    if 连续 3 次相同调用 → 强制收尾
+    if 需要确认 → 等待用户确认
+    result = await tool.run(params, ctx)
+    messages.push({ assistant: text })
+    messages.push({ user: '工具返回:\n' + result })
+```
+
+`truncateMessages` 用 `text.length / 2.5` 估算 token，上限 `NUM_CTX - 2048`，从旧到新丢弃。system 消息永不清除——工具列表在 system prompt 里，丢了模型就不知道有哪些工具可用。
+
+### 工具调用的两条路线
+
+按模型名判定走哪条：命中 `NATIVE_TOOLS_MODELS` 白名单的走原生 tools API（`tool_calls` 字段），其余走 prompt-based。默认走 prompt-based：工具列表以 Markdown 注入 system prompt，模型输出 `{"action":"工具名","params":{}}` 文本，Agent 解析提取。
+
+选它是因为实测结论——多数社区 tool-calling 模型实际只输出 JSON 文本，走 prompt 路线更稳定；原生路线失败时自动回退到文本解析。
+
+小模型的 JSON 格式错误是常态，解析侧做了五层容错：代码块提取 → 剥离 `//` 与 `/* */` 注释 → 修复尾部逗号 → `action/params` 与 `name/parameters` 双格式兼容 → 去掉 `think` 块后重试。
+
+另有一套绕过模型推理的入口：`@命令名` 直接调工具或技能（写操作仍需二次确认），`!命令` 直接走 shell，优先级高于 slash 命令。
+
+### 弱模型的补偿
+
+7B 的根本问题是推理弱、上下文短、易跑偏。优化围绕三条主线：降低模型负担、提高单步成功率、把判断权从模型剥离到确定性代码。
+
+| 手段             | 作用                                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| Few-shot 示例    | 高频工具各附一个标准调用示例，注入 system prompt，总量控制在 800 token 内                       |
+| 任务模板         | `src/templates/` 固化高频任务步骤骨架（修 bug / 加函数 / 重构命名），按图索骥而非自由规划       |
+| 调用预检         | `src/core/precheck.js` 在工具执行前校验文件是否存在、参数类型是否匹配，错误直接返回，不浪费一步 |
+| 硬约束           | system prompt 用「必须 / 禁止」写行为规则，替代「只有需要时才调工具」这类软建议                 |
+| 上下文压缩       | `src/core/compact.js`，上下文过阈值时用小模型摘要化                                             |
+| 记忆召回         | 三级记忆：L1 最近对话 / L2 语义召回 / L3 关联记忆                                               |
+| 模型路由         | 压缩摘要等低推理任务用小模型，主对话用大模型                                                    |
+| Toolbox 单轮命令 | `/explain` `/review` `/commit` `/fix` 等固定 prompt 走独立通道，不经多步 Agent 循环             |
+
+Toolbox 这条效果最直接：把「解释这个文件」「根据改动生成 commit message」这类任务的 prompt 固定下来，跳过循环。弱模型在单轮里能稳定产出，放进多步循环就会跑偏。
+
+结论是——让 7B 能干活的路径不是提升模型能力，而是减少模型需要承担的判断：能抄答案的给模板，能确定性判断的交给代码，只把真正需要推理的部分留给模型。
+
+### 约束清单
+
+| 层级       | 机制                                 | 阈值                  |
+| ---------- | ------------------------------------ | --------------------- |
+| 路径安全   | `safeResolve()` 越界检测，含符号链接 | 单目录 `PROJECT_ROOT` |
+| 写操作     | `needConfirm` + SSE 二次确认         | 每次单独确认          |
+| 工具白名单 | `isAllowed()`，未知工具直接拒绝      | —                     |
+| 输出截断   | 工具结果截断后注入                   | 6000 字符             |
+| 墙钟超时   | `AGENT_TIMEOUT_MS`                   | 90s                   |
+| 步数上限   | `MAX_STEPS`                          | 6                     |
+| 循环检测   | 同名同参数连续调用                   | 3 次强制收尾          |
+| 请求体     | `MAX_BODY`                           | 1MB                   |
+
+写操作确认走 SSE 双向：后端发 `confirm_request`，前端在消息流里就地弹卡片，用户确认后 `POST /api/confirm`，循环继续。超时或连接断开视为拒绝。
+
+### 度量
+
+优化靠埋点数据验证，`src/core/metrics.js` 写 `data/metrics.jsonl`，前端 `/metrics` 查看：
+
+| 指标               | 目标       |
+| ------------------ | ---------- |
+| JSON 解析失败率    | `5%` 以下  |
+| 平均收敛步数       | 4 以下     |
+| 重复工具调用占比   | `10%` 以下 |
+| 触发压缩的任务占比 | `30%` 以下 |
+| 任务成功率         | `80%` 以上 |
+
+没有基线数据，优化效果无法验证。顺序是先加埋点，再改 prompt 和工具。
+
+### 与热点的距离
+
+对照 Claude Code 这类成熟产品，差距集中在四处：无子代理委派、无 hooks 事件钩子、权限只有「确认 / 不确认」两档、无后台任务。
+
+多智能体协同和自我进化在本地 7B 上的优先级都靠后。子代理要求每个子代理自己能稳定完成子任务，7B 在单步上的成功率还没到那个水平，拆成多份只会把错误放大。当前版本先把单步做稳：预检拦掉确定性错误，模板固定高频路径，埋点给出失败率和收敛步数。单步成功率上去了，编排才有意义。
+
+仓库：https://github.com/SongFuZhen/ollama_agent

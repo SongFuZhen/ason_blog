@@ -1,0 +1,143 @@
+---
+title: umi-request 的 timeout 不会取消请求
+date: 2026-09-04
+tags: [前端, umi-request, fetch, AbortController, 请求超时]
+categories: [技术]
+authors: [default]
+summary: umi-request 的 timeout 只是用 Promise.race 提前 reject，底层 fetch 不会被中断。从源码确认这点，并给出在 request 层统一用 AbortController 接管超时的方案。
+---
+
+线上配了 `timeout: 3000`，3 秒后 `catch` 到 `RequestError(type: 'Timeout')`，但 DevTools 的 Network 面板里那条请求还是 `pending`，一直挂到服务端返回，耗时 12 秒。
+
+**超时只是 JS 侧的感知，请求本身没有被取消。**
+
+### 源码
+
+umi-request 基于 fetch（依赖 `isomorphic-fetch`），超时逻辑在核心的 fetch 中间件里，1.4.0 `dist/index.js` 第 709 行：
+
+```js
+// 超时处理、取消请求处理
+if (timeout > 0) {
+  response = Promise.race([
+    cancel2Throw(options),
+    adapter(url, options),
+    timeout2Throw(timeout, timeoutMessage, ctx.req),
+  ])
+} else {
+  response = Promise.race([cancel2Throw(options), adapter(url, options)])
+}
+```
+
+`adapter` 就是 `fetch`。`timeout2Throw` 只负责到点 reject：
+
+```js
+function timeout2Throw(msec, timeoutMessage, request) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(
+        new RequestError(timeoutMessage || `timeout of ${msec}ms exceeded`, request, 'Timeout')
+      )
+    }, msec)
+  })
+}
+```
+
+`Promise.race` 只决定谁先 `settle`，不会取消其他参与者。`adapter(url, options)` 拿不到任何通知，会一直跑到服务端返回。
+
+`cancel2Throw` 同理：
+
+```js
+function cancel2Throw(opt) {
+  return new Promise(function (_, reject) {
+    if (opt.cancelToken) {
+      opt.cancelToken.promise.then(function (cancel) {
+        reject(cancel)
+      })
+    }
+  })
+}
+```
+
+所以 `umi-request` 自带的 `CancelToken` 也不是真取消，只是提前结束等待。官方 README 把它标为 `legacy`、推荐 `AbortController`，原因就在这——只有 `signal` 能穿透到 fetch 底层。
+
+对比 axios：浏览器端超时最终走 `xhr.abort()`，是真的断连接。从 axios 转过来容易**默认** umi-request 也是这个行为。
+
+### 造成了什么影响呢？
+
+- **连接占用**：HTTP/1.1 同域 6 并发，未被中断的请求继续占坑，慢接口堆积会阻塞后续请求。
+- **服务端空转**：客户端已放弃，服务端仍在执行。叠加前端失败重试，一次点击变成 N 次真实请求，流量被放大。
+- **竞态**：超时请求晚于重试请求返回时，旧响应覆盖新数据。
+- **监控失真**：前端超时率与后端成功率对不上，排查方向被带偏。
+
+复现方式：接口加 `sleep(10s)`，前端 `timeout: 3000`。Network 面板里请求没有变成 `canceled`，或后端 access log 有完整执行记录，即为命中。
+
+### So Easy 的解决方案
+
+fetch 原生支持 `signal`，`abort()` 会真正中断传输。umi-request 的 `RequestOptionsInit extends RequestInit`，合并后的 options 原样传给 `fetch(url, options)`，`signal` 能透传到底层。
+
+但 umi-request 的 `timeout` 不会帮你调 `abort()`，这一步得自己在 request 层接管：关掉内置 timeout，改由 AbortController 统一管理超时、取消和回收。
+
+```ts:src/utils/request.ts
+const DEFAULT_TIMEOUT = 10_000
+
+request.use(async (ctx, next) => {
+  const { options } = ctx.req
+
+  // 用户自带 signal 说明他要手动控制取消，这里不覆盖。
+  if (options.signal || typeof AbortController === 'undefined') {
+    await next()
+    return
+  }
+
+  const timeout = options.timeout ?? DEFAULT_TIMEOUT
+
+  const controller = new AbortController()
+  options.signal = controller.signal // fetchMiddleware 会原样传给 fetch
+  options.timeout = 0 // 关掉内置 race，让超时只有一个来源
+
+  const timer = setTimeout(() => {
+    const error = new Error(`timeout of ${timeout}ms exceeded`)
+    error.name = 'TimeoutError'
+    controller.abort(error)
+  }, timeout)
+
+  try {
+    await next()
+  } catch (error) {
+    // fetch 被 abort 时 reject 的是 DOMException，message 是只读 getter，
+    // 严格模式下直接赋值会抛 TypeError，只能构造新错误再抛
+    if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      throw Object.assign(new Error('请求超时，请稍后重试'), { type: 'Timeout', cause: error })
+    }
+    throw error
+  } finally {
+    clearTimeout(timer)
+  }
+})
+```
+
+业务侧调用不变：
+
+```ts
+const list = await request('/user/list', { params: { page: 1 } }) // 默认 10s
+const file = await request('/report/export', { timeout: 60_000 })
+const pkg = await request('/big-file.zip', { timeout: 0, responseType: 'blob' }) // 0 = 不超时
+```
+
+实现细节：
+
+**为什么用 `request.use` 而不是 interceptors。** 超时要在 fetch 前注入 `signal`、在 fetch 后清理定时器，`await next()` 正好提供「下游全部完成」的时机，配 `try/finally` 就能保证定时器一定被回收。`interceptors.request` 只有发出前的钩子，没有结束回调，做不到。
+
+**为什么显式 `options.timeout = 0`。** 不关掉的话，内置 `timeout2Throw` 会和我们注入的 `signal` 同时到点、两边都 reject，`Promise.race` 取谁取决于事件循环顺序，业务侧 catch 到的错误类型就不稳定。
+
+**为什么不能直接改 `error.message`。** fetch 被 abort 时 reject 出来的是 `DOMException`，`message` 是原型上的只读 getter（WebIDL readonly attribute）。严格模式（ESM、TS 编译产物默认都是）下赋值会抛 `TypeError: Cannot set property message of which has only a getter`——本来要抛超时错误，结果抛了个 TypeError。这个坑比较隐蔽。
+
+**退化分支为什么不置 0。** IE 这类老环境没有 `AbortController`，此时注入 `signal` 会被 fetch 忽略，请求既不超时也不取消。所以这条分支要保留 `options.timeout` 原值，让内置 timeout 兜底。
+
+### 注意点
+
+- **取消不等于回滚。** 请求可能已到达服务端并完成写入，`abort()` 只是不再等响应。写接口的重试安全要靠幂等设计（`Idempotency-Key`），不能依赖前端取消。
+- **被 abort 的请求不要重试。** 重试等于再发一次真实请求，正好把要解决的问题放大回去。重试只对幂等 GET，加退避和次数上限。
+- **大文件单独配超时。** 上传下载走同一套拦截器，一刀切会被误杀。
+- **老环境打 polyfill。** IE 没有 `AbortController`，官方推荐 `yet-another-abortcontroller-polyfill`。不打的话上面的退化分支已经兜住了：拿不到 `AbortController` 就跳过注入，由内置 `timeout` 保证前端至少能报错，代价是超时后请求不会被取消。
+- **纯超时场景可以更简单**：`signal: AbortSignal.timeout(timeout)`；两者都要用 `AbortSignal.any([controller.signal, AbortSignal.timeout(timeout)])`。
