@@ -62,16 +62,22 @@ export default function Footer() {
           </div>
           <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
             <Link
-              href="/privacy"
+              href="/about"
               className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
             >
-              隐私政策
+              关于
             </Link>
             <Link
               href="/contact"
               className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
             >
               联系
+            </Link>
+            <Link
+              href="/privacy"
+              className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >
+              隐私政策
             </Link>
           </div>
           <div className="pt-2 text-xs text-gray-400 dark:text-gray-500">

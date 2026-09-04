@@ -73,6 +73,26 @@ export function AboutPage() {
           </ol>
         </div>
 
+        <div>
+          <div className="text-gray-400 dark:text-gray-500">
+            <Prompt>cat ~/site.md</Prompt>
+          </div>
+          <div className="mt-2 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <p>{profile.site.positioning}</p>
+            <p className="text-gray-400 dark:text-gray-500">这个网站写给谁：</p>
+            <ul className="space-y-1">
+              {profile.site.audience.map((item) => (
+                <li key={item} className="flex gap-2">
+                  <span aria-hidden className="text-primary-600 dark:text-primary-400">
+                    ›
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
         <div id="comment" className="border-t border-gray-200 pt-4 dark:border-gray-800">
           <div className="text-gray-400 dark:text-gray-500">
             <Prompt>cat comments</Prompt>

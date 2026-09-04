@@ -23,4 +23,13 @@ export const profile = {
     deployment: ['Vercel', 'Cloudflare'],
   },
   siteHistory: ['随便发发牢骚，写写东西'],
+  site: {
+    positioning:
+      'ason.top 是一个个人博客，记录我在 AI Coding、独立开发与前端技术上的实践笔记、项目复盘与踩坑记录。所有内容来自真实的项目经验与动手实验，不搬运、不灌水。',
+    audience: [
+      '想用 AI 提升开发效率的前端与全栈开发者',
+      '正在做（或想做）自己产品的一人公司 / 独立开发者',
+      '对工具站、小程序等小产品从 0 到 1 过程感兴趣的读者',
+    ],
+  },
 }
