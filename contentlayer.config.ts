@@ -184,8 +184,11 @@ export const Blog = defineDocumentType(() => ({
             '@type': 'WebPage',
             '@id': url,
           },
-          keywords: doc.tags?.join(', '),
-          articleSection: doc.categories,
+          // Contentlayer2 passes list fields to computed-field resolvers as an
+          // Effect-ts `Chunk` (array-like, but no Array.prototype methods) —
+          // spread it into a real array before using array methods.
+          keywords: [...(doc.tags ?? [])].join(', '),
+          articleSection: [...(doc.categories ?? [])],
           publisher: {
             '@type': 'Organization',
             name: siteMetadata.title,
