@@ -161,16 +161,41 @@ export const Blog = defineDocumentType(() => ({
     ...computedFields,
     structuredData: {
       type: 'json',
-      resolve: (doc) => ({
-        '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
-        headline: doc.title,
-        datePublished: doc.date,
-        dateModified: doc.lastmod || doc.date,
-        description: doc.summary,
-        image: doc.images ? doc.images[0] : siteMetadata.socialBanner,
-        url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
-      }),
+      resolve: (doc) => {
+        const rawBanner = doc.images ? doc.images[0] : siteMetadata.socialBanner
+        const image =
+          typeof rawBanner === 'string' && rawBanner.startsWith('http')
+            ? rawBanner
+            : `${siteMetadata.siteUrl}${rawBanner}`
+        const logoUrl = siteMetadata.socialBanner.startsWith('http')
+          ? siteMetadata.socialBanner
+          : `${siteMetadata.siteUrl}${siteMetadata.socialBanner}`
+        const url = `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: doc.title,
+          datePublished: doc.date,
+          dateModified: doc.lastmod || doc.date,
+          description: doc.summary,
+          image,
+          url,
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': url,
+          },
+          keywords: doc.tags?.join(', '),
+          articleSection: doc.categories,
+          publisher: {
+            '@type': 'Organization',
+            name: siteMetadata.title,
+            logo: {
+              '@type': 'ImageObject',
+              url: logoUrl,
+            },
+          },
+        }
+      },
     },
   },
 }))
