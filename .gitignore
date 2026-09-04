@@ -47,3 +47,6 @@ tsconfig.tsbuildinfo
 
 # git worktrees
 /.worktrees
+
+# local agent tooling state
+.workbuddy/
