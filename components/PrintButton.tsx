@@ -10,7 +10,7 @@ export default function PrintButton() {
       type="button"
       onClick={() => window.print()}
       aria-label="打印文章"
-      className="hover:border-primary-400 hover:text-primary-600 dark:hover:text-primary-400 inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-md border border-gray-300 px-2 py-0.5 text-xs text-gray-500 transition-colors dark:border-gray-700 dark:text-gray-400 print:hidden"
+      className="hover:border-primary-400 hover:text-primary-600 dark:hover:text-primary-400 hidden shrink-0 cursor-pointer items-center gap-1 rounded-md border border-gray-300 px-2 py-0.5 text-xs text-gray-500 transition-colors sm:inline-flex dark:border-gray-700 dark:text-gray-400 print:hidden"
     >
       打印
     </button>
