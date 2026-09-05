@@ -52,7 +52,7 @@ export default function Footer() {
               >
                 OpenCode
               </Link>
-              ——这个网站就是这样搭建起来的。
+              、CodeBuddy 等——这个网站就是这样搭建起来的。
             </p>
           </div>
           <div className="flex items-center gap-5">
