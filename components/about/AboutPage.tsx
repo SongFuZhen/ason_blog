@@ -65,12 +65,12 @@ export function AboutPage() {
           </div>
           <ul className="mt-2 space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
             {profile.blogGuide.map((item) => (
-              <li key={item.dir} className="flex flex-wrap gap-x-3">
-                <span aria-hidden className="shrink-0 text-gray-400 dark:text-gray-500">
-                  drwxr-xr-x
+              <li key={item.dir} className="pl-[11ch] indent-[-11ch]">
+                <span aria-hidden className="text-gray-400 dark:text-gray-500">
+                  drwxr-xr-x{' '}
                 </span>
-                <span className="text-primary-600 dark:text-primary-400 shrink-0">{item.dir}</span>
-                <span className="text-gray-500 dark:text-gray-400">{item.desc}</span>
+                <span className="text-primary-600 dark:text-primary-400">{item.dir}</span>
+                <span className="text-gray-500 dark:text-gray-400"> {item.desc}</span>
               </li>
             ))}
           </ul>
