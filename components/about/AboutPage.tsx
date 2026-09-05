@@ -97,13 +97,13 @@ export function AboutPage() {
           <div className="text-gray-400 dark:text-gray-500">
             <Prompt>cat ~/contact</Prompt>
           </div>
-          <figure className="mx-auto mt-3 w-32 text-center">
+          <figure className="mx-auto mt-3 w-[140px] text-center">
             <Image
               src={profile.contact.feishuQrcode}
               alt="飞书联系二维码，扫码添加 ASoN 的飞书好友"
               width={160}
               height={160}
-              className="mx-auto h-auto w-32 rounded-sm border border-gray-200 dark:border-gray-800"
+              className="mx-auto h-auto w-[140px] rounded-sm border border-gray-200 dark:border-gray-800"
             />
             <figcaption className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               飞书 · 扫码添加
@@ -120,13 +120,13 @@ export function AboutPage() {
           </div>
           <div className="mt-3 flex flex-wrap items-start justify-center gap-6">
             {profile.donate.qrcodes.map((qr) => (
-              <figure key={qr.src} className="w-32 text-center">
+              <figure key={qr.src} className="w-[140px] text-center">
                 <Image
                   src={qr.src}
                   alt={qr.alt}
                   width={160}
                   height={160}
-                  className="mx-auto h-auto w-32 rounded-sm border border-gray-200 dark:border-gray-800"
+                  className="mx-auto h-auto w-[140px] rounded-sm border border-gray-200 dark:border-gray-800"
                 />
                 <figcaption className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   {qr.label}
