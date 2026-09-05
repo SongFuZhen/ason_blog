@@ -23,6 +23,14 @@ export const profile = {
     deployment: ['Vercel', 'Cloudflare'],
   },
   siteHistory: ['随便发发牢骚，写写东西'],
+  contact: {
+    feishuQrcode: '/static/images/feishu-qrcode.jpg',
+    feishuNote: '扫码添加我的飞书，交流前端、AI Coding 或合作都欢迎。',
+  },
+  donate: {
+    paypalQrcode: '/static/images/paypal-qrcode.jpg',
+    note: '博客与所有工具完全免费，无需付费。如果你觉得内容有帮助、想支持服务器和域名开销，可以通过下面的 PayPal 收款码自愿请我喝杯咖啡，金额随意，不捐也完全不影响任何内容。',
+  },
   site: {
     positioning:
       'ason.top 是一个个人博客，记录我在 AI Coding、独立开发与前端技术上的实践笔记、项目复盘与踩坑记录。所有内容来自真实的项目经验与动手实验，不搬运、不灌水。',
