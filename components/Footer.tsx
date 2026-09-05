@@ -52,7 +52,16 @@ export default function Footer() {
               >
                 OpenCode
               </Link>
-              、CodeBuddy 等——这个网站就是这样搭建起来的。
+              、{' '}
+              <Link
+                href="https://www.workbuddy.cn/events/invite?inviteCode=zy3wnbjen2n4k20c"
+                target="_blank"
+                rel="sponsored noopener noreferrer"
+                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+              >
+                CodeBuddy
+              </Link>{' '}
+              等——这个网站就是这样搭建起来的。
             </p>
           </div>
           <div className="flex items-center gap-5">
