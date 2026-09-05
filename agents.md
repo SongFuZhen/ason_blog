@@ -40,6 +40,18 @@ If a local page shows raw MDX: stop the dev server, delete `.contentlayer` and `
 - Images in MDX without explicit `width`/`height` fall back to a native `<img>` in `components/mdx/ProseImage.tsx` (so they bypass `next/image` remote-pattern restrictions and won't 404 on domain config).
 - **Live-site "md 显示不对" is usually a stale CSS cache, NOT a code bug.** If `curl` shows the `prose` wrapper class in the HTML and `prose`/`tw-prose-body` rules exist in the deployed CSS, the server output is correct — the user is almost certainly seeing a cached old CSS (browser, or Vercel edge). Tell them to hard-refresh (Ctrl/Cmd+Shift+R) and re-check before touching any code. This is the #1 false alarm for "渲染不对" reports on ason.top.
 
+## Pre-push SEO checklist (MANDATORY before any push)
+
+Before running `git push` (whether the user says "push" or asks to commit & push), always run through this SEO check for every blog post included in the push. SEO here is template-automated, so this is a **verification** pass, not manual authoring — most items are auto-derived from frontmatter.
+
+1. **Frontmatter complete** for each new/changed post in `data/blog/**`: `title`, `date`, `tags`, `categories`, `authors`, `summary` present. Missing `summary` → no meta description / OG description.
+2. **No `draft: true`** on posts intended to go live (sitemap + prod build filter drafts out).
+3. **OG / share image**: if you want a post-specific share card, the post needs an `images` field; otherwise it falls back to `siteMetadata.socialBanner` (acceptable, but flag it).
+4. **Sitemap coverage**: confirm `app/sitemap.ts` will include the post — it auto-maps `allBlogs` (non-draft), so a correctly-compiled post is included. If Contentlayer didn't compile (see "Local dev / build" above), the post is missing from `allBlogs` and silently absent from sitemap + metadata.
+5. **Title stability**: Giscus maps discussions by `<title>` (`data-mapping="title"`). Renaming a live post's `title` orphans its comments — only flag if the post is already published.
+
+If a post fails any check, fix it (or tell the user) **before** pushing. Confirm to the user that SEO was verified as part of the push.
+
 ## Comments (Giscus)
 
 Comments are powered by **Giscus** (GitHub Discussions backend). Notes for maintainers:
