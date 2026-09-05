@@ -21,7 +21,7 @@ export default async function Page() {
   const topTags = sortedTags.slice(0, 3)
 
   return (
-    <article className="mx-auto min-h-screen max-w-3xl pt-16 pb-16">
+    <article className="mx-auto min-h-screen max-w-4xl pt-16 pb-16 print:max-w-[210mm]">
       <TerminalWindow title="ls -la ~/tags" shell="zsh" promptTitle className="animate-hero-reveal">
         {/* hero */}
         <div>

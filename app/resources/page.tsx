@@ -74,7 +74,7 @@ export default function Resources() {
   let runIndex = 0
 
   return (
-    <article className="mx-auto min-h-screen max-w-3xl pt-16 pb-16">
+    <article className="mx-auto min-h-screen max-w-4xl pt-16 pb-16 print:max-w-[210mm]">
       <TerminalWindow title="ls -la ~/resources" shell="zsh" className="animate-hero-reveal">
         {/* summary line */}
         <div className="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">

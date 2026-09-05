@@ -146,7 +146,7 @@ export default function ListLayoutWithTags({
   })()
 
   return (
-    <article className="mx-auto min-h-screen max-w-3xl pt-16 pb-16">
+    <article className="mx-auto min-h-screen max-w-4xl pt-16 pb-16 print:max-w-[210mm]">
       <TerminalWindow
         title={
           isTag

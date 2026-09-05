@@ -13,7 +13,7 @@ const skillLines = [
 
 export function AboutPage() {
   return (
-    <article className="mx-auto min-h-screen max-w-3xl px-6 pt-16 pb-16 sm:px-10">
+    <article className="mx-auto min-h-screen max-w-4xl px-6 pt-16 pb-16 sm:px-10 print:max-w-[210mm]">
       <TerminalWindow title="~/about" shell="less" className="animate-hero-reveal">
         <div className="text-gray-400 dark:text-gray-500">
           <Prompt>cat ~/about.md</Prompt>

@@ -16,7 +16,7 @@ export default async function Page() {
   const totalPosts = categoryKeys.reduce((total, cat) => total + categoryCounts[cat], 0)
 
   return (
-    <article className="mx-auto min-h-screen max-w-3xl pt-16 pb-16">
+    <article className="mx-auto min-h-screen max-w-4xl pt-16 pb-16 print:max-w-[210mm]">
       <TerminalWindow
         title="ls -la ~/categories"
         shell="zsh"
