@@ -118,6 +118,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             crossOrigin="anonymous"
             strategy="afterInteractive"
           />
+          {/* Cloudflare Web Analytics */}
+          <Script
+            id="cloudflare-web-analytics"
+            type="module"
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: '04000ba9db054013a748735fe3a8071d' })}
+            strategy="afterInteractive"
+          />
           <SectionContainer>
             <Suspense fallback={null}>
               <ProgressBar />
