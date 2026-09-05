@@ -3,10 +3,10 @@
   <rect x="80" y="76" width="1040" height="478" rx="28" fill="white" stroke="#DDE5EE" stroke-width="2"/>
   <path d="M170 338C170 256.262 236.262 190 318 190C386.448 190 444.063 236.479 460.82 299.737C490.483 308.942 513 336.46 513 370.25C513 411.257 479.757 444.5 438.75 444.5H225.75C174.929 444.5 133.5 403.071 133.5 352.25C133.5 303.445 171.494 263.519 219.592 260.394" stroke="#1F2937" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M345 116C320 145 307.5 172 307.5 197C307.5 230.137 334.363 257 367.5 257C392.5 257 419.5 244.5 448.5 219.5C423.5 219.5 403.333 211.833 388 196.5C372.667 181.167 365 161 365 136C358.667 129.667 352 123 345 116Z" fill="#1F2937"/>
-  <text x="570" y="262" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="700">Skyplume Blog</text>
+  <text x="570" y="262" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="700">ASoN Blog</text>
   <text x="574" y="326" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="28">
-    <tspan x="574" dy="0">A clean Next.js blog template</tspan>
-    <tspan x="574" dy="38">for MDX publishing.</tspan>
+    <tspan x="574" dy="0">Notes on AI Coding</tspan>
+    <tspan x="574" dy="38">&amp; Indie Development</tspan>
   </text>
   <text x="574" y="432" fill="#6B7280" font-family="Arial, Helvetica, sans-serif" font-size="22">Next.js · MDX · Tailwind CSS · RSS · Search</text>
 </svg>

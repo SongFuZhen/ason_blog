@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
   title: {
     default: siteMetadata.title,
-    template: `%s | ${siteMetadata.title}`,
+    template: `%s | ASoN 的博客`,
   },
   description: siteMetadata.description,
   openGraph: {
