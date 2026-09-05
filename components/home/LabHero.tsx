@@ -5,7 +5,7 @@ import Link from '@/components/Link'
 import { profile } from '@/data/profile'
 import projectsData from '@/data/projectsData'
 
-const MAX_DISPLAY = 5
+const MAX_DISPLAY = 10
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 function shortDate(iso: string): string {
