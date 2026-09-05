@@ -59,6 +59,9 @@ const output = process.env.EXPORT ? 'export' : undefined
 const basePath = process.env.BASE_PATH || undefined
 const unoptimized = process.env.UNOPTIMIZED ? true : undefined
 
+// 旧（中文）URL -> 新（英文 key）URL 的 301 跳转表，由 scripts/generate-redirects.mjs 生成
+const legacyRedirects = require('./lib/redirects.generated.cjs')
+
 /**
  * @type {import('next/dist/next-server/server/config').NextConfig}
  **/
@@ -70,6 +73,9 @@ module.exports = () => {
     reactStrictMode: true,
     trailingSlash: false,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+    async redirects() {
+      return legacyRedirects
+    },
     images: {
       remotePatterns: [
         {

@@ -1,7 +1,6 @@
 import { defineDocumentType, ComputedFields, makeSource } from 'contentlayer2/source-files'
 import { writeFileSync, readdirSync } from 'fs'
 import readingTime from 'reading-time'
-import { slug } from 'github-slugger'
 import path from 'path'
 import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic'
 // Remark packages
@@ -24,6 +23,7 @@ import rehypeCitation from 'rehype-citation'
 import rehypePrismPlus from 'rehype-prism-plus'
 import rehypePresetMinify from 'rehype-preset-minify'
 import siteMetadata from './data/siteMetadata'
+import { tagKey } from './data/tags'
 import { allCoreContent, sortPosts } from './lib/content/core.mjs'
 import prettier from 'prettier'
 
@@ -43,15 +43,27 @@ const icon = fromHtmlIsomorphic(
   { fragment: true }
 )
 
+// 取 data/blog 下的分类目录名（已是英文 key），作为文章 URL 的分类段。
+function categoryKeyOf(doc: { _raw: { flattenedPath: string } }): string {
+  return doc._raw.flattenedPath.split('/').slice(1, -1).join('/')
+}
+
 const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
+  // 分类目录名（英文 key），如 products / ai
+  categoryKey: {
+    type: 'string',
+    resolve: (doc) => categoryKeyOf(doc),
+  },
+  // 文章 URL 的路径段：<categoryKey>/<key>，如 products/tool-station
   slug: {
     type: 'string',
-    resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
+    resolve: (doc) => `${categoryKeyOf(doc)}/${doc.key}`,
   },
+  // 完整内部路径：blog/<categoryKey>/<key>
   path: {
     type: 'string',
-    resolve: (doc) => doc._raw.flattenedPath,
+    resolve: (doc) => `blog/${categoryKeyOf(doc)}/${doc.key}`,
   },
   filePath: {
     type: 'string',
@@ -68,7 +80,7 @@ async function createTagCount(allBlogs) {
   allBlogs.forEach((file) => {
     if (file.tags && (!isProduction || file.draft !== true)) {
       file.tags.forEach((tag) => {
-        const formattedTag = slug(tag)
+        const formattedTag = tagKey(tag)
         if (formattedTag in tagCount) {
           tagCount[formattedTag] += 1
         } else {
@@ -148,6 +160,8 @@ export const Blog = defineDocumentType(() => ({
     date: { type: 'date', required: true },
     tags: { type: 'list', of: { type: 'string' }, default: [] },
     categories: { type: 'list', of: { type: 'string' }, default: [] },
+    // 英文唯一键，作为 URL 的最终段，如 tool-station
+    key: { type: 'string', required: true },
     lastmod: { type: 'date' },
     draft: { type: 'boolean' },
     summary: { type: 'string' },
@@ -170,7 +184,7 @@ export const Blog = defineDocumentType(() => ({
         const logoUrl = siteMetadata.socialBanner.startsWith('http')
           ? siteMetadata.socialBanner
           : `${siteMetadata.siteUrl}${siteMetadata.socialBanner}`
-        const url = `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`
+        const url = `${siteMetadata.siteUrl}/blog/${categoryKeyOf(doc)}/${doc.key}`
         return {
           '@context': 'https://schema.org',
           '@type': 'BlogPosting',

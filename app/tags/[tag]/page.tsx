@@ -1,9 +1,9 @@
-import { slug } from 'github-slugger'
 import { allCoreContent, sortPosts } from '@/lib/content/core.mjs'
 import siteMetadata from '@/data/siteMetadata'
 import ListLayout from '@/layouts/ListLayoutWithTags'
 import { allBlogs } from 'contentlayer/generated'
 import tagData from 'app/tag-data.json'
+import { tagKey, tagName } from '@/data/tags'
 import { genPageMetadata } from 'app/seo'
 import { Metadata } from 'next'
 
@@ -15,8 +15,8 @@ export async function generateMetadata(props: {
   const params = await props.params
   const tag = decodeURI(params.tag)
   return genPageMetadata({
-    title: tag,
-    description: `${siteMetadata.title} ${tag} tagged content`,
+    title: tagName(tag),
+    description: `${siteMetadata.title} ${tagName(tag)} tagged content`,
     alternates: {
       canonical: './',
       types: {
@@ -38,7 +38,7 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
   const params = await props.params
   const tag = decodeURI(params.tag)
   const filteredPosts = allCoreContent(
-    sortPosts(allBlogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag)))
+    sortPosts(allBlogs.filter((post) => post.tags && post.tags.map((t) => tagKey(t)).includes(tag)))
   )
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
   const initialDisplayPosts = filteredPosts.slice(0, POSTS_PER_PAGE)
@@ -53,7 +53,7 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
       variant="tag"
-      tagSlug={tag}
+      tagSlug={tagName(tag)}
     />
   )
 }

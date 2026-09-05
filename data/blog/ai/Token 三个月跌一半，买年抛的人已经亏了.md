@@ -1,4 +1,5 @@
 ---
+key: 'token-drop-annual-pass'
 title: Token 三个月跌一半，买年抛的人已经亏了
 date: 2026-09-05
 tags: [AI, Token, 年抛]

@@ -17,7 +17,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, next, prev, children }: LayoutProps) {
-  const { path, slug, date, title } = content
+  const { date, title } = content
 
   return (
     <SectionContainer>
@@ -45,7 +45,7 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
             </div>
             {siteMetadata.comments && (
               <div className="pt-8 pb-8 text-center text-gray-700 dark:text-gray-300" id="comment">
-                <Comments slug={slug} title={title} />
+                <Comments />
               </div>
             )}
             <footer>

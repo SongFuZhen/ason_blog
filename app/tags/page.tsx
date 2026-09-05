@@ -1,6 +1,6 @@
 import Link from '@/components/Link'
-import { slug } from 'github-slugger'
 import tagData from 'app/tag-data.json'
+import { tagName } from '@/data/tags'
 import { allCoreContent } from '@/lib/content/core.mjs'
 import { allBlogs } from 'contentlayer/generated'
 import { genPageMetadata } from 'app/seo'
@@ -48,14 +48,14 @@ export default async function Page() {
           {sortedTags.map((tag, idx) => (
             <li key={tag}>
               <Link
-                href={`/tags/${slug(tag)}`}
+                href={`/tags/${tag}`}
                 className="group grid grid-cols-[auto_1fr] items-baseline gap-x-3"
               >
                 <span className="shrink-0 text-gray-400 dark:text-gray-500">
                   dr-xr-xr-x {String(idx + 1).padStart(2, '0')}
                 </span>
                 <span className="text-primary-600 dark:text-primary-400 truncate underline underline-offset-2 transition-opacity group-hover:opacity-80">
-                  {tag}/
+                  {tagName(tag)}/
                   <span className="ml-2 text-gray-400 no-underline dark:text-gray-500">
                     {tagCounts[tag]} 篇
                   </span>
@@ -72,10 +72,10 @@ export default async function Page() {
             {topTags.map((tag) => (
               <Link
                 key={tag}
-                href={`/tags/${slug(tag)}`}
+                href={`/tags/${tag}`}
                 className="bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300 ml-1 rounded px-2 py-0.5"
               >
-                {tag}/
+                {tagName(tag)}/
               </Link>
             ))}
           </div>

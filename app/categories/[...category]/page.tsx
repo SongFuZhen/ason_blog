@@ -2,6 +2,7 @@ import ListLayout from '@/layouts/ListLayoutWithTags'
 import { allCoreContent, sortPosts } from '@/lib/content/core.mjs'
 import { allBlogs } from 'contentlayer/generated'
 import categoryData from 'app/category-data.json'
+import { categoryName } from '@/data/categories'
 import { genPageMetadata } from 'app/seo'
 import { Metadata } from 'next'
 
@@ -44,7 +45,7 @@ export default async function CategoryPage(props: { params: Promise<CategoryPara
       posts={filteredPosts}
       initialDisplayPosts={filteredPosts}
       variant="category"
-      categorySlug={categorySlug}
+      categorySlug={categoryName(categorySlug)}
     />
   )
 }

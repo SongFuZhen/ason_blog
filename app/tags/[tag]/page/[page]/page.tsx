@@ -1,8 +1,8 @@
-import { slug } from 'github-slugger'
 import { allCoreContent, sortPosts } from '@/lib/content/core.mjs'
 import ListLayout from '@/layouts/ListLayoutWithTags'
 import { allBlogs } from 'contentlayer/generated'
 import tagData from 'app/tag-data.json'
+import { tagKey, tagName } from '@/data/tags'
 import { notFound } from 'next/navigation'
 
 const POSTS_PER_PAGE = 5
@@ -24,7 +24,7 @@ export default async function TagPage(props: { params: Promise<{ tag: string; pa
   const tag = decodeURI(params.tag)
   const pageNumber = parseInt(params.page)
   const filteredPosts = allCoreContent(
-    sortPosts(allBlogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag)))
+    sortPosts(allBlogs.filter((post) => post.tags && post.tags.map((t) => tagKey(t)).includes(tag)))
   )
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
 
@@ -47,7 +47,7 @@ export default async function TagPage(props: { params: Promise<{ tag: string; pa
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
       variant="tag"
-      tagSlug={tag}
+      tagSlug={tagName(tag)}
     />
   )
 }

@@ -1,7 +1,6 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { slug } from 'github-slugger'
 import { useState } from 'react'
 import type { CoreContent } from '@/lib/content/types'
 import type { Blog } from 'contentlayer/generated'
@@ -10,6 +9,8 @@ import ExternalPosts from '@/components/ExternalPosts'
 import TerminalWindow from '@/components/home/TerminalWindow'
 import tagData from 'app/tag-data.json'
 import categoryData from 'app/category-data.json'
+import { categoryName } from '@/data/categories'
+import { tagName } from '@/data/tags'
 import { termDate } from '@/lib/utils'
 
 interface PaginationProps {
@@ -140,8 +141,8 @@ export default function ListLayoutWithTags({
       if (cat && map.has(cat)) map.get(cat)!.push(post)
       else uncategorized.push(post)
     })
-    const result = categoryKeys.map((c) => ({ name: c, posts: map.get(c)! }))
-    if (uncategorized.length) result.push({ name: '未分类', posts: uncategorized })
+    const result = categoryKeys.map((c) => ({ name: categoryName(c), key: c, posts: map.get(c)! }))
+    if (uncategorized.length) result.push({ name: '未分类', key: '', posts: uncategorized })
     return result
   })()
 
@@ -245,7 +246,7 @@ export default function ListLayoutWithTags({
                       </span>
                     </button>
                     <Link
-                      href={`/categories/${encodeURI(group.name)}`}
+                      href={`/categories/${encodeURI(group.key)}`}
                       className="text-[10px] text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                     >
                       →
@@ -287,18 +288,18 @@ export default function ListLayoutWithTags({
             <div className="text-gray-400 dark:text-gray-500">tags {sortedTags.length}个</div>
             <div className="mt-2 flex flex-wrap">
               {sortedTags.map((t) => {
-                const active = decodeURI(pathname.split('/tags/')[1] ?? '') === slug(t)
+                const active = decodeURI(pathname.split('/tags/')[1] ?? '') === t
                 return (
                   <Link
                     key={t}
-                    href={`/tags/${slug(t)}`}
+                    href={`/tags/${t}`}
                     className={
                       active
                         ? 'bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300 mt-1 ml-1 rounded px-2 py-0.5'
                         : 'mt-1 ml-1 rounded px-2 py-0.5 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
                     }
                   >
-                    #{t}
+                    #{tagName(t)}
                   </Link>
                 )
               })}

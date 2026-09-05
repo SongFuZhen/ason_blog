@@ -100,7 +100,7 @@ export default function Footer() {
           <div className="text-gray-400 dark:text-gray-500">~/scan-qrcode</div>
           <div className="flex gap-4">
             <Link
-              href="/blog/产品/陇中乡音词典"
+              href="/blog/products/long-dialect-dict"
               className="block flex-1 text-center transition-colors"
             >
               <div className="text-xs font-medium text-gray-800 dark:text-gray-200">

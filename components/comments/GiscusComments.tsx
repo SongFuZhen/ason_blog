@@ -1,12 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTheme } from 'next-themes'
-
-type GiscusCommentsProps = {
-  slug: string
-  title?: string
-}
 
 function getGiscusConfig() {
   const repo = process.env.NEXT_PUBLIC_GISCUS_REPO
@@ -39,18 +34,18 @@ function sendGiscusTheme(theme: string) {
   iframe.contentWindow.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app')
 }
 
-export function GiscusComments(_props: GiscusCommentsProps) {
+export function GiscusComments() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { repo, repoId, category, categoryId, missing } = getGiscusConfig()
   const { resolvedTheme } = useTheme()
   const theme = getGiscusTheme(resolvedTheme)
   const themeRef = useRef(theme)
-  themeRef.current = theme
 
-  // Sync theme to Giscus whenever resolvedTheme changes
+  // Keep themeRef in sync and push the new theme to Giscus whenever it changes.
   useEffect(() => {
-    sendGiscusTheme(themeRef.current)
-  }, [resolvedTheme])
+    themeRef.current = theme
+    sendGiscusTheme(theme)
+  }, [theme])
 
   // Load Giscus script
   useEffect(() => {
@@ -65,7 +60,7 @@ export function GiscusComments(_props: GiscusCommentsProps) {
     script.setAttribute('data-repo-id', repoId!)
     script.setAttribute('data-category', category!)
     script.setAttribute('data-category-id', categoryId!)
-    script.setAttribute('data-mapping', 'title')
+    script.setAttribute('data-mapping', 'pathname')
     script.setAttribute('data-strict', '0')
     script.setAttribute('data-reactions-enabled', '1')
     script.setAttribute('data-emit-metadata', '0')

@@ -1,7 +1,6 @@
 import 'css/prism.css'
 import 'katex/dist/katex.css'
 
-import PageTitle from '@/components/PageTitle'
 import { components } from '@/components/MDXComponents'
 import { MDXLayoutRenderer } from '@/lib/mdx/mdx-layout-renderer'
 import { sortPosts, coreContent, allCoreContent } from '@/lib/content/core.mjs'
@@ -12,6 +11,7 @@ import PostLayout from '@/layouts/PostLayout'
 import PostBanner from '@/layouts/PostBanner'
 import { Metadata } from 'next'
 import siteMetadata from '@/data/siteMetadata'
+import { categoryName } from '@/data/categories'
 import { notFound } from 'next/navigation'
 
 const defaultLayout = 'PostLayout'
@@ -106,7 +106,8 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
     }
   })
 
-  const category = [...(post.categories ?? [])][0]
+  const categoryKey = post.categoryKey
+  const category = categoryKey ? categoryName(categoryKey) : ''
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -117,12 +118,12 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         name: siteMetadata.title,
         item: siteMetadata.siteUrl,
       },
-      category
+      categoryKey
         ? {
             '@type': 'ListItem',
             position: 2,
             name: category,
-            item: encodeURI(`${siteMetadata.siteUrl}/categories/${category}`),
+            item: encodeURI(`${siteMetadata.siteUrl}/categories/${categoryKey}`),
           }
         : {
             '@type': 'ListItem',

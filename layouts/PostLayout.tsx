@@ -5,8 +5,9 @@ import Comments from '@/components/Comments'
 import Link from '@/components/Link'
 import SectionContainer from '@/components/SectionContainer'
 import TerminalWindow, { Prompt } from '@/components/home/TerminalWindow'
-import { slug } from 'github-slugger'
 import siteMetadata from '@/data/siteMetadata'
+import { categoryName } from '@/data/categories'
+import { tagKey, tagName } from '@/data/tags'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import PrintButton from '@/components/PrintButton'
 
@@ -25,9 +26,10 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { path, slug: postSlug, date, title, tags, filePath } = content
+  const { path, slug: postSlug, date, title, tags, filePath, categoryKey } = content
   const basePath = path.split('/')[0]
   const folder = postSlug.includes('/') ? postSlug.split('/').slice(0, -1).join('/') : ''
+  const folderName = categoryKey ? categoryName(categoryKey) : folder
   const fileName = filePath?.replace(/^blog\//, '') ?? `${postSlug}.mdx`
   const authorNames = authorDetails.map((author) => author.name).filter(Boolean)
   const authorLabel = authorNames.length > 0 ? authorNames.join('、') : 'ason'
@@ -55,7 +57,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 href={`/categories/${encodeURI(folder)}`}
                 className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 inline-block font-mono text-lg font-semibold transition-colors"
               >
-                {folder}/
+                {folderName}/
               </Link>
             )}
             <h1 className="font-mono text-xl leading-snug font-semibold text-gray-900 sm:text-2xl dark:text-gray-100">
@@ -75,10 +77,10 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 {tags.map((tag) => (
                   <Link
                     key={tag}
-                    href={`/tags/${slug(tag)}`}
+                    href={`/tags/${tagKey(tag)}`}
                     className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
                   >
-                    #{tag}
+                    #{tagName(tag)}
                   </Link>
                 ))}
               </div>
@@ -131,7 +133,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               <div className="text-gray-400 dark:text-gray-500">
                 <Prompt>cat comments</Prompt>
               </div>
-              <Comments slug={postSlug} title={title} />
+              <Comments />
             </div>
           )}
 

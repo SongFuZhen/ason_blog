@@ -1,4 +1,5 @@
 ---
+key: 'juejin-vibelaunch'
 title: 参加了掘金的 VibeLaunch 比赛
 date: 2026-08-21
 tags: [掘金, VibeLaunch, 作品]

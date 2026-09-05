@@ -146,7 +146,7 @@ export function AboutPage() {
           <div className="text-gray-400 dark:text-gray-500">
             <Prompt>cat comments</Prompt>
           </div>
-          <Comments slug="about" title="关于" />
+          <Comments />
         </div>
 
         <div className="flex items-center justify-between border-t border-gray-200 pt-4 text-xs dark:border-gray-800">

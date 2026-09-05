@@ -1,4 +1,5 @@
 ---
+key: 'ai-journey'
 title: '`独立开发者` 的心路历程'
 date: 2026-08-19
 tags: [独立开发者, 经历, AI Coding, Harness, Superpowers]

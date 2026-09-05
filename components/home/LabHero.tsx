@@ -5,6 +5,7 @@ import Link from '@/components/Link'
 import { Prompt } from '@/components/home/TerminalWindow'
 import { profile } from '@/data/profile'
 import projectsData from '@/data/projectsData'
+import { categoryKeyByName } from '@/data/categories'
 
 const MAX_DISPLAY = 10
 
@@ -177,15 +178,18 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
                         <span className="text-xs text-gray-400 dark:text-gray-500">
                           {post.date?.slice(0, 10)}
                         </span>
-                        {[...(post.categories ?? [])].map((category) => (
-                          <Link
-                            key={category}
-                            href={`/categories/${encodeURI(category)}`}
-                            className="hover:text-primary-600 dark:hover:text-primary-400 text-xs text-gray-400 transition-colors dark:text-gray-500"
-                          >
-                            #{category}
-                          </Link>
-                        ))}
+                        {[...(post.categories ?? [])].map((category) => {
+                          const catKey = categoryKeyByName(category) ?? category
+                          return (
+                            <Link
+                              key={category}
+                              href={`/categories/${encodeURI(catKey)}`}
+                              className="hover:text-primary-600 dark:hover:text-primary-400 text-xs text-gray-400 transition-colors dark:text-gray-500"
+                            >
+                              #{category}
+                            </Link>
+                          )
+                        })}
                       </div>
                       {post.summary && (
                         <p className="mt-1 text-xs leading-6 text-gray-500 dark:text-gray-400">
@@ -202,19 +206,22 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
                   <Prompt>ls ~/categories/</Prompt>
                 </div>
                 <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
-                  {[...categoryCounts.entries()].map(([category, count]) => (
-                    <li key={category}>
-                      <Link
-                        href={`/categories/${encodeURI(category)}`}
-                        className="hover:text-primary-600 dark:hover:text-primary-400 text-gray-700 transition-colors dark:text-gray-300"
-                      >
-                        {category}/
-                      </Link>
-                      <span className="ml-1 text-xs text-gray-400 dark:text-gray-500">
-                        {count} 篇
-                      </span>
-                    </li>
-                  ))}
+                  {[...categoryCounts.entries()].map(([category, count]) => {
+                    const catKey = categoryKeyByName(category) ?? category
+                    return (
+                      <li key={category}>
+                        <Link
+                          href={`/categories/${encodeURI(catKey)}`}
+                          className="hover:text-primary-600 dark:hover:text-primary-400 text-gray-700 transition-colors dark:text-gray-300"
+                        >
+                          {category}/
+                        </Link>
+                        <span className="ml-1 text-xs text-gray-400 dark:text-gray-500">
+                          {count} 篇
+                        </span>
+                      </li>
+                    )
+                  })}
                 </ul>
               </div>
             </div>

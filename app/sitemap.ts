@@ -1,9 +1,9 @@
 import { MetadataRoute } from 'next'
-import { slug } from 'github-slugger'
 import { allBlogs } from 'contentlayer/generated'
 import siteMetadata from '@/data/siteMetadata'
 import tagData from 'app/tag-data.json'
 import categoryData from 'app/category-data.json'
+import { tagKey } from '@/data/tags'
 
 export const dynamic = 'force-static'
 
@@ -27,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .flatMap(([tag, count]) => {
       const lastModified =
         allBlogs
-          .filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag))
+          .filter((post) => post.tags && post.tags.map((t) => tagKey(t)).includes(tag))
           .map((post) => post.lastmod || post.date)
           .sort()
           .at(-1) ?? today()

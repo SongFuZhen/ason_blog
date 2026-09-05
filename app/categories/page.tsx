@@ -1,5 +1,6 @@
 import Link from '@/components/Link'
 import categoryData from 'app/category-data.json'
+import { categoryName } from '@/data/categories'
 import { genPageMetadata } from 'app/seo'
 import TerminalWindow, { Prompt } from '@/components/home/TerminalWindow'
 
@@ -49,7 +50,9 @@ export default async function Page() {
           {categoryKeys.map((cat, idx) => {
             const depth = cat.split('/').length - 1
             const label =
-              depth === 0 ? `${cat}/` : `${'  '.repeat(depth)}↳ ${cat.split('/').pop()}/`
+              depth === 0
+                ? `${categoryName(cat)}/`
+                : `${'  '.repeat(depth)}↳ ${categoryName(cat.split('/').pop()!)}/`
             return (
               <li key={cat} style={{ paddingLeft: `${depth * 1.25}rem` }}>
                 <Link
