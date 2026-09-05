@@ -1,6 +1,6 @@
 ---
 key: 'glm-7day'
-title: GLM 模型 7 天体验卡
+title: GLM 7 天体验卡：额度与可白嫖的永久免费模型
 date: 2026-08-28
 tags: [AI, 免费模型, 智谱, GLM]
 categories: [AI]

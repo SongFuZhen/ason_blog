@@ -48,7 +48,8 @@ Before running `git push` (whether the user says "push" or asks to commit & push
 2. **No `draft: true`** on posts intended to go live (sitemap + prod build filter drafts out).
 3. **OG / share image**: if you want a post-specific share card, the post needs an `images` field; otherwise it falls back to `siteMetadata.socialBanner` (acceptable, but flag it).
 4. **Sitemap coverage**: confirm `app/sitemap.ts` will include the post — it auto-maps `allBlogs` (non-draft), so a correctly-compiled post is included. If Contentlayer didn't compile (see "Local dev / build" above), the post is missing from `allBlogs` and silently absent from sitemap + metadata.
-5. **Title stability**: Giscus maps discussions by `<title>` (`data-mapping="title"`). Renaming a live post's `title` orphans its comments — only flag if the post is already published.
+5. **Title tag length / descriptiveness**: the live `<title>` is `post.title | ASoN 的博客｜独立开发者技术笔记` (site suffix ≈ 21 display chars). Post titles must be **descriptive, not too short** — they should accurately summarize the page so search engines and users get enough context (better CTR / ranking; the user's stated SEO/GEO rule). For Chinese, judge by display width (CJK ≈ 2 Latin chars), not raw glyph count — terse titles like `墨帖` / `临盘` / `一些思考` fail this check. Extend short titles (e.g. `墨帖` → `墨帖：免费在线硬笔书法字帖生成器`).
+6. **Title stability vs comments**: Giscus maps discussions by **URL pathname** (`data-mapping="pathname"` in `components/comments/GiscusComments.tsx`), NOT by `<title>`. So renaming a post's `title` does **not** orphan its comments. (Earlier docs claimed title-mapping — that is stale; the code uses pathname.) Keep titles stable for UX/bookmarks, but don't block a rename over comment loss.
 
 If a post fails any check, fix it (or tell the user) **before** pushing. Confirm to the user that SEO was verified as part of the push.
 
@@ -58,7 +59,7 @@ Comments are powered by **Giscus** (GitHub Discussions backend). Notes for maint
 
 - **Enabled via** `data/siteMetadata.js` → `comments.provider: 'giscus'`. The `Comments` component renders `null` unless provider is exactly `'giscus'`.
 - **Config source**: environment variables `NEXT_PUBLIC_GISCUS_REPO` / `_REPOSITORY_ID` / `_CATEGORY` / `_CATEGORY_ID` (see `.env.example`). `.env` is gitignored — these must also be set in **Vercel → Settings → Environment Variables** for the live build (Vercel does not read local `.env`).
-- **Mapping**: `data-mapping="title"` — discussions are keyed by the page `<title>` (not the URL pathname). GitHub Discussions titles become the post title. Keep post titles stable; renaming a post starts a fresh discussion. (Comments were empty at switch time, so no data was lost.)
+- **Mapping**: `data-mapping="pathname"` (set in `components/comments/GiscusComments.tsx`) — discussions are keyed by the page URL pathname, **not** the `<title>`. So renaming a post's `title` does NOT orphan its comments. (Earlier notes claiming title-mapping are stale.) Keep titles stable for UX/bookmarks, but comment loss is not a blocker for renames.
 - **UI language**: `data-lang="zh-CN"` (Chinese UI, matching the rest of the site).
 - **Theme**: custom terminal-style themes in `public/giscus-terminal-dark.css` / `public/giscus-terminal-light.css`, wired in `components/comments/GiscusComments.tsx` via a `window.location.origin`-based `data-theme` URL (works on both localhost and the live domain) and switched on light/dark via `postMessage`.
 - **Auto-load**: `components/Comments.tsx` renders `GiscusComments` directly (no click-to-load button) — the Giscus script is injected client-side, so it never appears in server-rendered / `curl` HTML (only the "not configured" fallback message would).
