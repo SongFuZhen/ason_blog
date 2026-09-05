@@ -33,11 +33,11 @@ export function AboutPage() {
           </div>
         </div>
 
-        <p className="text-sm leading-7 text-gray-700 dark:text-gray-300">{profile.intro}</p>
-
         <blockquote className="border-l-2 border-gray-300 pl-3 text-xs leading-6 text-gray-500 dark:border-gray-700 dark:text-gray-400">
           {profile.quote}
         </blockquote>
+
+        <p className="text-sm leading-7 text-gray-700 dark:text-gray-300">{profile.intro}</p>
 
         {profile.interests.length > 0 && (
           <p className="text-xs text-gray-500 dark:text-gray-400">
