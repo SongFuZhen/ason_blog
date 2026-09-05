@@ -28,8 +28,24 @@ export const profile = {
     feishuNote: '扫码添加我的飞书，交流前端、AI Coding 或合作都欢迎。',
   },
   donate: {
-    paypalQrcode: '/static/images/paypal-qrcode.jpg',
-    note: '博客与所有工具完全免费，无需付费。如果你觉得内容有帮助、想支持服务器和域名开销，可以通过下面的 PayPal 收款码自愿请我喝杯咖啡，金额随意，不捐也完全不影响任何内容。',
+    qrcodes: [
+      {
+        src: '/static/images/wechat-qrcode.png',
+        label: '微信',
+        alt: '微信赞赏二维码，自愿捐赠支持本站服务器和域名开销',
+      },
+      {
+        src: '/static/images/alipay-qrcode.png',
+        label: '支付宝',
+        alt: '支付宝收款二维码，自愿捐赠支持本站服务器和域名开销',
+      },
+      {
+        src: '/static/images/paypal-qrcode.jpg',
+        label: 'PayPal',
+        alt: 'PayPal 收款二维码，自愿捐赠支持本站服务器和域名开销',
+      },
+    ],
+    note: '博客与所有工具完全免费，无需付费。如果你觉得内容有帮助、想支持服务器和域名开销，可以扫描上方二维码自愿请我喝杯咖啡，金额随意，不捐也完全不影响任何内容。',
   },
   site: {
     positioning:

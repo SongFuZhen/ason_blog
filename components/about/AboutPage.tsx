@@ -117,26 +117,28 @@ export function AboutPage() {
         </div>
 
         <div>
-          <div className="text-gray-400 dark:text-gray-500">
+          <div className="text-center text-gray-400 dark:text-gray-500">
             <Prompt>cat ~/donate</Prompt>
           </div>
-          <div className="mt-2 flex flex-wrap items-start gap-4 text-sm text-gray-700 dark:text-gray-300">
-            <figure className="w-28 text-center">
-              <Image
-                src={profile.donate.paypalQrcode}
-                alt="PayPal 收款二维码，自愿捐赠支持本站服务器开销"
-                width={160}
-                height={160}
-                className="mx-auto h-auto w-28 rounded-sm border border-gray-200 dark:border-gray-800"
-              />
-              <figcaption className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                PayPal · 自愿捐赠
-              </figcaption>
-            </figure>
-            <p className="flex-1 text-xs leading-6 text-gray-500 dark:text-gray-400">
-              {profile.donate.note}
-            </p>
+          <div className="mt-3 flex flex-wrap items-start justify-center gap-6">
+            {profile.donate.qrcodes.map((qr) => (
+              <figure key={qr.src} className="w-28 text-center">
+                <Image
+                  src={qr.src}
+                  alt={qr.alt}
+                  width={160}
+                  height={160}
+                  className="mx-auto h-auto w-28 rounded-sm border border-gray-200 dark:border-gray-800"
+                />
+                <figcaption className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  {qr.label}
+                </figcaption>
+              </figure>
+            ))}
           </div>
+          <p className="mx-auto mt-3 max-w-md text-center text-xs leading-6 text-gray-500 dark:text-gray-400">
+            {profile.donate.note}
+          </p>
         </div>
 
         <div id="comment" className="border-t border-gray-200 pt-4 dark:border-gray-800">
