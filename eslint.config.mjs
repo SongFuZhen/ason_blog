@@ -1,10 +1,10 @@
-import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import globals from 'globals'
 import tsParser from '@typescript-eslint/parser'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
 import { FlatCompat } from '@eslint/eslintrc'
+import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -17,19 +17,14 @@ export default [
     ignores: [],
   },
   js.configs.recommended,
-  ...compat.extends(
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jsx-a11y/recommended',
-    'plugin:prettier/recommended',
-    'next',
-    'next/core-web-vitals'
-  ),
+  // eslint-config-next 16 ships native flat configs; loading it through
+  // FlatCompat.extends('next') crashes ESLint 9 with a circular-structure error.
+  // Spread the flat config directly instead. core-web-vitals already includes
+  // the base `next` config (react, react-hooks, import, jsx-a11y, @next/next
+  // and @typescript-eslint), so no extra @typescript-eslint / jsx-a11y extends.
+  ...nextCoreWebVitals,
+  ...compat.extends('plugin:prettier/recommended'),
   {
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
-    },
-
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -38,8 +33,8 @@ export default [
       },
 
       parser: tsParser,
-      ecmaVersion: 5,
-      sourceType: 'commonjs',
+      ecmaVersion: 'latest',
+      sourceType: 'module',
 
       parserOptions: {
         project: true,
@@ -49,6 +44,7 @@ export default [
 
     rules: {
       'prettier/prettier': 'error',
+      'no-undef': 'off',
       'react/react-in-jsx-scope': 'off',
 
       'jsx-a11y/anchor-is-valid': [
@@ -69,7 +65,13 @@ export default [
   },
   {
     // 配置文件使用 CommonJS（require / module.exports），需允许 require 导入。
-    files: ['next.config.js', 'postcss.config.js', 'prettier.config.js', 'tailwind.config.js', '*.config.cjs'],
+    files: [
+      'next.config.js',
+      'postcss.config.js',
+      'prettier.config.js',
+      'tailwind.config.js',
+      '*.config.cjs',
+    ],
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
     },

@@ -74,7 +74,7 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
                 <div className="text-gray-400 dark:text-gray-500">
                   total {projectsData.length + productPosts.length}
                 </div>
-                <ul className="space-y-1 pt-0.5 font-mono text-xs">
+                <ul className="space-y-1 pt-0.5 font-mono text-sm">
                   {projectsData.map((project) => {
                     // 显示名优先用对应产品文的文章标题（如 画廊 → 灵绘画廊）
                     const linkedPost = posts.find(
@@ -160,13 +160,14 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
 
               <ol className="mt-2 space-y-4">
                 {posts.slice(0, MAX_DISPLAY).map((post, i) => (
-                  <li key={post.slug} className="grid grid-cols-[auto_1fr] gap-x-2 text-sm">
+                  <li key={post.slug} className="grid grid-cols-[auto_auto_1fr] gap-x-2 text-sm">
                     <span className="shrink-0 text-gray-400 dark:text-gray-500">-rw-r--r--</span>
+                    <span className="shrink-0 whitespace-nowrap text-gray-400 dark:text-gray-500">
+                      ason{'\u00A0\u00A0\u00A0'}
+                      {String(i + 1).padStart(2, '0')}.
+                    </span>
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                        <span className="shrink-0 text-gray-400 dark:text-gray-500">
-                          {String(i + 1).padStart(2, '0')}.
-                        </span>
                         <Link
                           href={`/blog/${post.slug}`}
                           className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 underline-offset-2 transition-colors hover:underline"

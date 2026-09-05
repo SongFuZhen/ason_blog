@@ -21,7 +21,7 @@ export function AboutPage() {
 
         <div className="flex items-start gap-4">
           <div className="relative size-14 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-gray-900">
-            <Image src={profile.avatar} alt="" fill className="object-cover" />
+            <Image src={profile.avatar} alt="" fill sizes="56px" className="object-cover" />
           </div>
           <div>
             <h1 className="font-heading text-2xl font-semibold text-gray-900 dark:text-gray-100">
