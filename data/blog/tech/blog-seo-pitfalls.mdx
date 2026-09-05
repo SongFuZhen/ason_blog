@@ -1,0 +1,88 @@
+---
+key: 'blog-seo-pitfalls'
+title: 博客 SEO 踩坑记录
+date: '2026-09-05'
+tags: [SEO, Next.js, Contentlayer, 博客]
+categories: [技术]
+authors: [default]
+summary: 给 ason.top 做了一次全站 SEO 体检。爬取、收录的基础设施是通的，实际踩到的坑有五个：og:image 用 SVG 导致分享卡片空白、sitemap 的 lastmod 每次构建都是当天、title 模板吃掉搜索结果字数、单篇文章的标签页进了 sitemap、以及没接统计就开始优化的顺序错误。
+draft: true
+---
+
+给博客做了一次全站 SEO 体检，线上页面和仓库源码两头看。结论先说：爬取、收录这部分（robots、sitemap、JSON-LD、canonical）是通的，一个都不用改。流量上不去的原因在信号层，下面是实际踩到的坑，全部有源码位置。
+
+### 先接统计，再谈优化
+
+`data/siteMetadata.js`：
+
+```js
+analytics: {},
+```
+
+layout 里写了 umami 的 `dns-prefetch`，统计配置却是空的。意思是：哪篇文章带来了搜索流量、哪些词有曝光没点击、收录率多少，全都不可见。这属于顺序错误，SEO 的每个动作都要靠 Search Console 和统计数据验证，没数据等于闭眼调。正确顺序是先注册 Google Search Console 和 Bing Webmaster Tools（Bing 可以直接导入 GSC 数据），再接一个无 Cookie 的统计（umami 或 Cloudflare Analytics），然后才轮到改代码。
+
+### og:image 不能是 SVG
+
+```js
+socialBanner: `${process.env.BASE_PATH || ''}/static/images/skyplume-card.svg`,
+```
+
+全站默认分享图是 SVG。微信、X、Telegram 的分享卡片解析只认 PNG/JPG，SVG 大多不渲染，分享出去就是一张空白图。`app/blog/[...slug]/page.tsx` 里文章没有 `images` 字段时全部回退到这张图，等于目前大部分文章的分享卡片都是坏的。
+
+修法：做一张 1200×630 的 PNG 放到同路径，重点文章在 frontmatter 单独配 `images`。
+
+### lastmod 每次构建都是今天
+
+`app/sitemap.ts`：
+
+```ts
+const staticRoutes: MetadataRoute.Sitemap = [
+  { url: `${siteUrl}/`, lastModified: today() /* ... */ },
+  // 另外 7 个静态路由同理
+]
+
+function today() {
+  return new Date().toISOString().split('T')[0]
+}
+```
+
+首页、about、contact 这些静态路由的 lastmod 在每次构建时都变成构建当天。页面内容没变，lastmod 却天天更新，搜索引擎对整个 sitemap 的 lastmod 都会降低信任，文章页真实的更新时间也会跟着被无视。修法是静态路由写固定日期，或取内容实际变更时间。
+
+### title 模板吃掉搜索结果字数
+
+`app/layout.tsx`：
+
+```ts
+template: `%s | ${siteMetadata.title}`,
+```
+
+全站 title 是「ASoN 的博客｜独立开发者技术笔记」，19 个字。文章标题加上这个后缀，Google 搜索结果大约显示 30 个汉字，超出的部分截断成省略号。文章标题本身就在 15 字上下，后缀一挂，搜索结果里能看到的信息所剩无几。后缀缩成 `| ASoN` 或者干脆去掉，品牌词在标题前 30 字内出现即可。
+
+### 单篇文章的标签页
+
+sitemap 会为每个 tag 生成页面，只有 1 篇文章的 tag 也生成，分页第二页照常。这类聚合页和文章页内容高度重合，属于薄内容页，进 sitemap 是把抓取配额分给了没有排名价值的页面。修法：tag 下文章数小于 3 的不进 sitemap，权重集中给文章页和分类页。
+
+### Contentlayer 没编译，文章静默消失
+
+这是模板特有的坑。Contentlayer 在 dev/build 时把 MDX 编译进 `contentlayer/generated`，sitemap 从 `allBlogs` 取数据。编译环节挂了（本地 Git Bash 跑 `npm run dev` 会触发），`allBlogs` 就是旧的，新文章不会报任何错，只是同时从 sitemap、RSS、站内列表里消失。线上 Vercel 构建不受影响，所以本地看着丢了文章时，先删 `.contentlayer` 缓存换 PowerShell 重跑，别急着查渲染代码。
+
+### 收录基础设施清单
+
+这部分验证过是好的，列出来防止以后误改：
+
+- robots.txt 声明了 sitemap 地址，97 个 URL 全部带 lastmod
+- 文章页输出 Article 和 BreadcrumbList 两段 JSON-LD
+- canonical、OG、Twitter Card 由 metadataBase + `alternates.canonical: './'` 生成，路径自引用
+- IndexNow 在 postbuild 阶段推送，Bing 侧新文收录不用等
+- `max-snippet: -1`、`max-image-preview: large` 已开，富摘要不被截断
+
+### 外链从哪来
+
+新站域名没有外部信任，内容再对也没位置。能走的路：掘金、知乎发同主题删节版带原文链接；GitHub 项目 README 挂博客；`tools.ason.top` 的工具页在工具类长尾词里拿流量顺便给主站导流；提交到独立开发者导航站。前三个月内链比外链更划算，每篇新文链 2~3 篇相关旧文，成本为零。
+
+### 注意点
+
+- 改 title 模板影响 Giscus：评论按页面 `<title>` 映射 discussion，已发布文章改 title 会丢评论。上线前先确认存量文章，模板改动只影响未来的显示层，实际上 title 由文章标题 + 模板组成，改模板必然变全文 title，这个坑要在动手前想清楚，必要时先备份 discussion 映射。
+- sitemap 里 draft 是被过滤的，草稿不用处理，上线把 `draft: true` 去掉即可。
+- 百度对 Vercel 托管站收录很差，主攻 Google + Bing 就好，验证 meta 已经配了，别花时间在百度站点提交上。
+- 修复顺序：统计 → og:image → title 模板 → lastmod → 薄内容页。统计放第一是因为后面每一步的效果都要靠它验证。
