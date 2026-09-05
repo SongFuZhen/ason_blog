@@ -113,7 +113,7 @@ export default function Footer() {
                 alt="陇中乡音词典小程序二维码"
                 width={160}
                 height={160}
-                className="mx-auto mt-2 h-auto w-20 rounded-sm"
+                className="mx-auto mt-2 h-auto w-16 rounded-sm sm:w-20"
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码体验</div>
             </Link>
@@ -128,7 +128,22 @@ export default function Footer() {
                 alt="ason产品公众号二维码"
                 width={160}
                 height={160}
-                className="mx-auto mt-2 h-auto w-20 rounded-sm"
+                className="mx-auto mt-2 h-auto w-16 rounded-sm sm:w-20"
+              />
+              <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码关注</div>
+            </div>
+            <div className="block flex-1 text-center">
+              <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
+                小红书
+                <br />
+                轻前端
+              </div>
+              <Image
+                src="/static/images/xiaohongshu.jpg"
+                alt="小红书二维码"
+                width={160}
+                height={160}
+                className="mx-auto mt-2 h-auto w-16 rounded-sm sm:w-20"
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码关注</div>
             </div>
@@ -143,7 +158,7 @@ export default function Footer() {
                 alt="闲鱼店铺二维码"
                 width={160}
                 height={160}
-                className="mx-auto mt-2 h-auto w-20 rounded-sm"
+                className="mx-auto mt-2 h-auto w-16 rounded-sm sm:w-20"
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码逛逛</div>
             </div>
