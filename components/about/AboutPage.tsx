@@ -65,7 +65,7 @@ export function AboutPage() {
           </div>
           <ul className="mt-2 space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
             {profile.blogGuide.map((item) => (
-              <li key={item.dir} className="pl-[11ch] indent-[-11ch]">
+              <li key={item.dir} className="pl-[13ch] indent-[-13ch]">
                 <span aria-hidden className="text-gray-400 dark:text-gray-500">
                   drwxr-xr-x{' '}
                 </span>
