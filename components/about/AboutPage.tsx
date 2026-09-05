@@ -63,14 +63,17 @@ export function AboutPage() {
           <div className="text-gray-400 dark:text-gray-500">
             <Prompt>ls ~/blog --guide</Prompt>
           </div>
-          <ol className="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
-            {profile.siteHistory.map((item, i) => (
-              <li key={item} className="flex gap-3">
-                <span className="w-6 shrink-0 text-gray-400 dark:text-gray-500">{i + 1}.</span>
-                <span>{item}</span>
+          <ul className="mt-2 space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
+            {profile.blogGuide.map((item) => (
+              <li key={item.dir} className="flex flex-wrap gap-x-3">
+                <span aria-hidden className="shrink-0 text-gray-400 dark:text-gray-500">
+                  drwxr-xr-x
+                </span>
+                <span className="text-primary-600 dark:text-primary-400 shrink-0">{item.dir}</span>
+                <span className="text-gray-500 dark:text-gray-400">{item.desc}</span>
               </li>
             ))}
-          </ol>
+          </ul>
         </div>
 
         <div>

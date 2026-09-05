@@ -22,7 +22,24 @@ export const profile = {
     content: ['SEO', '0-1全干'],
     deployment: ['Vercel', 'Cloudflare'],
   },
-  siteHistory: ['随便发发牢骚，写写东西'],
+  blogGuide: [
+    {
+      dir: 'ai/',
+      desc: 'AI Coding 实战：CodeBuddy、OpenCode 等免费 AI 模型的真机体验、用量复盘与踩坑记录',
+    },
+    {
+      dir: '产品/',
+      desc: '独立开发复盘：工具站、小程序等小产品从 0 到 1 的设计、开发与运营笔记',
+    },
+    {
+      dir: '技术/',
+      desc: '前端技术笔记：Next.js、Tailwind CSS 与博客 SEO 优化实践',
+    },
+    {
+      dir: '生活/',
+      desc: '生活随笔：养猫日常、读书心得、比赛经历与一些不成熟的思考',
+    },
+  ],
   contact: {
     feishuQrcode: '/static/images/feishu-qrcode.jpg',
     feishuNote: '扫码添加我的飞书，交流前端、AI Coding 或合作都欢迎。',
