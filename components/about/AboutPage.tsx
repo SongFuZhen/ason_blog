@@ -120,13 +120,13 @@ export function AboutPage() {
           </div>
           <div className="mt-3 flex flex-wrap items-start justify-center gap-6">
             {profile.donate.qrcodes.map((qr) => (
-              <figure key={qr.src} className="w-[140px] text-center">
+              <figure key={qr.src} className="text-center">
                 <Image
                   src={qr.src}
                   alt={qr.alt}
                   width={160}
                   height={160}
-                  className="mx-auto h-auto w-[140px] rounded-sm border border-gray-200 dark:border-gray-800"
+                  className={`mx-auto rounded-sm border border-gray-200 dark:border-gray-800 ${qr.imgClass}`}
                 />
                 <figcaption className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   {qr.label}
