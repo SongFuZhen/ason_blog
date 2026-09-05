@@ -40,7 +40,7 @@ export const profile = {
         alt: '支付宝收款二维码，自愿捐赠支持本站服务器和域名开销',
       },
       {
-        src: '/static/images/paypal-qrcode.jpg',
+        src: '/static/images/paypal-qrcode-v2.jpg',
         label: 'PayPal',
         alt: 'PayPal 收款二维码，自愿捐赠支持本站服务器和域名开销',
       },
