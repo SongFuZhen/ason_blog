@@ -1,9 +1,9 @@
 {
-  "ai": 6,
+  "AI": 7,
   "cats": 1,
   "competition": 1,
   "life": 4,
   "products": 5,
   "reading": 1,
-  "tech": 1
+  "tech": 2
 }
