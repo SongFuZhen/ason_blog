@@ -6,6 +6,7 @@ tags: [独立开发者, 经历, AI Coding, Harness, Superpowers]
 categories: [生活]
 authors: [default]
 summary: 使用了半年的 AI 模型有感
+typora-root-url: ..\..\..\public
 ---
 
 　　我不知道你们是怎么定义`独立开发者`的，但是就我的理解来说，我不算传统意义上的`独立开发者`，因为我既没有自己想要开发的产品，也没有全职在做这件事。

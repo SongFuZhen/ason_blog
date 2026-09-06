@@ -6,6 +6,7 @@ tags: [AI, 免费模型, 智谱, GLM]
 categories: [AI]
 authors: [default]
 summary: 领到智谱 GLM 7 天体验卡，顺带聊聊积分额度与可白嫖的永久免费模型
+typora-root-url: ..\..\..\public
 ---
 
 ### `Ox-Alpha`

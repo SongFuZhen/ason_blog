@@ -7,6 +7,7 @@ categories: [技术]
 authors: [default]
 summary: 给 ason.top 做了一次全站 SEO 体检。爬取、收录的基础设施是通的，实际踩到的坑有五个：og:image 用 SVG 导致分享卡片空白、sitemap 的 lastmod 每次构建都是当天、title 模板吃掉搜索结果字数、单篇文章的标签页进了 sitemap、以及没接统计就开始优化的顺序错误。
 draft: true
+typora-root-url: ..\..\..\public
 ---
 
 给博客做了一次全站 SEO 体检，线上页面和仓库源码两头看。结论先说：爬取、收录这部分（robots、sitemap、JSON-LD、canonical）是通的，一个都不用改。流量上不去的原因在信号层，下面是实际踩到的坑，全部有源码位置。

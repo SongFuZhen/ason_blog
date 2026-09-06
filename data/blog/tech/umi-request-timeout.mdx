@@ -6,6 +6,7 @@ tags: [前端, umi-request, fetch, AbortController, 请求超时]
 categories: [技术]
 authors: [default]
 summary: umi-request 的 timeout 只是用 Promise.race 提前 reject，底层 fetch 不会被中断。从源码确认这点，并给出在 request 层统一用 AbortController 接管超时的方案。
+typora-root-url: ..\..\..\public
 ---
 
 线上配了 `timeout: 3000`，3 秒后 `catch` 到 `RequestError(type: 'Timeout')`，但 DevTools 的 Network 面板里那条请求还是 `pending`，一直挂到服务端返回，耗时 12 秒。

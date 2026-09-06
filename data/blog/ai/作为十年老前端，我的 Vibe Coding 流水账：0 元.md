@@ -1,11 +1,12 @@
 ---
+key: 'vibe-coding-0-yuan'
 title: 作为十年老前端，我的 Vibe Coding 流水账：0 元
 date: 2026-09-06
 tags: [AI, 前端, Vibe Coding, 账单, 免费]
 categories: [AI]
 authors: [default]
 summary: 干了十年前端，从搭站到上线，全程没充一分钱：Vercel 免费部署，Neon 免费数据库，AI 补 logo 和文案，Next.js 从 14 升到 16，内存从 2G 降到几百 M。全部投入只有一个 14 块的域名。这篇是流水账，也是白嫖攻略。
-key: 'vibe-coding-0-yuan'
+typora-root-url: ..\..\..\public
 ---
 
 我，一个干了十年前端的人，从今年 5 月份开始，折腾 Vibe Coding 直到今天，一毛钱没充过。
@@ -14,7 +15,11 @@ key: 'vibe-coding-0-yuan'
 
 看过我之前帖子的人可能也知道，我 5 月份开始申请到了 MiMo Pro 套餐，免费了一个月，从此踏入了 Vibe Coding 卷王模式。
 
-可以查看我的另一篇文章：[11亿Tokens，547次提交、花费0元：一个上班族的AI编程“免费午餐”账单](https://ason.top/blog/ai/ai-aug-summary)
+可以查看我的另一篇文章：[11 亿 Tokens，547 次提交、花费 0 元：一个上班族的 AI 编程“免费午餐”账单](https://ason.top/blog/ai/ai-aug-summary)
+
+![image-20260906111701460](/static/blog/image-20260906111701460.png)
+
+<div style="font-size:0.8em; color:#606060; text-align: center;"> 图 1 WorkBuddy 卷王模式 </div>
 
 钱这事倒不是重点。更让我感慨的是另一个感受：一个写了十年前端的人，现在居然能一个人把一个产品从头到尾跑通。搭站、数据库、部署、logo、设计稿、宣传文案，每个环节都有免费的 AI 工具一揽子帮你扛了。
 
@@ -69,6 +74,10 @@ Vercel 的 Hobby 计划对个人免费，连上 GitHub，push 一次自动构建
 该说不说，模型得挑对。免费的 mimo-v2.5、deepseek-v4-flash、hy3 这些，压根不是干画图这行的，只会拿 SVG 或者 HTML 硬凑，凑出来的图一个比一个辣眼睛。
 
 要出图，还是得找专门的 <span style="font-weight:bold; color:#FF0000;"> 图片模型 </span>。
+
+<img src="/static/blog/ason_blog.jpg" alt="ason_blog" style="zoom:50%;" />
+
+<div style="font-size:0.8em; color:#606060; text-align: center; "> 图 2 Ason Blog 首页设计（未采纳） </div>
 
 ## 四、文案外包给 <span style="font-weight:bold; color:#FF0000;">“专家”</span>
 

@@ -6,6 +6,7 @@ tags: [掘金, VibeLaunch, 作品]
 categories: [比赛]
 authors: [default]
 summary: 将最近自己的 Vibe Coding 成果展示出来，参加一下比赛，也算是抛头露面了。
+typora-root-url: ..\..\..\public
 ---
 
 ​ 可能也有半年左右的时间了，每天刷 [掘金](https://juejin.cn) 也就是上去签个到，已经 1400 多天了，不想就这样断掉。

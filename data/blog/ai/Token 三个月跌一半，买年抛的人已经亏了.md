@@ -6,6 +6,7 @@ tags: [AI, Token, 年抛]
 categories: [AI]
 authors: [default]
 summary: 别把 Token 当理财，你买的年会员已经跌了。
+typora-root-url: ..\..\..\public
 ---
 
 ### Token 三个月腰斩

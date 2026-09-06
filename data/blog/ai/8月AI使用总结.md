@@ -7,6 +7,7 @@ categories: [AI]
 authors: [default]
 summary: 11亿Token，547次提交，产出4个网站+1个小程序，账单金额：0元。一个朝九晚六上班族，靠免费AI编程工具下班硬磨出来的真实账单。不吹不黑。
 images: ['/static/images/posts/2026-08-ai-summary/tokens-overview.webp']
+typora-root-url: ..\..\..\public
 ---
 
 8 月 31 号晚上，我对着四张平台账单算了一笔账：**1,100,000,000 Token，GitHub 提交 547 次，按市价折算 63.88 美元。**
