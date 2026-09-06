@@ -8,7 +8,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // AdSense 域名：script-src 放行 pagead2.googlesyndication.com，frame-src 放行 *.googlesyndication.com / googleads.g.doubleclick.net
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is pagead2.googlesyndication.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is pagead2.googlesyndication.com static.cloudflareinsights.com;
   style-src 'self' 'unsafe-inline' https://giscus.app;
   img-src * blob: data:;
   media-src 'self' blob: data: *.s3.amazonaws.com;
