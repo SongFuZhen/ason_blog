@@ -281,6 +281,14 @@
   /* Looser leading for CJK body text — Chinese reads better around 1.9. */
   line-height: 1.9;
 
+  /* 文章详情页图片居中：块级 + 左右 auto。
+     注意：这会覆盖 typography 插件默认的图片上下间距（置为 0），
+     若想保留图片与正文的纵向留白，可改为 margin: 1.5rem auto; */
+  & img {
+    display: block;
+    margin: 0 auto;
+  }
+
   & h1,
   & h2,
   & h3,
