@@ -22,6 +22,7 @@ import rehypeKatexNoTranslate from 'rehype-katex-notranslate'
 import rehypeCitation from 'rehype-citation'
 import rehypePrismPlus from 'rehype-prism-plus'
 import rehypePresetMinify from 'rehype-preset-minify'
+import { rehypeParseStyle } from './lib/mdx/rehypeParseStyle.mjs'
 import siteMetadata from './data/siteMetadata'
 import { tagKey } from './data/tags'
 import { allCoreContent, sortPosts } from './lib/content/core.mjs'
@@ -267,6 +268,7 @@ export default makeSource({
       [rehypeCitation, { path: path.join(root, 'data') }],
       [rehypePrismPlus, { defaultLanguage: 'js', ignoreMissing: true }],
       rehypePresetMinify,
+      rehypeParseStyle,
     ],
   },
   onSuccess: async (importData) => {
