@@ -70,7 +70,10 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
           {/* ls -la ~/products */}
           {projectsData.length > 0 && (
             <div>
-              <div className="text-gray-400 dark:text-gray-500">{prompt}ls -la ~/products</div>
+              <div className="text-gray-400 dark:text-gray-500">
+                <span className="hidden sm:inline">{prompt}ls -la ~/products</span>
+                <span className="sm:hidden">产品</span>
+              </div>
               <div className="mt-1 space-y-1 text-gray-800 dark:text-gray-200">
                 <div className="text-gray-400 dark:text-gray-500">
                   total {projectsData.length + productPosts.length}
@@ -89,14 +92,18 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
                           href={project.href ?? '#'}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group grid grid-cols-[auto_1fr] items-baseline gap-x-2 transition-opacity hover:opacity-80"
+                          className="group grid grid-cols-1 items-baseline gap-x-2 transition-opacity hover:opacity-80 sm:grid-cols-[auto_1fr]"
                         >
-                          <span className="text-gray-400 dark:text-gray-500">
+                          <span className="hidden text-gray-400 sm:inline dark:text-gray-500">
                             {project.perms ?? '-rw-r--r--'}
                           </span>
-                          <span className="grid min-w-0 grid-cols-[auto_auto_1fr] items-baseline gap-x-2">
-                            <span className="text-gray-400 dark:text-gray-500">ason</span>
-                            <span className="text-gray-400 dark:text-gray-500">staff</span>
+                          <span className="grid min-w-0 grid-cols-1 items-baseline gap-x-2 sm:grid-cols-[auto_auto_1fr]">
+                            <span className="hidden text-gray-400 sm:inline dark:text-gray-500">
+                              ason
+                            </span>
+                            <span className="hidden text-gray-400 sm:inline dark:text-gray-500">
+                              staff
+                            </span>
                             <span
                               className="project-name truncate"
                               style={
@@ -113,7 +120,7 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
                                 →
                               </span>
                             </span>
-                            <span className="col-start-3 mt-0.5 text-xs leading-6 text-gray-500 dark:text-gray-400">
+                            <span className="col-start-1 mt-0.5 text-xs leading-6 text-gray-500 sm:col-start-3 dark:text-gray-400">
                               {project.description}
                             </span>
                           </span>
@@ -125,12 +132,18 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
                     <li key={post.slug}>
                       <Link
                         href={`/blog/${post.slug}`}
-                        className="group grid grid-cols-[auto_1fr] items-baseline gap-x-2 transition-opacity hover:opacity-80"
+                        className="group grid grid-cols-1 items-baseline gap-x-2 transition-opacity hover:opacity-80 sm:grid-cols-[auto_1fr]"
                       >
-                        <span className="text-gray-400 dark:text-gray-500">-rw-r--r--</span>
-                        <span className="grid min-w-0 grid-cols-[auto_auto_1fr] items-baseline gap-x-2">
-                          <span className="text-gray-400 dark:text-gray-500">ason</span>
-                          <span className="text-gray-400 dark:text-gray-500">staff</span>
+                        <span className="hidden text-gray-400 sm:inline dark:text-gray-500">
+                          -rw-r--r--
+                        </span>
+                        <span className="grid min-w-0 grid-cols-1 items-baseline gap-x-2 sm:grid-cols-[auto_auto_1fr]">
+                          <span className="hidden text-gray-400 sm:inline dark:text-gray-500">
+                            ason
+                          </span>
+                          <span className="hidden text-gray-400 sm:inline dark:text-gray-500">
+                            staff
+                          </span>
                           <span className="text-primary-600 dark:text-primary-400 truncate">
                             <span className="underline underline-offset-2">{post.title}</span>
                             <span aria-hidden className="ml-1 text-gray-400 dark:text-gray-500">
@@ -138,7 +151,7 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
                             </span>
                           </span>
                           {post.summary && (
-                            <span className="col-start-3 mt-0.5 text-xs leading-6 text-gray-500 dark:text-gray-400">
+                            <span className="col-start-1 mt-0.5 text-xs leading-6 text-gray-500 sm:col-start-3 dark:text-gray-400">
                               {post.summary}
                             </span>
                           )}
@@ -155,16 +168,24 @@ export function LabHero({ posts }: { posts: CoreContent<Blog>[] }) {
           {posts.length > 0 && (
             <div>
               <div className="text-gray-400 dark:text-gray-500">
-                <span className="text-primary-600 dark:text-primary-400">ason@blog</span>
-                {': ~/blog --top10 -less'}
+                <span className="hidden sm:inline">
+                  <span className="text-primary-600 dark:text-primary-400">ason@blog</span>
+                  {': ~/blog --top10 -less'}
+                </span>
+                <span className="sm:hidden">最新文章</span>
               </div>
 
               <ol className="mt-2 space-y-4">
                 {posts.slice(0, MAX_DISPLAY).map((post, i) => (
-                  <li key={post.slug} className="grid grid-cols-[auto_auto_1fr] gap-x-2 text-sm">
-                    <span className="shrink-0 text-gray-400 dark:text-gray-500">-rw-r--r--</span>
+                  <li
+                    key={post.slug}
+                    className="grid grid-cols-1 gap-x-2 text-sm sm:grid-cols-[auto_auto_1fr]"
+                  >
+                    <span className="hidden shrink-0 text-gray-400 sm:inline dark:text-gray-500">
+                      -rw-r--r--{' '}
+                    </span>
                     <span className="shrink-0 whitespace-nowrap text-gray-400 dark:text-gray-500">
-                      ason{'\u00A0\u00A0\u00A0'}
+                      <span className="hidden sm:inline">ason{'\u00A0\u00A0\u00A0'}</span>
                       {String(i + 1).padStart(2, '0')}.
                     </span>
                     <div className="min-w-0">
