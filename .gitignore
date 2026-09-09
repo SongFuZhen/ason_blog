@@ -53,3 +53,7 @@ tsconfig.tsbuildinfo
 
 # local debug scripts
 __contrast*.js
+
+# local scratch
+.trash/
+/drafts/
