@@ -112,7 +112,7 @@ export default function InstallAppButton({
         type="button"
         onClick={handleClick}
         aria-label="安装到桌面"
-        aria-expanded={hintOpen}
+        aria-expanded={canInstall ? undefined : hintOpen}
         className={variant === 'menu' ? menuClass : headerClass}
       >
         {variant === 'menu' ? (
@@ -125,7 +125,7 @@ export default function InstallAppButton({
       </button>
       {hintOpen && !canInstall && (
         <span className="absolute top-full right-0 z-50 mt-2 w-60 rounded-md border border-gray-200 bg-white p-3 text-left text-xs leading-relaxed text-gray-700 shadow-lg dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
-          在 Safari 里点底部「分享」，再选「添加到主屏幕」，就能像 App 一样离线阅读。
+          点底部「分享」→「添加到主屏幕」，之后就能像 App 一样离线阅读。
         </span>
       )}
     </span>

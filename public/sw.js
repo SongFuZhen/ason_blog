@@ -9,7 +9,7 @@
  *
  * 改策略后请把 VERSION +1，旧缓存会在 activate 时被清掉。
  */
-const VERSION = 'v1'
+const VERSION = 'v2'
 const PAGE_CACHE = `ason-pages-${VERSION}`
 const ASSET_CACHE = `ason-assets-${VERSION}`
 const IMAGE_CACHE = `ason-images-${VERSION}`
@@ -49,7 +49,7 @@ async function staleWhileRevalidate(cacheName, request) {
       return response
     })
     .catch(() => cached)
-  return cached || network
+  return cached || network.catch(() => Response.error())
 }
 
 async function pageNetworkFirst(request) {
@@ -118,6 +118,9 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (url.pathname.startsWith('/api/')) return
+
+  // /static/files/ 放的是下载文件（如 typora 插件包），体积大且没必要缓存
+  if (url.pathname.startsWith('/static/files/')) return
 
   if (request.mode === 'navigate' || url.searchParams.has('_rsc')) {
     event.respondWith(pageNetworkFirst(request))
