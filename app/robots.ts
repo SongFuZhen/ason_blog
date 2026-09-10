@@ -8,6 +8,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
+      // /offline 只是 Service Worker 的兜底页，没有内容价值
+      disallow: '/offline',
     },
     sitemap: `${siteMetadata.siteUrl}/sitemap.xml`,
   }

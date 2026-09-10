@@ -6,6 +6,7 @@ import Link from './Link'
 import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
 import SearchButton from './SearchButton'
+import InstallAppButton from './pwa/InstallAppButton'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
@@ -62,6 +63,8 @@ const Header = () => {
         </nav>
         <SearchButton />
         <ThemeSwitch />
+        {/* PWA 安装入口：移动端放进抽屉，避免顶栏挤爆 */}
+        <InstallAppButton className="hidden sm:inline-flex" />
         <MobileNav />
       </div>
     </header>

@@ -9,6 +9,7 @@ import type { SearchConfig } from '@/components/search/SearchDialog'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
+import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister'
 import ProgressBar from '@/components/ProgressBar'
 import PageTransition from '@/components/PageTransition'
 import siteMetadata from '@/data/siteMetadata'
@@ -90,9 +91,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         sizes="180x180"
         href={`${basePath}/static/favicons/apple-touch-icon.png`}
       />
-      <link rel="manifest" href={`${basePath}/static/favicons/site.webmanifest`} />
+      {/* PWA manifest 放根目录：/static/* 在 Vercel 上是 immutable 长缓存，改了用户也拿不到 */}
+      <link rel="manifest" href={`${basePath}/manifest.webmanifest`} />
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
+      {/* iOS 加到主屏后隐藏 Safari 工具栏 */}
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="apple-mobile-web-app-title" content={siteMetadata.headerTitle} />
       <link rel="preconnect" href="https://api.github.com" />
       {/* 预连接高频第三方源，缩短真实用户的连接与图片加载耗时 */}
       <link
@@ -137,6 +144,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </main>
             <Footer />
           </SectionContainer>
+          <ServiceWorkerRegister />
         </ThemeProviders>
       </body>
     </html>

@@ -92,6 +92,14 @@ module.exports = () => {
           headers: securityHeaders,
         },
         {
+          // SW 必须每次都校验，否则新版本发不出去（浏览器最多 24h 才主动更新）
+          source: '/sw.js',
+          headers: [
+            { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
+            { key: 'Service-Worker-Allowed', value: '/' },
+          ],
+        },
+        {
           source: '/static/:path*',
           headers: [
             {

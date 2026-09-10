@@ -53,6 +53,16 @@ Before running `git push` (whether the user says "push" or asks to commit & push
 
 If a post fails any check, fix it (or tell the user) **before** pushing. Confirm to the user that SEO was verified as part of the push.
 
+## PWA（离线阅读 + 可安装）
+
+- **Service Worker 是手写的 `public/sw.js`**，不参与 Next 构建、不引第三方 PWA 库（避免和 Contentlayer / bundle-analyzer 的 webpack 插件链冲突）。
+- 注册入口：`components/pwa/ServiceWorkerRegister.tsx`，**只在 `NODE_ENV === 'production'` 注册**，所以 dev 下不会缓存住 HMR 资源。
+- 缓存策略：页面与 RSC（`?_rsc=`）网络优先 → 回落缓存 → 回落 `/offline`；`/_next/static`、`/static`、CSS/JS/字体缓存优先；图片（含图床跨域图）缓存优先并限 80 条；**Giscus / AdSense / 统计等第三方请求一律不拦截**。
+- 改缓存策略后**必须把 `sw.js` 里的 `VERSION` +1**，否则老用户拿不到新逻辑。
+- `app/offline/page.tsx` 是离线兜底页（noindex，sitemap 与 robots 均已排除），SW 安装时预缓存它。
+- **manifest 必须在根目录 `public/manifest.webmanifest`**：`vercel.json` 给 `/static/*` 设了 immutable 长缓存，放那里改了用户也拿不到。manifest 由 `scripts/generate-favicons.mjs` 生成，改 manifest 要改脚本再跑，别手改产物。
+- 安装引导：`components/pwa/InstallAppButton.tsx`（`beforeinstallprompt` + iOS Safari 分享引导），顶栏（sm+）与移动抽屉各一处，状态用模块级单例共享。
+
 ## Comments (Giscus)
 
 Comments are powered by **Giscus** (GitHub Discussions backend). Notes for maintainers:

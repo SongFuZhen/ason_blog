@@ -6,11 +6,20 @@
   },
   "headers": [
     {
-      "source": "/((?!_next/static|static|feed\\.xml|search\\.json|favicon\\.ico).*)",
+      "source": "/((?!sw\\.js)(?!_next/static|static|feed\\.xml|search\\.json|favicon\\.ico).*)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },

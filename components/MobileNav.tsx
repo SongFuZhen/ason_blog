@@ -5,6 +5,7 @@ import { Fragment, useState } from 'react'
 import Link from './Link'
 import headerNavLinks from '@/data/headerNavLinks'
 import siteMetadata from '@/data/siteMetadata'
+import InstallAppButton from './pwa/InstallAppButton'
 import Image from 'next/image'
 
 const MobileNav = () => {
@@ -71,6 +72,7 @@ const MobileNav = () => {
                     {link.title}
                   </Link>
                 ))}
+                <InstallAppButton variant="menu" />
               </nav>
 
               <button
