@@ -13,7 +13,7 @@ import { usePathname } from 'next/navigation'
 const Header = () => {
   const pathname = usePathname()
   const headerClass =
-    'sticky top-0 z-50 flex items-center w-full justify-between border-b border-gray-200 bg-white/80 px-6 py-4 font-mono text-sm backdrop-blur dark:border-gray-800 dark:bg-gray-950/80 sm:px-10 lg:px-16 xl:px-20'
+    'sticky top-0 z-50 flex items-center w-full justify-between border-b border-gray-200 bg-white px-6 py-4 font-mono text-sm dark:border-gray-800 dark:bg-gray-950 sm:px-10 lg:px-16 xl:px-20'
 
   return (
     <header className={headerClass}>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
 
 function getGiscusConfig() {
@@ -40,6 +40,10 @@ export function GiscusComments() {
   const { resolvedTheme } = useTheme()
   const theme = getGiscusTheme(resolvedTheme)
   const themeRef = useRef(theme)
+  // 带 #comment 锚点直达时立即加载；其余情况等滚动到评论区
+  const [shouldLoad, setShouldLoad] = useState(
+    () => typeof window !== 'undefined' && window.location.hash.toLowerCase().includes('comment')
+  )
 
   // Keep themeRef in sync and push the new theme to Giscus whenever it changes.
   useEffect(() => {
@@ -47,8 +51,29 @@ export function GiscusComments() {
     sendGiscusTheme(theme)
   }, [theme])
 
+  // 只在评论区即将进入视口时才挂载脚本：Giscus 的 iframe 会拉一堆 JS，
+  // 放在首屏会和水合抢主线程（直接拖高 INP / TBT）。
+  useEffect(() => {
+    if (shouldLoad) return
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldLoad(true) // 在订阅回调里 setState，不在 effect 同步体里
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '300px 0px' }
+    )
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [shouldLoad])
+
   // Load Giscus script
   useEffect(() => {
+    if (!shouldLoad) return
     if (missing.length > 0 || !containerRef.current) return
 
     const container = containerRef.current
@@ -71,7 +96,7 @@ export function GiscusComments() {
     script.async = true
 
     container.appendChild(script)
-  }, [category, categoryId, missing.length, repo, repoId])
+  }, [category, categoryId, missing.length, repo, repoId, shouldLoad])
 
   if (missing.length > 0) {
     return (

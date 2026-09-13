@@ -125,7 +125,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               siteMetadata.verification.other?.['google-adsense-account'] ?? ''
             }`}
             crossOrigin="anonymous"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
           {/* Cloudflare Web Analytics */}
           <Script
@@ -133,7 +133,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             type="module"
             src="https://static.cloudflareinsights.com/beacon.min.js"
             data-cf-beacon={JSON.stringify({ token: '04000ba9db054013a748735fe3a8071d' })}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
           <SectionContainer>
             <Suspense fallback={null}>
