@@ -34,7 +34,7 @@ function sendGiscusTheme(theme: string) {
   iframe.contentWindow.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app')
 }
 
-export function GiscusComments() {
+export function GiscusComments({ term }: { term?: string }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { repo, repoId, category, categoryId, missing } = getGiscusConfig()
   const { resolvedTheme } = useTheme()
@@ -85,7 +85,14 @@ export function GiscusComments() {
     script.setAttribute('data-repo-id', repoId!)
     script.setAttribute('data-category', category!)
     script.setAttribute('data-category-id', categoryId!)
-    script.setAttribute('data-mapping', 'pathname')
+    // 用文章 key（frontmatter 的 key 字段）做关联，而不是 URL pathname：
+    // 这样改分类、改标题、改 URL 都不会丢评论。没传 key 时退回 pathname。
+    if (term) {
+      script.setAttribute('data-mapping', 'specific')
+      script.setAttribute('data-term', term)
+    } else {
+      script.setAttribute('data-mapping', 'pathname')
+    }
     script.setAttribute('data-strict', '0')
     script.setAttribute('data-reactions-enabled', '1')
     script.setAttribute('data-emit-metadata', '0')
@@ -96,7 +103,7 @@ export function GiscusComments() {
     script.async = true
 
     container.appendChild(script)
-  }, [category, categoryId, missing.length, repo, repoId, shouldLoad])
+  }, [category, categoryId, missing.length, repo, repoId, shouldLoad, term])
 
   if (missing.length > 0) {
     return (

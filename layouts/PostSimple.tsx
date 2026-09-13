@@ -45,7 +45,7 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
             </div>
             {siteMetadata.comments && (
               <div className="pt-8 pb-8 text-center text-gray-700 dark:text-gray-300" id="comment">
-                <Comments />
+                <Comments term={content.key} />
               </div>
             )}
             <footer>

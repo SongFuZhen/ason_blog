@@ -133,7 +133,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               <div className="text-gray-400 dark:text-gray-500">
                 <Prompt>cat comments</Prompt>
               </div>
-              <Comments />
+              <Comments term={content.key} />
             </div>
           )}
 

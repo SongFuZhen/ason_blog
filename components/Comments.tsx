@@ -3,7 +3,7 @@
 import { GiscusComments } from '@/components/comments/GiscusComments'
 import siteMetadata from '@/data/siteMetadata'
 
-export default function Comments() {
+export default function Comments({ term }: { term?: string }) {
   const commentsProvider = (siteMetadata.comments as { provider?: string } | undefined)?.provider
 
   if (commentsProvider !== 'giscus') {
@@ -12,7 +12,7 @@ export default function Comments() {
 
   return (
     <div className="not-prose">
-      <GiscusComments />
+      <GiscusComments term={term} />
     </div>
   )
 }
