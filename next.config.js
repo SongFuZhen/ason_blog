@@ -111,11 +111,6 @@ module.exports = () => {
       ]
     },
     webpack: (config, { dev }) => {
-      config.module.rules.push({
-        test: /\.svg$/,
-        use: ['@svgr/webpack'],
-      })
-
       // 关闭生产构建的 webpack 文件系统缓存：Vercel 每次构建都会把 .next/cache
       // （约 330MB）打包上传并留存，命中收益远小于打包 + 上传 + 存储成本。
       // 只作用于生产构建，不影响 `npm run dev`。
