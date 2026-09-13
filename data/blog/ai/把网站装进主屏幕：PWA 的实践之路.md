@@ -3,7 +3,7 @@ key: 'pwa-practice'
 title: 把网站装进主屏幕：PWA 的实践之路
 date: 2026-09-13
 tags: [前端, PWA, Service Worker, Next.js]
-categories: [技术]
+categories: [AI]
 authors: [default]
 images: ['/static/cover/pwa-practice.jpg']
 summary: 网站接入 PWA 后，手机可加到主屏幕，打开即无地址栏的 App，断网也能翻已读文章，通勤地铁里照样读。配置分两块：manifest 管外观和安装入口，Service Worker 管离线缓存与静默更新。一次配置，长期受益。

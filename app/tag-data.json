@@ -18,6 +18,9 @@
   "vibe-coding": 1,
   "账单": 1,
   "免费": 1,
+  "pwa": 1,
+  "service-worker": 1,
+  "nextjs": 1,
   "life": 1,
   "handcraft": 1,
   "cats": 1,
@@ -73,8 +76,5 @@
   "umi-request": 1,
   "fetch": 1,
   "abortcontroller": 1,
-  "request-timeout": 1,
-  "pwa": 1,
-  "service-worker": 1,
-  "nextjs": 1
+  "request-timeout": 1
 }

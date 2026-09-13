@@ -62,6 +62,12 @@ const unoptimized = process.env.UNOPTIMIZED ? true : undefined
 // 旧（中文）URL -> 新（英文 key）URL 的 301 跳转表，由 scripts/generate-redirects.mjs 生成
 const legacyRedirects = require('./lib/redirects.generated.cjs')
 
+// 换过分类的文章：generate-redirects.mjs 只负责「中文 URL -> 英文 key」，
+// 换目录导致的旧路径要在这里手写保留，否则旧链接会 404。
+const movedRedirects = [
+  { source: '/blog/tech/pwa-practice', destination: '/blog/AI/pwa-practice', permanent: true },
+]
+
 /**
  * @type {import('next/dist/next-server/server/config').NextConfig}
  **/
@@ -74,7 +80,7 @@ module.exports = () => {
     trailingSlash: false,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
     async redirects() {
-      return legacyRedirects
+      return [...legacyRedirects, ...movedRedirects]
     },
     images: {
       remotePatterns: [
