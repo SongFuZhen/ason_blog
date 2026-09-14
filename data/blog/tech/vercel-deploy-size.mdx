@@ -114,3 +114,129 @@ if (url.pathname.startsWith('/static/files/')) return
 - Git 里删文件不等于变小，进历史之前先想清楚。
 
 三次服务端 + 一次浏览器端，四次下来最大的收获是：**「部署太大」从来不是一个问题，是一堆不同层的问题共用一个症状。** 先 `du`，再动手。
+
+### 附：用 Vercel CLI 批量清掉历史部署
+
+前面四步管的是「下一次部署别再这么大」，但**已经上传的那些历史部署还压在项目里**，每改一次 CSS 就多一份，CLI 里没有「一键清空」，只能逐个删。下面是我在用的脚本。
+
+先确认三件事（这几条的 flag 在 vercel CLI 59 上都实测过）：
+
+```bash
+vercel projects ls                       # 列出项目，找到名字
+vercel project inspect ason-blog         # 输出里 ID 一行就是 prj_xxx
+vercel ls ason-blog --json --limit 100   # 当前项目的部署列表（注意：没有 uid）
+vercel api "/v6/deployments?limit=100" --paginate   # 全账号部署，含 uid / projectId / target
+```
+
+`vercel ls` 的输出里没有部署 ID，删不了；能拿 ID 的是 `vercel api`。脚本用后者拉列表，再用 `vercel remove <id>` 逐个删：
+
+```js
+// scripts/prune-vercel-deployments.mjs
+// 批量清理 Vercel 旧预览部署。dry-run 是默认值，加 --apply 才真删。
+//
+//   node scripts/prune-vercel-deployments.mjs --project-id prj_xxx
+//   node scripts/prune-vercel-deployments.mjs --project-id prj_xxx --apply
+//
+// 需要登录态：已 `vercel login`，或设置 VERCEL_TOKEN。
+
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+
+const execFileAsync = promisify(execFile)
+
+// 保留策略
+const KEEP_LATEST = 20 // 无论多旧，最近 N 条一律保留
+const KEEP_DAYS = 14 // 最近 N 天内的部署不动
+const PAGE_LIMIT = 100 // /v6/deployments 的 limit 上限
+const SLEEP_MS = 200 // 删除之间的间隔，别打爆 API
+
+const args = process.argv.slice(2)
+const apply = args.includes('--apply')
+const idIndex = args.indexOf('--project-id')
+const projectId = idIndex >= 0 ? args[idIndex + 1] : process.env.VERCEL_PROJECT_ID
+
+if (!projectId) {
+  console.error('缺少 --project-id prj_xxx（也可以设置 VERCEL_PROJECT_ID）')
+  process.exit(1)
+}
+
+// Windows 下 cmd 会把 & 当命令分隔符，含特殊字符的参数要包引号；同时只有 npx.cmd
+const escapeArg = (a) =>
+  process.platform === 'win32' && /[&^|<>()" ]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a
+
+async function vercel(cliArgs) {
+  const bin = process.platform === 'win32' ? 'npx.cmd' : 'npx'
+  const { stdout } = await execFileAsync(
+    bin,
+    ['--yes', 'vercel@latest', ...cliArgs].map(escapeArg),
+    {
+      shell: process.platform === 'win32',
+      maxBuffer: 64 * 1024 * 1024,
+    }
+  )
+  return stdout.trim()
+}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+// --paginate 会一路翻完 next 游标，返回一个扁平数组（每项含 uid / target / createdAt）
+const all = JSON.parse(
+  await vercel(['api', `/v6/deployments?projectId=${projectId}&limit=${PAGE_LIMIT}`, '--paginate'])
+)
+console.log(`拉取到 ${all.length} 条部署`)
+
+const cutoff = Date.now() - KEEP_DAYS * 86_400_000
+const targets = all
+  .map((d) => ({ ...d, ts: d.createdAt ?? d.created ?? 0 }))
+  .sort((a, b) => b.ts - a.ts) // 结果按时间倒序排一次，保险
+  .filter((d) => d.target !== 'production') // 域名指向的是生产部署，永不自动删
+  .slice(KEEP_LATEST) // 最近的 N 条先保护下来
+  .filter((d) => d.ts < cutoff)
+  .filter((d) => ['READY', 'ERROR', 'CANCELED'].includes(d.readyState ?? d.state))
+
+console.log(
+  apply
+    ? `将删除 ${targets.length} 条预览部署`
+    : `dry-run：命中 ${targets.length} 条，加 --apply 才真删`
+)
+
+let done = 0
+let failed = 0
+for (const d of targets) {
+  const days = Math.floor((Date.now() - d.ts) / 86_400_000)
+  const line = `${d.uid}  ${days}d  ${d.target ?? '-'}  ${d.url}`
+  if (!apply) {
+    console.log(`  [dry] ${line}`)
+    continue
+  }
+  try {
+    // --safe 跳过仍挂着别名的部署，--yes 跳过二次确认
+    await vercel(['remove', d.uid, '--safe', '--yes'])
+    done++
+    console.log(`  [删除] ${line}`)
+  } catch (e) {
+    failed++
+    console.warn(`  [失败] ${line} -> ${String(e.message).split('\n')[0]}`)
+  }
+  await sleep(SLEEP_MS)
+}
+
+console.log(`完成：删除 ${done} 条，失败 ${failed} 条`)
+```
+
+跑起来的样子（我自己的项目这个月重建过，只剩两条生产部署）：
+
+```text
+拉取到 2 条部署
+dry-run：命中 0 条，加 --apply 才真删
+完成：删除 0 条，失败 0 条
+```
+
+四条保护逻辑，别嫌啰嗦，删掉部署是不可恢复的：
+
+- `target !== 'production'`：生产部署被域名指着，删了站点立刻 500。
+- `--safe`：还挂着 alias 的预览部署跳过，避免别人在用 preview 链接时把它抽掉。
+- `KEEP_LATEST` + `KEEP_DAYS`：留出回滚窗口，`vercel rollback` 需要它。
+- 默认 dry-run：`--apply` 才是删除开关，先看清命中列表。
+
+另外还有两个坑：一是**别用 `vercel remove <项目名>`**，CLI 文档里这写法是「删掉该项目的全部部署」，跟 `rm -rf` 一个性质；二是删除有速率限制，几百条的项目跑完要一会儿，中途报 429 就调大 `SLEEP_MS` 重跑。
