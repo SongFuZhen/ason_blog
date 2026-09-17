@@ -1,0 +1,170 @@
+---
+key: 'jump-host-port-forward'
+title: 库在内网、人在外地，这端口咋通？
+date: 2026-09-17
+tags: [运维, PostgreSQL, iptables, nginx, 跳板机, 端口转发, 服务器安全, firewalld]
+categories: [技术]
+authors: [default]
+summary: 数据库按规定待在内网不挂外网，但人不在公司也要连。本文用 iptables DNAT、firewalld、nginx stream 三套方案，把公网 53.32.211.193:25432 转发到内网 192.1.1.23:5432，并讲清 iptables 与 firewalld 不能混用、pg_hba 源地址改写、非标端口不是安全等坑。
+typora-root-url: ..\..\..\public
+images: ['/static/cover/jump-host-port-forward.jpg']
+---
+
+稍微正规点的公司，都知道数据库要单独拆服务器，备份容灾一套不能少。
+
+顺着这套流程走，为了防止 5432 被扫，数据库压根不会挂到外网上——它就安安静静待在内网。
+
+我们这台就是：PostgreSQL 缩在内网机 `192.1.1.23:5432`，外面直接连？
+
+门都没有，公网根本没这个端口。这本来是对的。
+
+直到上周，我在家排查生产问题，要连内网库取个数，才意识到 "库不露公网" 带来一个麻烦：人不在公司，连不上。
+
+远程办公、外包协作、跨机房调数据，需求是真存在的。
+
+怎么办？让数据库继续待在内网，只借一台有公网的跳板机 `53.32.211.193` 把流量 "转发" 进去。
+
+外面的人敲 `53.32.211.193:25432`，就能连上内网的 `192.1.1.23:5432`。
+
+听起来简单，水很深。
+
+我前后踩了好几次坑，还有一次直接把服务给搞坏了，ssh 连接不上了。
+
+## 第一招：iptables DNAT，内核级转发（慎用）
+
+跳板机上敲几行，纯内核处理，延迟最低：
+
+```bash
+# 开内核转发
+sysctl -w net.ipv4.ip_forward=1
+
+# 入向改目标地址（公网网卡 eth0 收来的 25432）
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 25432 \
+  -j DNAT --to-destination 192.1.1.23:5432
+
+# 出向伪装源地址，回包才能原路返回
+iptables -t nat -A POSTROUTING -p tcp -d 192.1.1.23 --dport 5432 -j MASQUERADE
+
+# 放行转发链
+iptables -A FORWARD -p tcp -d 192.1.1.23 --dport 5432 -j ACCEPT
+```
+
+DNAT 把进来的 25432 改写成目标 `192.1.1.23:5432`，再 MASQUERADE 伪装源地址，回包才能原路返回。
+
+这里我踩过最阴的坑：转发之后，数据库看到的客户端 IP 变成了跳板机的内网口，不是你同事的公网 IP。
+
+所以 `pg_hba.conf` 里放行的得是 **跳板机内网 IP**，否则连死连不上，还查不出原因。
+
+同事小王那晚对着 "connection refused" 骂了半小时，最后是我改了 pg_hba 才通。
+
+## 第二招：firewalld，RHEL 系一行搞定（推荐）
+
+CentOS 上不想碰 raw iptables，就用 firewalld 封装，底层还是 NAT，等价于第一招：
+
+```bash
+# 开启 masquerade
+firewall-cmd --permanent --add-masquerade
+
+# 注意端口号，别写反了
+firewall-cmd --permanent --add-forward-port=port=25432:proto=tcp:toaddr=192.1.1.23:toport=5432
+
+# 公网开放 25432 端口，不然也有可能连接不上
+firewall-cmd --permanent --zone=public --add-port=25432/tcp
+
+# ！重要
+firewall-cmd --reload
+```
+
+语法短一大截，出错概率也低。
+
+### 注意：iptables 和 firewalld 不能混用
+
+在 Linux 上，firewalld 本质是 iptables / nftables 的管理前端，它一直在动态维护那套规则。
+
+你一边用 `firewall-cmd` 让它管，一边手敲 `iptables` 往里插规则，两边会打架：
+
+- firewalld 一 reload 或重启，直接把你手加的 iptables 规则冲掉——它认为规则集该长成它管的样子。
+- RHEL 8 以后的 firewalld 默认走 nftables 后端，你敲的 `iptables` 其实是 nft 的兼容壳（iptables-nft），规则视图对不上，排错能把人搞疯。
+
+所以二选一：要走 firewalld，就用 `firewall-cmd` 写全套；
+
+要走裸 iptables，先 `systemctl disable --now firewalld` 关掉它，再用 `iptables-save / iptables-restore` 管规则。
+
+同一台机器、同一股流量，两套别同时上。
+
+最后这招，nginx stream 走用户态，和前两者不冲突，可以共存。
+
+## 第三招：nginx stream，四层代理还能上 TLS
+
+跳板机本来就在跑 nginx？别再装东西了，用 `stream` 模块做 TCP 代理：
+
+```nginx
+stream {
+    server {
+        listen 53.32.211.193:25432;
+        proxy_pass 192.1.1.23:5432;
+        proxy_connect_timeout 5s;
+        allow 203.0.113.0/24;
+        deny  all;
+    }
+}
+```
+
+注意 `stream` 和 `http` 平级，不能写进 `http` 块里。PostgreSQL 协议透传无碍，nginx 还能顺手给你上 `access_log`、用 `allow/deny` 锁来源，将来回程想加密直接 `proxy_ssl`。
+
+顺带说一句，`stream` 同样支持 `upstream`，能做四层负载均衡和故障转移——把多个后端塞进 `upstream`，`proxy_pass` 指向它名字即可：
+
+```nginx
+stream {
+    upstream pg {
+        least_conn;
+        server 192.1.1.23:5432;
+        server 192.1.1.24:5432 backup;
+    }
+    server {
+        listen 53.32.211.193:25432;
+        proxy_pass pg;
+    }
+}
+```
+
+不过 PostgreSQL 是 **有状态** 连接，别拿 round-robin 在主库和从库之间瞎轮，事务会乱。
+
+多后端一般只用在只读副本或主备切换场景；
+
+单主库老老实实指一个后端就够了。
+
+开源版 `upstream` 只做被动健康检查（`max_fails` / `fail_timeout`），主动探活要 NGINX Plus。
+
+### 注意：linux 自带的 nginx 不支持 upstream
+
+0.x 版本的 nginx 不支持 upstream，虽然这招看着最简单，但是如果本身不支持的话，那就没戏了。
+
+不过我作为好心人，将 1.24.x / 1.26.x / 1.30.x 的几个版本的编译好的版本都下载下来了，再也不用担心服务器装不上了。
+
+源文件在 [这里](https://github.com/jirutka/nginx-binaries)
+
+![Nginx 各版本](/static/blog/nginx.png)
+
+<div style="font-size:0.8em; color:#606060; text-align: center;"> 图 1 各个版本的 linux </div>
+
+## 我的推荐
+
+### 先看 nginx 支不支持 upstream
+
+```
+nginx -V 2>&1 | tr ' ' '\n' | grep stream
+```
+
+若输出包含 --with-stream 则支持；
+
+若无，需要按照我说的，重新编译包。
+
+### 再确认系统用的是 firewall 还是 iptables
+
+有 firewall 就用 firewall，没有就 iptables
+
+## 验证一下
+
+跳板机确认监听：`ss -tlnp | grep 25432`。
+客户端连通性：`nc -vz 53.32.211.193 25432`，能通再 `psql`。
