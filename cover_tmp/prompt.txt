@@ -1,0 +1,13 @@
+Minimalist tech editorial cover, Swiss editorial minimalism, flat and graphic, no ink wash, no decorative flourish.
+
+Background is exactly hex #0E1626 (RGB 14,22,38) — a deep ink blue, NOT a lighter navy, NOT royal blue, NOT teal. Flat solid color with the faintest paper-grain texture only.
+
+Visual motif (center-left, occupying roughly the left 60% of the frame): an abstract diagram of network port forwarding. A clean rounded-rectangle node representing a public jump host on the left, a small cylinder node representing an internal database on the right, joined by one thin straight horizontal line with a small arrowhead pointing right. All rendered as thin light-blue and white geometric line art on the dark background, monochrome, no gradients, no 3D, no glow. Sparse, precise, technical, lots of negative space.
+
+CRITICAL COLOR RULE: This image is dominated by deep ink blue. Red occupies less than 3% of the total area. NO red background. NO red ink wash. NO red clouds. NO red smoke. NO red vignette. NO warm lighting. The ONLY red element is a single small solid brick-red square stamp.
+
+A single small solid brick-red square stamp sits in the top-right area, containing the ONLY readable character: 转. No other text, letters, numbers, or captions anywhere.
+
+The bottom-right area is completely empty and flat dark blue, reserved for a title overlay.
+
+Negative: no people, no photographs, no glossy 3D render, no neon glow, no red wash, no red smoke, no red clouds, no cyberpunk cliches, no circuit boards, no robot, no watermark, no rounded border frame, no frame, no Chinese ink-wash atmosphere.
