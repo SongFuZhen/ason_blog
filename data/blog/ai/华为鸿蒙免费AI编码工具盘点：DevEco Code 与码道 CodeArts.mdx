@@ -1,0 +1,94 @@
+---
+key: 'huawei-free-ai-coding-tools'
+title: 华为鸿蒙免费 AI 编码工具盘点：DevEco Code 与码道 CodeArts
+date: 2026-10-11
+tags: [AI, 免费模型, 鸿蒙, 'DevEco Code', CodeArts, GLM]
+categories: [AI]
+authors: [default]
+summary: DevEco Code 终端 Agent 内置 GLM-5.1、登录华为账号即用，码道 CodeArts 代码智能体每天可领免费积分，CodeArts 体验版 DevOps 套餐免费开通——华为这波工具、模型、工具链打包送，鸿蒙开发从写码到 CI 全流程 0 元起步。
+typora-root-url: ..\..\..\public
+---
+
+10 月这波华为的免费羊毛，值得单独记一篇。前面几篇一直在记免费模型，但基本都是"模型免费、工具自己搭"；华为这波不太一样，是**工具、模型、工具链打包一起送**。鸿蒙开发者从写码到 CI 全流程都能 0 元起步，挨个过一遍。
+
+### DevEco Code：鸿蒙官方的终端 AI Agent
+
+这是我现在写鸿蒙项目的主力工具。2026 年 6 月才首发（0.1.0），8 月底 stable 线就到 0.2.0，节奏很快。
+
+![image-20261011102347089](/static/blog/image-20261011102347089.png)
+
+<div style="font-size:0.8em; color:#606060; text-align: center; "> 图1 DEVECO 首页 </div>
+
+它基于华为 BitFun 技术和开源 OpenCode，上手很熟悉：终端交互、Model / Provider / MCP / Skill 这些配置都还在，又集成了 HarmonyOS 精品 Skills、DevEco Studio 工具链和鸿蒙知识库，写码、构建、推包、修 ArkTS 报错、查文档，一条龙全在终端里搞定。
+
+重点说免费的部分：
+
+- **内置 GLM-5.1，登录华为账号就能用**，不用自己申请 API Key，单账号默认 50 次/分钟。之前在 OpenCode 里手填智谱 Key 踩过坑的（见 [GLM 7 天体验卡](/blog/ai/glm-7day)），这次直接跳过配置环节。
+- UI 检查用内置的 Qwen3-VL 多模态模型，同样登录即用。它不在 `/models` 列表里，是 UI 检查子代理内部调的；要换第三方多模态只支持 Qwen 系列，配在 `deveco.jsonc` 的 `agent.ui_verification` 里。
+- 也可以走 `/connect` 接第三方模型（ZhipuAI、Alibaba 等），`/models` 切换。
+
+Agent 有 Build / Plan / Goal 三种模式，`/agents` 切换。日常小改动用 Build 直接干，大需求丢给 Goal，让它把"需求理解 → 代码生成 → 构建出包 → 推模拟器"整条链路自己跑完。
+
+安装两条命令的事：
+
+```bash
+npm install -g @deveco/deveco-code
+deveco
+```
+
+默认装的是 latest 尝鲜版，想稳就装 `@stable`，不过它比 latest 旧一个多月。升级用 `deveco upgrade`。环境要求 Windows 11 22H2+ 或 macOS 15+、Node 22+；装了 DevEco Studio 6.1+ 才能编译构建和推模拟器/真机，不装也能当普通 AI CLI 用，就是鸿蒙工程相关的活干不了。
+
+### 码道 CodeArts 代码智能体：全家桶 + 每日免费积分
+
+先把名字捋清楚：原"软件开发生产线 CodeArts"在 **2026 年 7 月 14 日更名"华为云码道 CodeArts"**，AI 编码产品叫"码道 CodeArts 代码智能体"。形态多到离谱：
+
+- **IDE**：Windows / Mac / Linux ARM64，还有**鸿蒙 PC 版**（应用市场搜 CodeArts Agent 直接装）
+- **VS Code / JetBrains 插件**：老 IDE 不换也能用
+- **桌面端（Beta）**：一站式 AI 工作台，产品设计、数据分析、办公协同都往里塞
+- **CLI/TUI**：不用开 IDE，终端里直接写码、改文件、解释代码、跑 Git、生成单测
+
+免费力度：
+
+- 官网挂着**"每日千万 Token 免费领"**的活动。
+- 套餐分个人版/企业版，按积分计费，**个人版实测每天能领 1000 积分**，日常问答、小改动够用，具体数额以领取页为准。
+- 鸿蒙特色是增训模型，拿华为海量研发数据训的，ArkTS 和鸿蒙 API 生成比通用模型准不少，配上鸿蒙专属 Agent、Skills，还有 Agent Team 专家团队打配合。
+
+![image-20261011102651870](/static/blog/image-20261011102651870.png)
+
+<div style="font-size:0.8em; color:#606060; text-align: center; "> 图2 每日签到领1000积分 </div>
+
+### CodeArts 体验版：DevOps 全流程免费开通
+
+除了 AI 编码，CodeArts 本体（DevOps 平台）的体验版也免费开通，规格对个人开发者相当够用：
+
+- 需求管理（Scrum）、UML 软件建模
+- Git 代码托管 10G + 制品仓库 10G
+- 代码检查、流水线、编译构建、部署：各 1 并发、各 1800 分钟/月
+- 测试计划、效能洞察
+
+等于白嫖一套云端 DevOps，个人项目的托管和 CI 都能跑，不用单独养构建机。
+
+![image-20261011102651870](/static/blog/image-20261011102818451.png)
+
+<div style="font-size:0.8em; color:#606060; text-align: center; "> 图3 华为云码道 </div>
+
+### 汇总一张表
+
+| 工具                     | 形态                                | 免费点                                     |
+| ------------------------ | ----------------------------------- | ------------------------------------------ |
+| DevEco Code              | 终端 CLI Agent                      | 内置 GLM-5.1，登录即用，50 次/分钟         |
+| 码道 CodeArts 代码智能体 | IDE / 插件 / 桌面端 / CLI / 鸿蒙 PC | 每日免费领 Token/积分（实测 1000 积分/天） |
+| CodeArts 体验版          | 云端 DevOps                         | 免费开通，10G 代码托管 + 流水线            |
+| DevEco Studio            | 桌面 IDE                            | 本身就免费                                 |
+
+### 一点提醒
+
+"每日免费领"这类活动时效性强，入口和数额说变就变，正经生产流程别全押在白嫖额度上；拿来当日常开发的默认配置，现阶段是真的香。
+
+相关入口：
+
+- [DevEco Studio 下载](https://developer.huawei.com/consumer/cn/deveco-studio/)
+- [码道 CodeArts 代码智能体](https://codearts.huaweicloud.com/)
+- [码道下载页（IDE / 插件 / 桌面端 / CLI）](https://codearts.huaweicloud.com/download.html)
+- [码道 CLI 安装指导](https://support.huaweicloud.com/usermanual-cli/codeartsagent_cli_0004.html)
+- [CodeArts（DevOps 平台）](https://www.huaweicloud.com/product/codearts.html)
