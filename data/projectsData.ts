@@ -18,14 +18,6 @@ const projectsData: Project[] = [
     perms: '-rw-r--r--',
   },
   {
-    title: '画廊',
-    description: 'AI作品与影像展示',
-    href: 'https://gallery.ason.top',
-    color: '#d95e10',
-    colorDark: '#f59e0b',
-    perms: '-rw-r--r--',
-  },
-  {
     title: '工具站',
     description: '日常开发与小工具集合',
     href: 'https://tools.ason.top',

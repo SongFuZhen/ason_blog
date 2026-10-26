@@ -120,14 +120,6 @@ const resourcesData: Resource[] = [
     href: 'https://tools.ason.top',
     status: '在售',
   },
-  {
-    title: '画廊 · AI 作品与影像',
-    description: 'AI 生成的国风作品与影像展示，免费浏览。',
-    price: '免费',
-    platform: '免费',
-    href: 'https://gallery.ason.top',
-    status: '在售',
-  },
 ]
 
 export default resourcesData

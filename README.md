@@ -21,7 +21,6 @@ The blog also keeps notes from indie development, project retrospectives, readin
 | Project   | Description                                                   | Link                                         |
 | --------- | ------------------------------------------------------------- | -------------------------------------------- |
 | 墨帖      | Search and appreciate Chinese calligraphy rubbings            | [ink.ason.top](https://ink.ason.top)         |
-| 画廊      | A showcase for AI works and images                            | [gallery.ason.top](https://gallery.ason.top) |
 | 工具站    | A collection of daily development tools                       | [tools.ason.top](https://tools.ason.top)     |
 | 临盘      | Temporary file-share links that expire automatically          | [pan.ason.top](https://pan.ason.top)         |
 | 秦安话    | Qin'an dialect phrasebook mini-program and its API            | [dialect.ason.top](https://dialect.ason.top) |
