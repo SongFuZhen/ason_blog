@@ -5,7 +5,7 @@ date: 2026-11-01
 tags: [AI, 本地模型, Ollama, Docker, 量化, GGUF]
 categories: [AI]
 authors: [default]
-summary: 接上篇，真正动手：用 Ollama 把 nomic-embed-text 和 qwen3:8b 跑起来。讲清 Ollama 是什么、docker run/compose 怎么用、镜像与容器的区别，以及为什么 8B 模型能在纯 CPU 上跑——量化与 GGUF 到底省了什么；最后提一嘴断网环境怎么用 docker save/load 把整套带走。
+summary: 接上篇，真正动手：用 Ollama 把 nomic-embed-text 和 ornith:9b 跑起来。讲清 Ollama 是什么、docker run/compose 怎么用、镜像与容器的区别，以及为什么 9B 模型能在纯 CPU 上跑——量化与 GGUF 到底省了什么；最后提一嘴断网环境怎么用 docker save/load 把整套带走。
 typora-root-url: ..\..\..\public
 draft: true
 ---
@@ -14,13 +14,11 @@ draft: true
 
 我选了 Ollama。
 
-我选了 Ollama。
-
 原因很简单：它把「在本地跑一个大模型」这件听起来很吓人的事，压成了一条命令。
 
-`ollama pull qwen3:8b` 是把模型下载下来。
+`ollama pull ornith:9b` 是把模型下载下来。
 
-`ollama run qwen3:8b` 是直接开聊。
+`ollama run ornith:9b` 是直接开聊。
 
 `ollama list` 是看看自己装了哪几个。
 
@@ -70,20 +68,20 @@ ollama:
 ```
 OLLAMA_HOST=host.docker.internal:11434
 EMBED_MODEL=nomic-embed-text
-CHAT_MODEL=qwen3:8b
+CHAT_MODEL=ornith:9b
 ```
 
-这里正好对上 RAG 的两个活儿：`nomic-embed-text` 管 embedding（默默把文档压成向量），`qwen3:8b` 管 generation（开口回答）。
+这里正好对上 RAG 的两个活儿：`nomic-embed-text` 管 embedding（默默把文档压成向量），`ornith:9b` 管 generation（开口回答）。
 
-### 8B 模型凭什么在 CPU 上跑
+### 9B 模型凭什么在 CPU 上跑
 
 这是个绕不过去的问题。
 
-qwen3:8b，「8b」是 80 亿参数。
+ornith:9b，「9b」是 90 亿参数。
 
 模型说到底就是一大堆浮点数（权重）。
 
-如果全用 FP16（半精度）存，一个参数 2 字节，80 亿个就是差不多 16GB——光装进内存就够喝一壶，更别提 CPU 一点点算了。
+如果全用 FP16（半精度）存，一个参数 2 字节，90 亿个就是差不多 18GB——光装进内存就够喝一壶，更别提 CPU 一点点算了。
 
 所以本地能跑，靠的是量化。
 
