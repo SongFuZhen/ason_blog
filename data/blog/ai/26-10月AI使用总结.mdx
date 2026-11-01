@@ -1,0 +1,57 @@
+---
+key: 'ai-monthly-2026-10'
+title: 2026 年 10 月 AI 动态总结
+date: 2026-11-01
+tags: [AI, 月度总结, 随笔]
+categories: [AI]
+authors: [default]
+summary: 10 月 AI 使用记录：DeepSeek 大故障、Gemini 4 Argon 发布、WorkBuddy 小程序生成，以及华为 DevEco Code / CodeArts 免费编码体验与 ZCode 程序员节送额度。
+typora-root-url: ..\..\..\public
+---
+
+10 月过得挺热闹，AI 这边又是故障又是发布，顺手把一个月里印象深的几件事记下来。
+
+### DeepSeek 大故障
+
+10 月 15 号早上 8 点 11 分开始，DeepSeek 的网页端和 APP 突然抽了，对话直接不可用，满屏「服务器暂时不可用」。
+不光是对话，连 DeepSeek V4.1 Pro 和 V4.1 Flash 的 API 也一起性能下降，网页和接口都不太正常。
+这波故障从早 8 点一直拖到中午 12 点还没完全恢复，前前后后超过 4 个小时，「DeepSeek 崩了」直接冲上了微博热搜。
+官方状态页先是「正在定位原因」，后来变成「已定位原因，正在实施修复」，慢悠悠地把服务拉回来。
+我当天的体感很直观：想用的时候一直转圈，最后只能先切到别的模型顶上。
+
+### 新模型发布
+
+10 月 14 号，谷歌正式发布了 Gemini 4 Argon 这个前沿模型，API 和多端接入都开了。
+这个月各家旗舰也打得凶，Claude Opus 5.5、Gemini 4 Argon 在 LMSys Arena 和 Artificial Analysis 的榜单上反复被拿来横评。
+DeepSeek 这边目前主力是 V4.1，分 Pro 和 Flash 两档 API，结果 15 号那次故障把两个 API 全干挂了，挺尴尬。
+
+### 腾讯系 / WorkBuddy
+
+WorkBuddy 上线了微信小程序的生成和发布能力，用自然语言描述需求就能生成一整套小程序，云数据库、微信授权登录、文件存储都给你包进去。
+生成完还能在 WorkBuddy 里直接预览、发布，整个流程在它内部就闭环了，不用再开什么开发者工具。
+再往前，8 月底混元 Hy4 preview 也发了，770B 的 MoE、激活 49B，WorkBuddy、CodeBuddy、元宝、ima 都同步接上了。
+
+### Google Antigravity 突然不能用
+
+10 月 18 号，原本一直好好的 Google Antigravity（agy）突然打不开了，提示「Your current account is not eligible for Antigravity... not available in your location」。
+账号没动过，之前也一直能用，就是典型的「用着用着突然被区域限制拦了」。
+看样子是 Google 收紧了地区判定，而且事前一声招呼都没打。
+Codex 倒是还能用，就是免费额度掉得太快，几下就见底了。
+
+### 华为 AI 编码工具
+
+华为这边的 AI 编码工具挺值得记一笔。
+DevEco Code 现在能免费畅用，登录华为账号就能直接开写，不用自己折腾模型 API Key，对鸿蒙开发来说 DevEco Studio 的工具链也都集成在里面了。
+码道 CodeArts 每天能领 1000 积分，日常写写代码、改改小功能还能接着用，而且能直接连 AtomGit 仓库，代码托管和 AI 编码接在了一起。
+不过实际用的时候会碰到排队，等待时间不太稳，具体原因还没搞清楚，但免费额度确实香，真赶进度时记得把排队时间算进去。
+这块我单独写了一篇更细的记录：[华为鸿蒙免费 AI 编码工具盘点：DevEco Code 与码道 CodeArts](/blog/ai/huawei-free-ai-coding-tools)。
+
+### ZCode 程序员节送 5 亿 Tokens
+
+1024 程序员节，ZCode 搞活动送了 5 亿 Tokens，活动额度统一在 10 月 26 号到期。
+这种限时额度适合趁到期前集中体验或者处理一波开发任务，用之前记得瞄一眼有效期。
+
+### 一点小结
+
+整体看下来，10 月的主线还是「免费额度 + 区域限制 + 偶发故障」：能白嫖的越来越卷，但掉链子和被墙的事也没少发生。
+下个月再看看这些额度到期后，主力模型怎么换。
