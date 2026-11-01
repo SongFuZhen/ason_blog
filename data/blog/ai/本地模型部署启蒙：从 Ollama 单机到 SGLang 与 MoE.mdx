@@ -1,0 +1,143 @@
+---
+key: 'local-llm-deployment-101'
+title: 本地模型部署启蒙：从 Ollama 单机到 SGLang 与 MoE
+date: 2026-11-01
+tags: [AI, 本地模型, Ollama, SGLang, Docker, GPU, MoE, 量化]
+categories: [AI]
+authors: [default]
+summary: 把本地模型部署这条线一次讲清：量化与 GGUF 怎么让 9B 模型在 CPU 上跑起来；用 Ollama + Docker 落地（镜像/容器、host 网络、模型持久化、断网 U 盘交付）；Ollama 与 SGLang 怎么选（GGUF 对 HuggingFace、单节点对多卡高并发）；再到 GPU、MoE、FP8、张量并行与 nvidia-container-toolkit。
+typora-root-url: ..\..\..\public
+draft: true
+---
+
+本地跑大模型，第一个绕不开的词是量化。
+
+模型说到底就是一大堆浮点权重。
+
+9B 模型全用 FP16 存，一个参数 2 字节，90 亿个就是约 18GB——光装进内存就够呛，更别提 CPU 一点点算。
+
+量化把这些高精度权重压成低精度，比如 4-bit，体积直接砍到约四分之一，算起来也轻得多。
+
+代价是精度有损，回答偶尔糙一点、漏点细节。
+
+换来的，是普通办公机甚至树莓派都能跑。
+
+Ollama 里的模型载体叫 GGUF，文件里是量化后的权重加一份配置。
+
+`q4_K_M` 这类名字末尾那段，就是在说「用什么档位量化」。
+
+### 用 Ollama 跑起来
+
+`ollama pull ornith:9b` 是把模型下载下来，`ollama run ornith:9b` 是直接开聊，`ollama list` 是看装了哪些。
+
+它背后是本地推理运行时，前面挡一个兼容 OpenAI 的 `/v1` 接口（11434 端口），你原来的 GPT 调用代码把地址指过来就能用。
+
+Windows、macOS、Linux 都行，关键是——纯 CPU 也能跑。
+
+### 把 Ollama 塞进 Docker
+
+镜像像一张安装盘，是静态模板；容器是「装好并开机」之后的活实例。`docker run` 一次，从镜像生出一只容器；容器删了，镜像还在，随时能再起。
+
+GraphMap 给 Ollama 单独打镜像，编排长这样（精简）：
+
+```yaml
+ollama:
+  image: graphmap-ollama:1.0.0-x86
+  network_mode: host
+  volumes:
+    - /opt/graphmap/models:/root/.ollama
+  environment:
+    - OLLAMA_HOST=0.0.0.0:11434
+    - OLLAMA_ORIGINS=*
+```
+
+`network_mode: host` 让容器直接用宿主机网络，Ollama 监听 `0.0.0.0:11434`，端口配置都不变，外面连起来最省心。
+
+`volumes` 把 `/opt/graphmap/models` 挂到容器 `/root/.ollama`——模型存到了磁盘，容器删了重建，拉过的模型还在。
+
+`OLLAMA_ORIGINS=*` 放开跨域，方便网页前端直调。
+
+RAG 要两个模型：
+
+```
+EMBED_MODEL=nomic-embed-text
+CHAT_MODEL=ornith:9b
+```
+
+`nomic-embed-text` 管 embedding（把文档压成向量），`ornith:9b` 管 generation（开口回答）。
+
+部署文档里按内存自动选模型：≥32G 上 7b，低于 16G 退到 3b——量化最现实的好处，看菜吃饭。
+
+### 断网也能交付
+
+目标机没外网，模型从哪来？
+
+有网的机器先 `ollama pull` 好，把模型目录 `tar` 成包，U 盘拷过去解压到 models 目录，重启容器。
+
+镜像同理：联网机 `docker save` 导出 tar，目标机 `docker load -i` 导入。
+
+GraphMap 那套「U 盘带走」——上海服务器 3.5GB 的压缩包，连 Docker 本身都能离线装。
+
+### Ollama 还是 SGLang
+
+Ollama：开箱即用，吃 GGUF，CPU 友好，单节点，适合「先在本地跑起来」。
+
+SGLang：生产级推理服务框架，吃 HuggingFace 格式（config.json + safetensors，不认 GGUF），要 GPU、做张量并行、扛高并发，适合「认真服务一个大模型」。
+
+连续批处理（continuous batching）让一堆请求挤在一块儿跑，吞吐远高于 Ollama 那种「一次招呼一个」的节奏；还能做结构化输出，用代码拼复杂 prompt，做 Agent、批量抽取都顺手。
+
+| 维度     | Ollama               | SGLang                      |
+| -------- | -------------------- | --------------------------- |
+| 模型格式 | GGUF（量化友好）     | HuggingFace safetensors     |
+| 硬件     | CPU 也能跑           | 多 GPU 才发挥               |
+| 并发     | 弱，单流为主         | 强，连续批处理              |
+| 上手     | 一条命令             | 要配环境/并行               |
+| 典型场景 | 本地 RAG、离线、试玩 | 线上服务、MoE 大模型、Agent |
+
+关键坑：两边模型格式不互通，同一个模型得各准备一份，不能直接搬。
+
+所以我上海那台离线服务器用 Ollama（断网、CPU、GGUF 一把带走），`Qwen3.6-35B-A3B` 这种 MoE 大模型要上 SGLang 多卡服务。
+
+### 为什么大模型非得上 GPU
+
+神经网络干的事说穿了是海量矩阵乘法。
+
+CPU 核心少，单线程快但并行弱；GPU 成千上万核心，一起算矩阵乘法快得离谱。
+
+几十亿参数全靠大规模并行才能实时吐字——CPU 是「能跑」，GPU 才是「能用好」。
+
+### MoE：专家会诊
+
+普通稠密模型每个 token 过全部参数；MoE 把模型拆成多个「专家」子网络，配一个「路由器」，每个 token 只挑少数专家算，其余闲置。
+
+`Qwen3.6-35B-A3B` 里 A3B 是 Activated 3B：350 亿总参，每个 token 只激活约 30 亿。
+
+知识容量是 35B 的（装得多、懂得广），推理成本是 3B 的（算得少、跑得快），所以它才塞得进 5 张 T4。
+
+代价：路由不均时专家忙闲不均；全部 35B 权重仍要躺在显存里，只是算的时候少算——「显存放得下」依旧是硬门槛。
+
+### FP8 与张量并行
+
+权重精度直接决定占多少显存：同一模型 bf16 是 71G，FP8 是 35G，差不多一半。
+
+SGLangRun 默认用 FP8，5 张 T4 每卡才约 7G。FP8 主要省显存和带宽；算力加速看显卡世代，新卡才原生吃 FP8，老卡更多是「存得下、算时再抬精度」。
+
+35G 也不是一张 T4（16G）能独吞，就把模型切几片分到多卡协同算一次前向——张量并行（Tensor Parallel）。脚本里 `TP_SIZE=5` 对应 5 张卡各扛一片。
+
+启动长这样（精简）：
+
+```bash
+docker run --rm --gpus all --ipc=host --shm-size=16g -v '$MODEL_PATH:/model:ro' lmsysorg/sglang:latest --model-path /model --served-model-name qwen3.6-35b --tp-size 5 --context-length 65536 --max-num-seqs 3 --host 0.0.0.0 --port 30000
+```
+
+`--gpus all` 把卡交给容器，端口 30000，上下文 64K，并发 3；它顺手处理 Qwen3 的思考模式（`<think>` 标签）解析，并用离线环境变量把网络掐断。
+
+### 让 Docker 看见 GPU
+
+宿主机装了 NVIDIA 驱动只代表本机能用 GPU，容器默认看不见。
+
+`docker run --gpus all` 不报错，得单独装 nvidia-container-toolkit，它把 GPU 透传进容器。
+
+验证：`docker info` 的 Runtimes 里出现 `nvidia` 就成了。
+
+这玩意儿也能离线装（4 个 .deb 打包），跟前面 U 盘带 docker、带镜像一脉相承。
