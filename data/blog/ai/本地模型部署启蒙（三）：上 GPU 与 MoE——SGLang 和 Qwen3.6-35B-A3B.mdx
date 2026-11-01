@@ -1,6 +1,6 @@
 ---
 key: 'local-llm-gpu-moe'
-title: 本地模型部署启蒙（四）：上 GPU 与 MoE——SGLang 和 Qwen3.6-35B-A3B
+title: 本地模型部署启蒙（三）：上 GPU 与 MoE——SGLang 和 Qwen3.6-35B-A3B
 date: 2026-11-01
 tags: [AI, 本地模型, GPU, MoE, SGLang, 量化]
 categories: [AI]
@@ -10,7 +10,7 @@ typora-root-url: ..\..\..\public
 draft: true
 ---
 
-前三篇，我们在 CPU 上用 Ollama 跑起了 8B，又用三节点 HA 把它稳住。
+前两篇，我们在 CPU 上用 Ollama 跑起了 8B，又用三节点 HA 把它稳住。
 
 但 8B 在 CPU 上到底慢，也干不了太大的活。
 
@@ -82,7 +82,7 @@ FP8 主要省的是显存和带宽；算力的加速要看显卡世代，新卡�
 
 讲到这，两套体系就摆清楚了。
 
-Ollama（上篇讲过）：简单、吃 GGUF、CPU 友好、单机够用，适合「先在本地跑起来」。
+Ollama：简单、吃 GGUF、CPU 友好、单机够用，适合「先在本地跑起来」。
 
 SGLang：高性能推理服务引擎，吃 HuggingFace 格式（config.json + safetensors，不认 GGUF），要 GPU、做张量并行、扛高并发，适合「认真服务一个大模型」。
 

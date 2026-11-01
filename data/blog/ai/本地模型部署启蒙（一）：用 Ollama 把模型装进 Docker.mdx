@@ -1,6 +1,6 @@
 ---
 key: 'local-llm-ollama-docker'
-title: 本地模型部署启蒙（二）：用 Ollama 把模型装进 Docker
+title: 本地模型部署启蒙（一）：用 Ollama 把模型装进 Docker
 date: 2026-11-01
 tags: [AI, 本地模型, Ollama, Docker, 量化, GGUF]
 categories: [AI]
@@ -10,11 +10,9 @@ typora-root-url: ..\..\..\public
 draft: true
 ---
 
-上篇把「为什么」说完了。
+要把模型跑起来，第一个要选的，是拿什么跑。
 
-这篇真的动手。
-
-第一个要选的，是拿什么把模型跑起来。
+我选了 Ollama。
 
 我选了 Ollama。
 
@@ -75,9 +73,7 @@ EMBED_MODEL=nomic-embed-text
 CHAT_MODEL=qwen3:8b
 ```
 
-还记得上篇说的两个活儿吗？
-
-这里就是对上了：`nomic-embed-text` 管 embedding（默默把文档压成向量），`qwen3:8b` 管 generation（开口回答）。
+这里正好对上 RAG 的两个活儿：`nomic-embed-text` 管 embedding（默默把文档压成向量），`qwen3:8b` 管 generation（开口回答）。
 
 ### 8B 模型凭什么在 CPU 上跑
 
@@ -111,7 +107,7 @@ GraphMap 的 `.env` 里还留了更小的选项，比如 `qwen2.5:0.5b`（5 亿�
 
 ### 断网环境：整套带走
 
-回到上篇那个卖点：目标机没外网。
+回到 GraphMap 那个卖点：目标机没外网。
 
 那模型从哪来？
 
