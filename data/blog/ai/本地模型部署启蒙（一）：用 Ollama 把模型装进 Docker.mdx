@@ -5,7 +5,7 @@ date: 2026-11-01
 tags: [AI, 本地模型, Ollama, Docker, 量化, GGUF]
 categories: [AI]
 authors: [default]
-summary: 接上篇，真正动手：用 Ollama 把 nomic-embed-text 和 ornith:9b 跑起来。讲清 Ollama 是什么、docker run/compose 怎么用、镜像与容器的区别，以及为什么 9B 模型能在纯 CPU 上跑——量化与 GGUF 到底省了什么；最后提一嘴断网环境怎么用 docker save/load 把整套带走。
+summary: 真正动手：用 Ollama 把 nomic-embed-text 和 ornith:9b 跑起来。讲清 Ollama 是什么、docker run/compose 怎么用、镜像与容器的区别，以及为什么 9B 模型能在纯 CPU 上跑——量化与 GGUF 到底省了什么；最后提一嘴断网环境怎么用 docker save/load 把整套带走。
 typora-root-url: ..\..\..\public
 draft: true
 ---
@@ -123,10 +123,10 @@ GraphMap 那套交付，就是这么「U 盘带走」的——上海服务器那
 
 ### 下篇预告
 
-单机跑通了，但生产环境不能只有一台。
+单机跑通了，但 Ollama 不是唯一选择。
 
-下篇讲上海服务器上那套 Ollama-HA：三台对等节点、Nginx 负载均衡、keepalived 做故障转移。
+下篇直接把 Ollama 和 SGLang 摆到一起，做份简单的对比：什么场景该用哪个、模型格式差在哪、为什么一个吃 GGUF、一个吃 HuggingFace。
 
-顺带拆一个听起来很玄的词——event loop：模型是怎么一边想一边把字吐出来的（SSE 流式），请求又怎么在节点之间流转。
+再下一篇再往深了走，上 GPU、聊 MoE，看 SGLang 怎么把 `Qwen3.6-35B-A3B` 这种大模型跑起来。
 
 还是那句：边做边学，错漏难免，权当笔记。

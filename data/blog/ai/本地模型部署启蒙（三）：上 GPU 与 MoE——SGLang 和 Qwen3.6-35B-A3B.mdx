@@ -10,9 +10,9 @@ typora-root-url: ..\..\..\public
 draft: true
 ---
 
-前两篇，我们在 CPU 上用 Ollama 跑起了 8B，又用三节点 HA 把它稳住。
+上一篇，我们在 CPU 上用 Ollama 跑起了 ornith:9b，把它塞进了 Docker。
 
-但 8B 在 CPU 上到底慢，也干不了太大的活。
+但 9B 在 CPU 上到底慢，也干不了太大的活。
 
 要上量，得请显卡。
 
@@ -80,7 +80,7 @@ FP8 主要省的是显存和带宽；算力的加速要看显卡世代，新卡�
 
 ### SGLang 和 Ollama 怎么选
 
-讲到这，两套体系就摆清楚了。
+（上篇（二）已经专门做过一份 Ollama vs SGLang 的简单对比，这里不重复，只从工程角度再补一刀。）
 
 Ollama：简单、吃 GGUF、CPU 友好、单机够用，适合「先在本地跑起来」。
 
