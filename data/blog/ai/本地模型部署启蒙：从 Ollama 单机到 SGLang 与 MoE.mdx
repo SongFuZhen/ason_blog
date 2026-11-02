@@ -10,23 +10,31 @@ typora-root-url: ..\..\..\public
 draft: true
 ---
 
-本地跑大模型，第一个绕不开的词是量化。
+# 量化
+
+本地跑大模型，第一个绕不开的词是**量化**。
 
 模型说到底就是一大堆浮点权重。
 
-9B 模型全用 FP16 存，一个参数 2 字节，90 亿个就是约 18GB——光装进内存就够呛，更别提 CPU 一点点算。
+9B 模型如果全用 FP16 存，一个参数 2 字节，90 亿个就是约 18GB——光装进内存就够呛，更别提 CPU 一点点算。
 
 量化把这些高精度权重压成低精度，比如 4-bit，体积直接砍到约四分之一，算起来也轻得多。
 
 代价是精度有损，回答偶尔糙一点、漏点细节。
 
-换来的，是普通办公机甚至树莓派都能跑。
+# GGUF
 
 Ollama 里的模型载体叫 GGUF，文件里是量化后的权重加一份配置。
 
 `q4_K_M` 这类名字末尾那段，就是在说「用什么档位量化」。
 
-### 用 Ollama 跑起来
+# 用 Ollama 跑本地模型
+
+现在网上一搜，本地模型怎么部署，所有人都在推荐的，就是 Ollama。
+
+说实话，我第一次在电脑上跑本地模型，甚至我到现在，也依然还是在用 ollama，挺好用的。
+
+## 几个命令
 
 `ollama pull ornith:9b` 是把模型下载下来，`ollama run ornith:9b` 是直接开聊，`ollama list` 是看装了哪些。
 
@@ -34,9 +42,33 @@ Ollama 里的模型载体叫 GGUF，文件里是量化后的权重加一份配�
 
 Windows、macOS、Linux 都行，关键是——纯 CPU 也能跑。
 
-### 把 Ollama 塞进 Docker
+## 把 Ollama 塞进 Docker
 
-镜像像一张安装盘，是静态模板；容器是「装好并开机」之后的活实例。`docker run` 一次，从镜像生出一只容器；容器删了，镜像还在，随时能再起。
+在跨环境+离线迁移的过程中，我还是比较倾向于用 docker image。
+
+好在服务器使用的是 x86 架构，跟家用的电脑架构一致，打包 image 没问题。
+
+但是如果服务器是 arm 的，那么就得找一台专门的服务器来打包镜像了，好在 Oracle 免费提供的镜像就是 arm 的，可以用来打包。
+
+## X86 架构和 arm 架构的区别
+
+x86 和 arm 是两套不同的 CPU 指令集。
+
+x86 是 Intel、AMD 那一套（家用电脑、大部分服务器），arm 是苹果芯片、树莓派、以及 Oracle 免费实例那一套。
+
+指令集不同，编译出来的程序不通用——在 x86 上打的包，arm 上跑不了，反过来也一样。
+
+Docker 镜像里打包的是编译好的二进制，所以必须按架构来打：x86 服务器就用 x86 机器打包，arm 服务器就用 arm 机器打包。
+
+这就是为什么前面说，目标机要是 arm，得找一台 arm 机器（比如 Oracle 的免费 arm 实例）来打包镜像，不能拿家用 x86 电脑直接出 arm 包。
+
+拉基础镜像时也可以显式指定平台，比如 `FROM --platform=linux/arm64 ollama/ollama`，免得在不同架构上拉错版本。
+
+## 怎么打包 docker 镜像
+
+打包 docker 镜像这个活，完全可以交给 AI 了。
+
+`docker run` 一次，从镜像生出一只容器；容器删了，镜像还在，随时能再起。
 
 GraphMap 给 Ollama 单独打镜像，编排长这样（精简）：
 
@@ -56,6 +88,14 @@ ollama:
 `volumes` 把 `/opt/graphmap/models` 挂到容器 `/root/.ollama`——模型存到了磁盘，容器删了重建，拉过的模型还在。
 
 `OLLAMA_ORIGINS=*` 放开跨域，方便网页前端直调。
+
+真正打包就两步：先 `docker build -t graphmap-ollama:1.0.0-x86 .` 把 Dockerfile 打成镜像，再 `docker save graphmap-ollama:1.0.0-x86 -o ollama.tar` 导出成文件，拷到目标机 `docker load -i ollama.tar` 即可。
+
+Dockerfile 本身也很短，基本就是 `FROM ollama/ollama` 再加点环境变量，交给 AI 写完全够用。
+
+## RAG
+
+如果不用 rag，那么你的代码，tui 还是看不懂，而且受上下文的限制，每次可能都会撑爆。
 
 RAG 要两个模型：
 
