@@ -22,12 +22,6 @@ draft: true
 
 代价是精度有损，回答偶尔糙一点、漏点细节。
 
-# GGUF
-
-Ollama 里的模型载体叫 GGUF，文件里是量化后的权重加一份配置。
-
-`q4_K_M` 这类名字末尾那段，就是在说「用什么档位量化」。
-
 # 用 Ollama 跑本地模型
 
 现在网上一搜，本地模型怎么部署，所有人都在推荐的，就是 Ollama。
@@ -70,14 +64,14 @@ Docker 镜像里打包的是编译好的二进制，所以必须按架构来打�
 
 `docker run` 一次，从镜像生出一只容器；容器删了，镜像还在，随时能再起。
 
-GraphMap 给 Ollama 单独打镜像，编排长这样（精简）：
+我的项目 给 Ollama 单独打镜像，编排长这样（精简）：
 
 ```yaml
 ollama:
-  image: graphmap-ollama:1.0.0-x86
+  image: local-ollama:1.0.0-x86
   network_mode: host
   volumes:
-    - /opt/graphmap/models:/root/.ollama
+    - /opt/models:/root/.ollama
   environment:
     - OLLAMA_HOST=0.0.0.0:11434
     - OLLAMA_ORIGINS=*
@@ -85,11 +79,11 @@ ollama:
 
 `network_mode: host` 让容器直接用宿主机网络，Ollama 监听 `0.0.0.0:11434`，端口配置都不变，外面连起来最省心。
 
-`volumes` 把 `/opt/graphmap/models` 挂到容器 `/root/.ollama`——模型存到了磁盘，容器删了重建，拉过的模型还在。
+`volumes` 把 `/opt/models` 挂到容器 `/root/.ollama`——模型存到了磁盘，容器删了重建，拉过的模型还在。
 
 `OLLAMA_ORIGINS=*` 放开跨域，方便网页前端直调。
 
-真正打包就两步：先 `docker build -t graphmap-ollama:1.0.0-x86 .` 把 Dockerfile 打成镜像，再 `docker save graphmap-ollama:1.0.0-x86 -o ollama.tar` 导出成文件，拷到目标机 `docker load -i ollama.tar` 即可。
+真正打包就两步：先 `docker build -t local-ollama:1.0.0-x86 .` 把 Dockerfile 打成镜像，再 `docker save local-ollama:1.0.0-x86 -o ollama.tar` 导出成文件，拷到目标机 `docker load -i ollama.tar` 即可。
 
 Dockerfile 本身也很短，基本就是 `FROM ollama/ollama` 再加点环境变量，交给 AI 写完全够用。
 
@@ -116,7 +110,7 @@ CHAT_MODEL=ornith:9b
 
 镜像同理：联网机 `docker save` 导出 tar，目标机 `docker load -i` 导入。
 
-GraphMap 那套「U 盘带走」——上海服务器 3.5GB 的压缩包，连 Docker 本身都能离线装。
+我的项目 那套「U 盘带走」——离线服务器 3.5GB 的压缩包，连 Docker 本身都能离线装。
 
 ### Ollama 还是 SGLang
 
@@ -136,7 +130,7 @@ SGLang：生产级推理服务框架，吃 HuggingFace 格式（config.json + sa
 
 关键坑：两边模型格式不互通，同一个模型得各准备一份，不能直接搬。
 
-所以我上海那台离线服务器用 Ollama（断网、CPU、GGUF 一把带走），`Qwen3.6-35B-A3B` 这种 MoE 大模型要上 SGLang 多卡服务。
+所以我那台离线服务器用 Ollama（断网、CPU、GGUF 一把带走），`Qwen3.6-35B-A3B` 这种 MoE 大模型要上 SGLang 多卡服务。
 
 ### 为什么大模型非得上 GPU
 
@@ -160,7 +154,7 @@ CPU 核心少，单线程快但并行弱；GPU 成千上万核心，一起算矩
 
 权重精度直接决定占多少显存：同一模型 bf16 是 71G，FP8 是 35G，差不多一半。
 
-SGLangRun 默认用 FP8，5 张 T4 每卡才约 7G。FP8 主要省显存和带宽；算力加速看显卡世代，新卡才原生吃 FP8，老卡更多是「存得下、算时再抬精度」。
+我的 SGLang 部署 默认用 FP8，5 张 T4 每卡才约 7G。FP8 主要省显存和带宽；算力加速看显卡世代，新卡才原生吃 FP8，老卡更多是「存得下、算时再抬精度」。
 
 35G 也不是一张 T4（16G）能独吞，就把模型切几片分到多卡协同算一次前向——张量并行（Tensor Parallel）。脚本里 `TP_SIZE=5` 对应 5 张卡各扛一片。
 
