@@ -2,7 +2,6 @@ import { allCoreContent, sortPosts } from '@/lib/content/core.mjs'
 import siteMetadata from '@/data/siteMetadata'
 import ListLayout from '@/layouts/ListLayoutWithTags'
 import { allBlogs } from 'contentlayer/generated'
-import tagData from 'app/tag-data.json'
 import { tagKey, tagName } from '@/data/tags'
 import { genPageMetadata } from 'app/seo'
 import { Metadata } from 'next'
@@ -24,14 +23,6 @@ export async function generateMetadata(props: {
       },
     },
   })
-}
-
-export const generateStaticParams = async () => {
-  const tagCounts = tagData as Record<string, number>
-  const tagKeys = Object.keys(tagCounts)
-  return tagKeys.map((tag) => ({
-    tag: encodeURI(tag),
-  }))
 }
 
 export default async function TagPage(props: { params: Promise<{ tag: string }> }) {
