@@ -15,7 +15,7 @@ export default async function Page() {
   const tagCounts = tagData as Record<string, number>
   const tagKeys = Object.keys(tagCounts)
   const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
-  const totalTaggedPosts = allCoreContent(allBlogs).filter(
+  const totalTaggedPosts = (allCoreContent(allBlogs) as { tags?: string[] }[]).filter(
     (post) => post.tags && post.tags.length > 0
   ).length
   const topTags = sortedTags.slice(0, 3)
@@ -48,7 +48,7 @@ export default async function Page() {
           {sortedTags.map((tag, idx) => (
             <li key={tag}>
               <Link
-                href={`/tags/${tag}`}
+                href={`/tags/${encodeURI(tag)}`}
                 className="group grid grid-cols-[auto_1fr] items-baseline gap-x-3"
               >
                 <span className="shrink-0 text-gray-400 dark:text-gray-500">
@@ -72,7 +72,7 @@ export default async function Page() {
             {topTags.map((tag) => (
               <Link
                 key={tag}
-                href={`/tags/${tag}`}
+                href={`/tags/${encodeURI(tag)}`}
                 className="bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300 ml-1 rounded px-2 py-0.5"
               >
                 {tagName(tag)}/

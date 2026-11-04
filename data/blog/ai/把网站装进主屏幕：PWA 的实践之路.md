@@ -7,7 +7,6 @@ categories: [AI]
 authors: [default]
 images: ['/static/cover/pwa-practice.jpg']
 summary: 网站接入 PWA 后，手机可加到主屏幕，打开即无地址栏的 App，断网也能翻已读文章，通勤地铁里照样读。配置分两块：manifest 管外观和安装入口，Service Worker 管离线缓存与静默更新。一次配置，长期受益。
-typora-root-url: ..\..\..\public
 ---
 
 前阵子给 `ason.top` 接了 `PWA`，手机能「添加到主屏幕」，打开是个无地址栏的 `App`，断网也能翻看过的文章。这篇文章把配置和几个实际踩到的坑记下来，方便回看，也算一份给自己博客接 `PWA` 的参考。

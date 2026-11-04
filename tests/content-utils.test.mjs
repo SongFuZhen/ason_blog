@@ -58,5 +58,8 @@ test('formatDate formats dates with the requested locale', async () => {
 test('escapeHtml escapes XML-sensitive characters for RSS', async () => {
   const { escapeHtml } = await import('../lib/content/html-escape.mjs')
 
-  assert.equal(escapeHtml(`A&B <tag> 'quote' "double"`), 'A&amp;B &lt;tag&gt; &#39;quote&#39; &quot;double&quot;')
+  assert.equal(
+    escapeHtml(`A&B <tag> 'quote' "double"`),
+    'A&amp;B &lt;tag&gt; &#39;quote&#39; &quot;double&quot;'
+  )
 })

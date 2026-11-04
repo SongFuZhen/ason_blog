@@ -26,7 +26,6 @@ const siteMetadata = {
       'google-adsense-account': 'ca-pub-1857431419637010',
     },
   },
-  analytics: {},
   newsletter: {
     provider: '',
   },
@@ -42,4 +41,4 @@ const siteMetadata = {
   },
 }
 
-module.exports = siteMetadata
+export default siteMetadata

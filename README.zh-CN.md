@@ -3,7 +3,7 @@
 > ASoN 的个人博客：记录前端开发、独立开发、AI Coding、产品思考与日常生活。
 
 [![在线访问](https://img.shields.io/badge/在线访问-ason.top-17897e?style=flat)](https://ason.top)
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-087ea4?style=flat&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
@@ -34,7 +34,7 @@
 
 ## 技术栈
 
-Next.js 15 App Router · React 19 · TypeScript · Tailwind CSS 4 · Contentlayer2 · MDX · KaTeX · Giscus
+Next.js 16 App Router · React 19 · TypeScript · Tailwind CSS 4 · Contentlayer2 · MDX · KaTeX · Giscus
 
 ## 本地运行
 

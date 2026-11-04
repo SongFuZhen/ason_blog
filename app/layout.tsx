@@ -3,7 +3,7 @@ import 'remark-github-blockquote-alert/alert.css'
 
 import { Suspense } from 'react'
 import Script from 'next/script'
-import { Analytics, AnalyticsConfig } from '@/components/analytics/Analytics'
+import { Analytics } from '@/components/analytics/Analytics'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SearchDialogController } from '@/components/search/SearchDialogController'
 import type { SearchConfig } from '@/components/search/SearchDialog'
@@ -115,7 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
-          <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+          <Analytics />
           <SpeedInsights />
           {/* AdSense 自动广告：仅加载脚本，广告位由 Google 自动插入 */}
           <Script

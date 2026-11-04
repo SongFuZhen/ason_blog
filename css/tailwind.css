@@ -630,6 +630,11 @@ input:-webkit-autofill:focus {
   overflow: auto hidden;
 }
 
+/* 锚点跳转时为 sticky header 预留空间，避免标题被遮挡。 */
+.post-prose :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 6rem;
+}
+
 /* 标题锚点图标：绝对定位悬挂在标题左侧空白处，不占正文流，
    标题文字与正文左对齐；悬停标题时图标淡入。 */
 .content-header {

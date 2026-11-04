@@ -76,14 +76,17 @@ export async function generateMetadata(props: {
 }
 
 export const generateStaticParams = async () => {
-  return allBlogs.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }))
+  // Drafts 404 in production (see Page below), so don't emit pages for them.
+  return allBlogs
+    .filter((p) => process.env.NODE_ENV !== 'production' || !p.draft)
+    .map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }))
 }
 
 export default async function Page(props: { params: Promise<{ slug: string[] }> }) {
   const params = await props.params
   const slug = decodeURI(params.slug.join('/'))
   // Filter out drafts in production
-  const sortedCoreContents = allCoreContent(sortPosts(allBlogs))
+  const sortedCoreContents = allCoreContent(sortPosts(allBlogs)) as Blog[]
   const postIndex = sortedCoreContents.findIndex((p) => p.slug === slug)
   if (postIndex === -1) {
     return notFound()
@@ -140,7 +143,8 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
     ],
   }
 
-  const Layout = layouts[post.layout || defaultLayout]
+  const layoutKey = (post.layout || defaultLayout) as keyof typeof layouts
+  const Layout = layouts[layoutKey] ?? layouts.PostLayout
 
   return (
     <>

@@ -2,7 +2,7 @@ import type React from 'react'
 import siteMetadata from '@/data/siteMetadata'
 import SocialIcon from '@/components/social-icons'
 import Link from './Link'
-import Image from './Image'
+import ZoomableImage from './ZoomableImage'
 import projectsData from '@/data/projectsData'
 import { profile } from '@/data/profile'
 
@@ -16,7 +16,7 @@ const prompt = (
 export default function Footer() {
   return (
     <footer className="border-t border-gray-200 font-mono text-sm dark:border-gray-800">
-      <div className="grid gap-8 px-6 py-10 sm:px-10 md:grid-cols-[2fr_1fr_1fr] md:gap-0 md:divide-x md:divide-gray-200 lg:px-16 xl:px-20 md:dark:divide-gray-800">
+      <div className="grid gap-8 px-6 py-10 sm:px-10 md:grid-cols-[2fr_1.8fr_1fr] md:gap-0 md:divide-x md:divide-gray-200 lg:px-16 xl:px-20 md:dark:divide-gray-800">
         {/* Left: whoami + contacts + copyright */}
         <div className="space-y-4 md:pr-8">
           <div className="text-gray-400 dark:text-gray-500">{prompt}whoami</div>
@@ -96,69 +96,69 @@ export default function Footer() {
         </div>
 
         {/* Middle: mini-program + 公众号 */}
-        <div className="space-y-3 md:px-8">
+        <div className="space-y-3 md:px-6">
           <div className="text-gray-400 dark:text-gray-500">~/scan-qrcode</div>
-          <div className="flex gap-4">
-            <Link
-              href="/blog/products/long-dialect-dict"
-              className="block flex-1 text-center transition-colors"
-            >
-              <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
+          <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+            <div className="min-w-0 text-center">
+              <Link
+                href="/blog/products/long-dialect-dict"
+                className="text-[11px] font-medium whitespace-nowrap text-gray-800 transition-colors hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-400"
+              >
                 小程序
                 <br />
                 陇中乡音词典
-              </div>
-              <Image
+              </Link>
+              <ZoomableImage
                 src="/static/images/longzhong-miniapp.jpg"
                 alt="陇中乡音词典小程序二维码"
                 width={160}
                 height={160}
-                className="mx-auto mt-2 h-auto w-16 rounded-sm sm:w-20"
+                className="h-auto w-16 rounded-sm 2xl:w-20"
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码体验</div>
-            </Link>
-            <div className="block flex-1 text-center">
-              <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
+            </div>
+            <div className="min-w-0 text-center">
+              <div className="text-[11px] font-medium whitespace-nowrap text-gray-800 dark:text-gray-200">
                 公众号
                 <br />
                 轻前端
               </div>
-              <Image
+              <ZoomableImage
                 src="/static/images/qrcode_for_gh_ec1c60eb836a_258.jpg"
                 alt="ason产品公众号二维码"
                 width={160}
                 height={160}
-                className="mx-auto mt-2 h-auto w-16 rounded-sm sm:w-20"
+                className="h-auto w-16 rounded-sm 2xl:w-20"
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码关注</div>
             </div>
-            <div className="block flex-1 text-center">
-              <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
+            <div className="min-w-0 text-center">
+              <div className="text-[11px] font-medium whitespace-nowrap text-gray-800 dark:text-gray-200">
                 小红书
                 <br />
                 轻前端
               </div>
-              <Image
+              <ZoomableImage
                 src="/static/images/xiaohongshu.jpg"
                 alt="小红书二维码"
                 width={160}
                 height={160}
-                className="mx-auto mt-2 h-auto w-16 rounded-sm sm:w-20"
+                className="h-auto w-16 rounded-sm 2xl:w-20"
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码关注</div>
             </div>
-            <div className="block flex-1 text-center">
-              <div className="text-xs font-medium text-gray-800 dark:text-gray-200">
+            <div className="min-w-0 text-center">
+              <div className="text-[11px] font-medium whitespace-nowrap text-gray-800 dark:text-gray-200">
                 闲鱼
                 <br />
                 轻前端ASoN
               </div>
-              <Image
+              <ZoomableImage
                 src="/static/images/xianyu-qrcode.jpg"
                 alt="闲鱼店铺二维码"
                 width={160}
                 height={160}
-                className="mx-auto mt-2 h-auto w-16 rounded-sm sm:w-20"
+                className="h-auto w-16 rounded-sm 2xl:w-20"
               />
               <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">扫码逛逛</div>
             </div>
@@ -166,7 +166,7 @@ export default function Footer() {
         </div>
 
         {/* Right: products */}
-        <div className="space-y-3 md:px-8">
+        <div className="space-y-3 md:px-6">
           <div className="text-gray-400 dark:text-gray-500">~/products</div>
           <ul className="grid grid-cols-2 gap-2">
             {projectsData.map((project) => (

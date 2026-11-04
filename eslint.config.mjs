@@ -12,9 +12,31 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 })
 
-export default [
+// eslint-config-next's first flat config registers the `jsx-a11y` plugin.
+// Declaring the same plugin in another config object makes ESLint 9 throw
+// "Cannot redefine plugin jsx-a11y", so merge the project rule into that object.
+const nextConfigs = nextCoreWebVitals.map((config, index) =>
+  index === 0
+    ? {
+        ...config,
+        rules: {
+          ...config.rules,
+          'jsx-a11y/anchor-is-valid': [
+            'error',
+            {
+              components: ['Link'],
+              specialLink: ['hrefLeft', 'hrefRight'],
+              aspects: ['invalidHref', 'preferButton'],
+            },
+          ],
+        },
+      }
+    : config
+)
+
+const config = [
   {
-    ignores: [],
+    ignores: ['node_modules/**', '.next/**', '.contentlayer/**', 'public/**'],
   },
   js.configs.recommended,
   // eslint-config-next 16 ships native flat configs; loading it through
@@ -22,7 +44,7 @@ export default [
   // Spread the flat config directly instead. core-web-vitals already includes
   // the base `next` config (react, react-hooks, import, jsx-a11y, @next/next
   // and @typescript-eslint), so no extra @typescript-eslint / jsx-a11y extends.
-  ...nextCoreWebVitals,
+  ...nextConfigs,
   ...compat.extends('plugin:prettier/recommended'),
   {
     languageOptions: {
@@ -46,16 +68,8 @@ export default [
       'prettier/prettier': 'error',
       'no-undef': 'off',
       'react/react-in-jsx-scope': 'off',
-
-      'jsx-a11y/anchor-is-valid': [
-        'error',
-        {
-          components: ['Link'],
-          specialLink: ['hrefLeft', 'hrefRight'],
-          aspects: ['invalidHref', 'preferButton'],
-        },
-      ],
       'react/prop-types': 'off',
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       '@typescript-eslint/no-unused-vars': 'off',
       'react/no-unescaped-entities': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -77,3 +91,5 @@ export default [
     },
   },
 ]
+
+export default config

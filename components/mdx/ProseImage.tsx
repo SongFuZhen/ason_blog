@@ -1,5 +1,14 @@
-import type { ComponentPropsWithoutRef, CSSProperties } from 'react'
+'use client'
+
+import { useState } from 'react'
+import type {
+  ComponentPropsWithoutRef,
+  CSSProperties,
+  KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent as ReactMouseEvent,
+} from 'react'
 import Image from 'next/image'
+import ImageLightbox from '../ImageLightbox'
 
 type ProseImageProps = ComponentPropsWithoutRef<'img'> & {
   'data-zoom'?: string
@@ -39,6 +48,9 @@ export function ProseImage({
   height,
   ...props
 }: ProseImageProps) {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
+  const closeLightbox = () => setLightboxSrc(null)
+
   const resolvedStyle: CSSProperties =
     typeof style === 'string' ? parseStyleString(style) : (style ?? {})
   const widthFromZoom = getZoomWidth(props['data-zoom'])
@@ -51,34 +63,70 @@ export function ProseImage({
 
   const baseClass =
     'my-8 rounded-md border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950'
+  const src = typeof props.src === 'string' ? props.src : undefined
+  const imageClassName = [baseClass, className, src ? 'cursor-zoom-in' : undefined]
+    .filter(Boolean)
+    .join(' ')
 
-  // Use next/image when explicit dimensions are available
-  if (width && height) {
-    return (
-      <Image
-        src={props.src as string}
-        alt={alt}
-        width={Number(width)}
-        height={Number(height)}
-        loading={(props.loading as 'lazy' | 'eager' | undefined) || 'lazy'}
-        className={[baseClass, className].filter(Boolean).join(' ')}
-        style={imageStyle}
-      />
-    )
+  const openLightbox = (event: ReactMouseEvent<HTMLImageElement>) => {
+    if (!src) return
+    // Images are often wrapped in links; don't navigate when the intent is to zoom.
+    event.preventDefault()
+    event.stopPropagation()
+    setLightboxSrc(src)
   }
 
-  // Fallback for legacy images without known dimensions
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLImageElement>) => {
+    if (!src) return
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      event.stopPropagation()
+      setLightboxSrc(src)
+    }
+  }
+
+  const zoomProps = src
+    ? {
+        onClick: openLightbox,
+        onKeyDown,
+        role: 'button' as const,
+        tabIndex: 0,
+        'aria-label': alt || '放大查看图片',
+        title: '点击放大',
+      }
+    : {}
+
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      {...props}
-      alt={alt}
-      width={width}
-      height={height}
-      loading={props.loading || 'lazy'}
-      decoding={props.decoding || 'async'}
-      className={[baseClass, className].filter(Boolean).join(' ')}
-      style={imageStyle}
-    />
+    <>
+      {width && height ? (
+        <Image
+          src={props.src as string}
+          alt={alt}
+          width={Number(width)}
+          height={Number(height)}
+          loading={(props.loading as 'lazy' | 'eager' | undefined) || 'lazy'}
+          className={imageClassName}
+          style={imageStyle}
+          {...zoomProps}
+        />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          {...props}
+          alt={alt}
+          width={width}
+          height={height}
+          loading={props.loading || 'lazy'}
+          decoding={props.decoding || 'async'}
+          // 图床（cloudflare-imgbed）有防盗链：来自非 ason.top 的 Referer 会 403。
+          // 去掉 Referer 后浏览器直连即可正常加载，也修复从搜索引擎进入文章时的坏图。
+          referrerPolicy="no-referrer"
+          className={imageClassName}
+          style={imageStyle}
+          {...zoomProps}
+        />
+      )}
+      {lightboxSrc && <ImageLightbox src={lightboxSrc} alt={alt} onClose={closeLightbox} />}
+    </>
   )
 }

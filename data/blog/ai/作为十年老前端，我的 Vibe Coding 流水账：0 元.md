@@ -6,7 +6,6 @@ tags: [AI, 前端, Vibe Coding, 账单, 免费]
 categories: [AI]
 authors: [default]
 summary: 干了十年前端，从搭站到上线，全程没充一分钱：Vercel 免费部署，Neon 免费数据库，AI 补 logo 和文案，Next.js 从 14 升到 16，内存从 2G 降到几百 M。全部投入只有一个 14 块的域名。这篇是流水账，也是白嫖攻略。
-typora-root-url: ..\..\..\public
 ---
 
 我，一个干了十年前端的人，从今年 5 月份开始，折腾 Vibe Coding 直到今天，一毛钱没充过。

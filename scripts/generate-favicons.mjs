@@ -70,7 +70,8 @@ writeFileSync(join(OUT_DIR, 'favicon.svg'), logoBuffer)
 const manifest = {
   name: 'ASoN 的博客｜独立开发者技术笔记',
   short_name: 'ASoN',
-  description: 'ASoN 的个人博客：记录 AI Coding、独立开发与前端技术的实践，分享 AI 打造的产品与日常思考。',
+  description:
+    'ASoN 的个人博客：记录 AI Coding、独立开发与前端技术的实践，分享 AI 打造的产品与日常思考。',
   lang: 'zh-CN',
   dir: 'ltr',
   id: '/',
@@ -81,10 +82,30 @@ const manifest = {
   orientation: 'any',
   categories: ['blog', 'technology', 'education'],
   icons: [
-    { src: '/static/favicons/android-chrome-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-    { src: '/static/favicons/android-chrome-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-    { src: '/static/favicons/maskable-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
-    { src: '/static/favicons/maskable-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    {
+      src: '/static/favicons/android-chrome-192x192.png',
+      sizes: '192x192',
+      type: 'image/png',
+      purpose: 'any',
+    },
+    {
+      src: '/static/favicons/android-chrome-512x512.png',
+      sizes: '512x512',
+      type: 'image/png',
+      purpose: 'any',
+    },
+    {
+      src: '/static/favicons/maskable-192x192.png',
+      sizes: '192x192',
+      type: 'image/png',
+      purpose: 'maskable',
+    },
+    {
+      src: '/static/favicons/maskable-512x512.png',
+      sizes: '512x512',
+      type: 'image/png',
+      purpose: 'maskable',
+    },
   ],
   shortcuts: [
     { name: '全部文章', short_name: '文章', url: '/blog' },

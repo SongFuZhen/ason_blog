@@ -6,7 +6,6 @@ tags: [Vercel, Next.js, 部署, 性能, PWA]
 categories: [技术]
 authors: [default]
 summary: Vercel 面板里 Deployment Storage 从 0 涨到 11GB，配额只有 10GB。翻记录找到四次原因：330MB 的构建缓存被当成产物上传、封面图单张 836KB、仓库历史里躺着 3.3MB 的下载包、Service Worker 把大文件塞满了浏览器配额。附四次的现象、定位方式，以及一份用 Vercel CLI 批量清理历史部署的脚本。
-typora-root-url: ..\..\..\public
 ---
 
 ason.top 部署在 Vercel 上。

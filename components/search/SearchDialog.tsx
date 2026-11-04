@@ -59,6 +59,7 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
   }, [isOpen])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset index data when the index path changes
     setDocuments([])
     setHasLoaded(false)
     setError(null)
@@ -100,11 +101,12 @@ export function SearchDialog({ isOpen, onClose, searchConfig }: SearchDialogProp
     return () => controller.abort()
   }, [hasLoaded, isOpen, searchDocumentsPath])
 
-  const results = useMemo(() => {
+  const results = useMemo<SearchDocument[]>(() => {
     return filterSearchDocuments(documents, query)
   }, [documents, query])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset highlight when results change
     setSelectedIndex(0)
   }, [query, documents])
 

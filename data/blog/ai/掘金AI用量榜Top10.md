@@ -6,7 +6,6 @@ tags: [AI, 掘金, 榜单, dsh, DeepSeek, Token, 国庆]
 categories: [AI]
 authors: [default]
 summary: 国庆几天猛用 AI 写项目，正好赶上掘金「AI 用量榜」第二期截止，Token 冲了个尖峰进了 Top 10，拿了两百块火山引擎代金券。纯记录加显摆，顺便讲讲来龙去脉。
-typora-root-url: ..\..\..\public
 ---
 
 10 月 9 号晚上收到掘金站内消息：我上了「AI 用量榜」第二期的 Top 10，奖品是 200 元火山引擎代金券。

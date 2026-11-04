@@ -83,10 +83,17 @@ module.exports = () => {
       return [...legacyRedirects, ...movedRedirects]
     },
     images: {
+      // 浏览器支持时优先 AVIF，其次 WebP，可显著减小图片体积。
+      formats: ['image/avif', 'image/webp'],
       remotePatterns: [
         {
           protocol: 'https',
           hostname: 'picsum.photos',
+        },
+        {
+          // 文章封面/截图使用的 Cloudflare 图床
+          protocol: 'https',
+          hostname: 'cloudflare-imgbed-91r.pages.dev',
         },
       ],
       unoptimized,

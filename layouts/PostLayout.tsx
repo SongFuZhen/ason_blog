@@ -10,6 +10,7 @@ import { categoryName } from '@/data/categories'
 import { tagKey, tagName } from '@/data/tags'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import PrintButton from '@/components/PrintButton'
+import FloatingTOC from '@/components/mdx/FloatingTOC'
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   year: 'numeric',
@@ -38,6 +39,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
   return (
     <SectionContainer>
       <ScrollTopAndComment />
+      {content.toc && <FloatingTOC toc={content.toc} />}
       {/* 屏幕上用 4xl 宽度；打印时收缩回 A4 纸宽，配合打印样式输出 A4 版式 */}
       <article className="mx-auto min-h-screen max-w-4xl pt-16 pb-16 print:max-w-[210mm]">
         <TerminalWindow
@@ -77,7 +79,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 {tags.map((tag) => (
                   <Link
                     key={tag}
-                    href={`/tags/${tagKey(tag)}`}
+                    href={`/tags/${encodeURI(tagKey(tag))}`}
                     className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
                   >
                     #{tagName(tag)}

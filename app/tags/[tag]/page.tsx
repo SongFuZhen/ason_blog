@@ -5,6 +5,7 @@ import { allBlogs } from 'contentlayer/generated'
 import { tagKey, tagName } from '@/data/tags'
 import { genPageMetadata } from 'app/seo'
 import { Metadata } from 'next'
+import tagData from 'app/tag-data.json'
 
 const POSTS_PER_PAGE = 5
 
@@ -13,15 +14,20 @@ export async function generateMetadata(props: {
 }): Promise<Metadata> {
   const params = await props.params
   const tag = decodeURI(params.tag)
+  const tagCounts = tagData as Record<string, number>
+  const count = tagCounts[tag] ?? 0
+
   return genPageMetadata({
     title: tagName(tag),
     description: `${siteMetadata.title} ${tagName(tag)} tagged content`,
     alternates: {
       canonical: './',
       types: {
-        'application/rss+xml': `${siteMetadata.siteUrl}/tags/${tag}/feed.xml`,
+        'application/rss+xml': `${siteMetadata.siteUrl}/tags/${encodeURI(tag)}/feed.xml`,
       },
     },
+    // 文章数 < 3 的标签页属于薄内容，不进 sitemap 也不让搜索引擎索引。
+    ...(count < 3 ? { robots: { index: false, follow: true } } : {}),
   })
 }
 

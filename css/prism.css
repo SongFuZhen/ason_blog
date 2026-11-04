@@ -1,9 +1,9 @@
 @reference "./tailwind.css";
 
 /**
- * Prism syntax highlighting — Night Owl theme by Sarah Drasner.
- * Original tokens are tuned for dark backgrounds and kept intact.
- * Only structural styles (titles, line highlights) are customized here.
+ * Prism syntax highlighting.
+ * - light（默认）：高对比度浅色主题，避免 Night Owl 的浅色 token 落在浅背景上看不清
+ * - .dark：Night Owl by Sarah Drasner（MIT），保持原有深色观感
  */
 
 /* ── Code title bar ── */
@@ -60,65 +60,108 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
- * Night Owl token theme — Sarah Drasner
- * MIT License
+ * Token colors
  * ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Light theme — all colors keep ≥ 4.5:1 contrast on the light code background */
+  --tok-comment: #5b6670;
+  --tok-punctuation: #52606d;
+  --tok-namespace: #1f2937;
+  --tok-deleted: #b91c1c;
+  --tok-symbol: #0f766e;
+  --tok-tag: #b91c1c;
+  --tok-operator: #b91c1c;
+  --tok-keyword: #b91c1c;
+  --tok-boolean: #b91c1c;
+  --tok-number: #b45309;
+  --tok-function: #1d4ed8;
+  --tok-selector: #7c3aed;
+  --tok-attr-name: #15803d;
+  --tok-string: #15803d;
+  --tok-class-name: #a16207;
+  --tok-regex: #334155;
+  --tok-variable: #334155;
+  --tok-parameter: #0f766e;
+}
+
+.dark {
+  /* Night Owl — Sarah Drasner, MIT License */
+  --tok-comment: rgb(99, 119, 119);
+  --tok-punctuation: rgb(199, 146, 234);
+  --tok-namespace: rgb(178, 204, 214);
+  --tok-deleted: rgba(239, 83, 80, 0.56);
+  --tok-symbol: rgb(128, 203, 196);
+  --tok-tag: rgb(127, 219, 202);
+  --tok-operator: rgb(127, 219, 202);
+  --tok-keyword: rgb(127, 219, 202);
+  --tok-boolean: rgb(255, 88, 116);
+  --tok-number: rgb(247, 140, 108);
+  --tok-function: rgb(130, 170, 255);
+  --tok-selector: rgb(199, 146, 234);
+  --tok-attr-name: rgb(173, 219, 103);
+  --tok-string: rgb(173, 219, 103);
+  --tok-class-name: rgb(255, 203, 139);
+  --tok-regex: rgb(214, 222, 235);
+  --tok-variable: rgb(214, 222, 235);
+  --tok-parameter: rgb(214, 222, 235);
+}
 
 .token.comment,
 .token.prolog,
 .token.cdata {
-  color: rgb(99, 119, 119);
+  color: var(--tok-comment);
   font-style: italic;
 }
 
 .token.punctuation {
-  color: rgb(199, 146, 234);
+  color: var(--tok-punctuation);
 }
 
 .namespace {
-  color: rgb(178, 204, 214);
+  color: var(--tok-namespace);
 }
 
 .token.deleted {
-  color: rgba(239, 83, 80, 0.56);
+  color: var(--tok-deleted);
   font-style: italic;
 }
 
 .token.symbol,
 .token.property {
-  color: rgb(128, 203, 196);
+  color: var(--tok-symbol);
 }
 
 .token.tag,
 .token.operator,
 .token.keyword {
-  color: rgb(127, 219, 202);
+  color: var(--tok-tag);
 }
 
 .token.boolean {
-  color: rgb(255, 88, 116);
+  color: var(--tok-boolean);
 }
 
 .token.number {
-  color: rgb(247, 140, 108);
+  color: var(--tok-number);
 }
 
 .token.constant,
 .token.function,
 .token.builtin,
 .token.char {
-  color: rgb(130, 170, 255);
+  color: var(--tok-function);
 }
 
 .token.selector,
 .token.doctype {
-  color: rgb(199, 146, 234);
+  color: var(--tok-selector);
   font-style: italic;
 }
 
 .token.attr-name,
 .token.inserted {
-  color: rgb(173, 219, 103);
+  color: var(--tok-attr-name);
   font-style: italic;
 }
 
@@ -127,19 +170,24 @@
 .token.entity,
 .language-css .token.string,
 .style .token.string {
-  color: rgb(173, 219, 103);
+  color: var(--tok-string);
 }
 
 .token.class-name,
 .token.atrule,
 .token.attr-value {
-  color: rgb(255, 203, 139);
+  color: var(--tok-class-name);
 }
 
 .token.regex,
 .token.important,
 .token.variable {
-  color: rgb(214, 222, 235);
+  color: var(--tok-regex);
+}
+
+/* CLI flags are tagged `parameter variable`; keep parameter last so it wins. */
+.token.parameter {
+  color: var(--tok-parameter);
 }
 
 .token.important,

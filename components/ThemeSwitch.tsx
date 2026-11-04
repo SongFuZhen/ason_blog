@@ -8,6 +8,7 @@ const ThemeSwitch = () => {
   const { resolvedTheme, setTheme } = useTheme()
 
   // When mounted on client, now we can show the UI
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration guard, must run after mount
   useEffect(() => setMounted(true), [])
 
   const toggle = () => {

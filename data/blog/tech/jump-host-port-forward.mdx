@@ -6,7 +6,6 @@ tags: [运维, PostgreSQL, iptables, nginx, 跳板机, 端口转发, 服务器�
 categories: [技术]
 authors: [default]
 summary: 数据库按规定待在内网不挂外网，但人不在公司也要连。本文用 iptables DNAT、firewalld、nginx stream 三套方案，把公网 53.32.211.193:25432 转发到内网 192.1.1.23:5432，并讲清 iptables 与 firewalld 不能混用、pg_hba 源地址改写、非标端口不是安全等坑。
-typora-root-url: ..\..\..\public
 images: ['/static/cover/jump-host-port-forward.jpg']
 ---
 

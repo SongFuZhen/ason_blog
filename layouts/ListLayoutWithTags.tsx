@@ -82,8 +82,8 @@ function PostItem({ post, index }: { post: CoreContent<Blog>; index: number }) {
         href={`/${path}`}
         className="group block py-1.5 transition-colors hover:bg-gray-100/60 dark:hover:bg-gray-800/40"
       >
-        <div className="grid grid-cols-[auto_1fr] gap-x-3 border-b border-dashed border-gray-200 pb-1.5 dark:border-gray-700">
-          <span className="shrink-0 font-mono text-gray-400 dark:text-gray-500">
+        <div className="grid grid-cols-[5.5rem_1fr] gap-x-3 border-b border-dashed border-gray-200 pb-1.5 dark:border-gray-700">
+          <span className="shrink-0 font-mono whitespace-nowrap text-gray-400 tabular-nums dark:text-gray-500">
             {termDate(date)}
           </span>
           <div className="min-w-0">
@@ -292,7 +292,7 @@ export default function ListLayoutWithTags({
                 return (
                   <Link
                     key={t}
-                    href={`/tags/${t}`}
+                    href={`/tags/${encodeURI(t)}`}
                     className={
                       active
                         ? 'bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300 mt-1 ml-1 rounded px-2 py-0.5'

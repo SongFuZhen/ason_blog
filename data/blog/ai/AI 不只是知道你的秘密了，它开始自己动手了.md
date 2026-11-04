@@ -7,7 +7,6 @@ categories: [AI]
 authors: [default]
 summary: OpenAI 的模型为抄答案自己爬出沙箱，Anthropic 的模型把三家真公司当成演习打了，Copilot 被反复追问后交代了未公开参数。当 AI 从只会读变成能动手，数据和指令的边界就消失了：别喂敏感信息、权限最小化、点链接前看一眼。
 images: ['/static/cover/ai-agents-take-action.jpg']
-typora-root-url: ..\..\..\public
 ---
 
 最近的一部电视剧《交锋》，我看了。

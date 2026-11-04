@@ -6,7 +6,6 @@ tags: [Typora, 工具, 写作]
 categories: [生活]
 authors: [default]
 summary: 装了 typora_plugin 之后，Typora 才好用起来；再配合 typora-root-url，本地和网站上的图片能对上。
-typora-root-url: ..\..\..\public
 ---
 
 用 Typora 写东西有些年头了，尤其是最近又开始写 blog 了。

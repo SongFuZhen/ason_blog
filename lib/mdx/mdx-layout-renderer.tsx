@@ -53,5 +53,6 @@ type MDXLayoutRendererProps = {
  */
 export function MDXLayoutRenderer({ code, components, ...rest }: MDXLayoutRendererProps) {
   const Mdx = useMDXComponent(code)
+  // eslint-disable-next-line react-hooks/static-components -- component is memoized per code string
   return <Mdx components={components} {...rest} />
 }

@@ -76,11 +76,13 @@ const computedFields: ComputedFields = {
 /**
  * Count the occurrences of all tags across blog posts and write to json file
  */
-async function createTagCount(allBlogs) {
+type CountableDoc = { tags?: string[]; draft?: boolean; slug?: string }
+
+async function createTagCount(allBlogs: CountableDoc[]) {
   const tagCount: Record<string, number> = {}
   allBlogs.forEach((file) => {
     if (file.tags && (!isProduction || file.draft !== true)) {
-      file.tags.forEach((tag) => {
+      file.tags.forEach((tag: string) => {
         const formattedTag = tagKey(tag)
         if (formattedTag in tagCount) {
           tagCount[formattedTag] += 1
@@ -90,7 +92,14 @@ async function createTagCount(allBlogs) {
       })
     }
   })
-  const formatted = await prettier.format(JSON.stringify(tagCount, null, 2), { parser: 'json' })
+  // Sort keys so `allBlogs` traversal order (which can vary between builds)
+  // never changes the generated file. Keeps builds reproducible and the diff clean.
+  const sortedTagCount = Object.fromEntries(
+    Object.entries(tagCount).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+  )
+  const formatted = await prettier.format(JSON.stringify(sortedTagCount, null, 2), {
+    parser: 'json',
+  })
   writeFileSync('./app/tag-data.json', formatted)
 }
 
@@ -102,7 +111,7 @@ async function createTagCount(allBlogs) {
  * added to it. Category keys use `/` as the nesting separator, e.g.
  * `猫咪/狸花`.
  */
-async function createCategoryCount(allBlogs) {
+async function createCategoryCount(allBlogs: CountableDoc[]) {
   const blogDir = path.join(root, 'data', 'blog')
   const categoryPaths: string[] = []
   const walk = (dir: string, prefix: string) => {
@@ -133,13 +142,16 @@ async function createCategoryCount(allBlogs) {
       categoryCount[cat] += 1
     }
   })
-  const formatted = await prettier.format(JSON.stringify(categoryCount, null, 2), {
+  const sortedCategoryCount = Object.fromEntries(
+    Object.entries(categoryCount).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+  )
+  const formatted = await prettier.format(JSON.stringify(sortedCategoryCount, null, 2), {
     parser: 'json',
   })
   writeFileSync('./app/category-data.json', formatted)
 }
 
-function createSearchIndex(allBlogs) {
+function createSearchIndex(allBlogs: any[]) {
   if (
     siteMetadata?.search?.provider === 'kbar' &&
     siteMetadata.search.kbarConfig.searchDocumentsPath
@@ -239,6 +251,17 @@ export const Authors = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: 'data',
+  // `data/package.json` marks the folder as ESM for Node scripts (rss.mjs),
+  // but it is not a content document.
+  contentDirExclude: [
+    'node_modules',
+    '.git',
+    '.yarn',
+    '.cache',
+    '.next',
+    '.contentlayer',
+    'package.json',
+  ],
   documentTypes: [Blog, Authors],
   mdx: {
     cwd: process.cwd(),

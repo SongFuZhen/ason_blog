@@ -52,8 +52,8 @@ export default function ExternalPosts({ startIndex = 0 }: { startIndex?: number 
                   rel="noopener noreferrer"
                   className="group block py-1.5 transition-colors hover:bg-gray-100/60 dark:hover:bg-gray-800/40"
                 >
-                  <div className="grid grid-cols-[auto_1fr_auto] items-baseline gap-x-3 border-b border-dashed border-gray-200 pb-1.5 dark:border-gray-700">
-                    <span className="shrink-0 font-mono whitespace-pre text-gray-400 dark:text-gray-500">
+                  <div className="grid grid-cols-[5.5rem_1fr_auto] items-baseline gap-x-3 border-b border-dashed border-gray-200 pb-1.5 dark:border-gray-700">
+                    <span className="shrink-0 font-mono whitespace-pre text-gray-400 tabular-nums dark:text-gray-500">
                       {post.date ? termDate(post.date) : '-- -- ----'}
                     </span>
                     <span className="flex min-w-0 items-baseline gap-x-2">

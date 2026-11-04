@@ -120,6 +120,14 @@ const resourcesData: Resource[] = [
     href: 'https://tools.ason.top',
     status: '在售',
   },
+  {
+    title: '临盘 · 临时网盘',
+    description: '免注册临时文件传输，单文件 100MB，6~24 小时到期自动删除。',
+    price: '免费',
+    platform: '免费',
+    href: 'https://pan.ason.top',
+    status: '在售',
+  },
 ]
 
 export default resourcesData
