@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="280" viewBox="0 0 900 280">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1 L8 5 L2 9" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="280" fill="#ffffff"/>
+  <g font-family="system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <text x="40" y="44" font-size="18" font-weight="500" fill="#1f2937">「组」是组批发射任务的序号</text>
+    <text x="40" y="68" font-size="13" fill="#6b7280">从 2024 年 12 月 16 日的 01 组起累加，2026 年 11 月 9 日为第 29 组</text>
+
+    <line x1="60" y1="150" x2="860" y2="150" stroke="#d1d5db" stroke-width="1"/>
+    <line x1="140" y1="150" x2="420" y2="150" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 5"/>
+    <text x="280" y="140" font-size="12" fill="#9ca3af" text-anchor="middle">02–26 组</text>
+    <path d="M460 150 L610 150" fill="none" stroke="#93c5fd" stroke-width="1.5" marker-end="url(#arr)"/>
+    <path d="M650 150 L800 150" fill="none" stroke="#93c5fd" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <circle cx="120" cy="150" r="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="120" y="122" font-size="14" font-weight="500" fill="#0c447c" text-anchor="middle">01 组</text>
+    <text x="120" y="182" font-size="12" fill="#6b7280" text-anchor="middle">2024-12-16</text>
+
+    <circle cx="440" cy="150" r="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="440" y="122" font-size="14" font-weight="500" fill="#0c447c" text-anchor="middle">27 组</text>
+    <text x="440" y="182" font-size="12" fill="#6b7280" text-anchor="middle">2026-10-10</text>
+
+    <circle cx="630" cy="150" r="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="630" y="122" font-size="14" font-weight="500" fill="#0c447c" text-anchor="middle">28 组</text>
+    <text x="630" y="182" font-size="12" fill="#6b7280" text-anchor="middle">2026-10-25</text>
+
+    <circle cx="820" cy="150" r="8" fill="#ffedd5" stroke="#c2410c" stroke-width="1.5"/>
+    <text x="820" y="122" font-size="14" font-weight="500" fill="#9a3412" text-anchor="middle">29 组</text>
+    <text x="820" y="182" font-size="12" fill="#6b7280" text-anchor="middle">2026-11-09</text>
+
+    <text x="40" y="228" font-size="12" fill="#6b7280">官方只给任务序号，不公布每组颗数、星座代号与在轨总数</text>
+    <text x="40" y="252" font-size="12" fill="#6b7280">27 组与 29 组之间隔着 28 组，是三次独立发射任务</text>
+  </g>
+</svg>

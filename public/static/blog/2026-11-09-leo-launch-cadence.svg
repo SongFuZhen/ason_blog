@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+  <rect x="0" y="0" width="900" height="300" fill="#ffffff"/>
+  <g font-family="system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <text x="40" y="44" font-size="18" font-weight="500" fill="#1f2937">2026 年低轨组网发射节奏</text>
+    <text x="40" y="68" font-size="13" fill="#6b7280">18 组至 29 组共 12 次；9 月后不再有整月空档，间隔稳在 15 天上下</text>
+
+    <text x="77" y="100" font-size="12" fill="#6b7280" text-anchor="middle">1 月</text>
+    <text x="152" y="100" font-size="12" fill="#6b7280" text-anchor="middle">2 月</text>
+    <text x="226" y="100" font-size="12" fill="#6b7280" text-anchor="middle">3 月</text>
+    <text x="301" y="100" font-size="12" fill="#6b7280" text-anchor="middle">4 月</text>
+    <text x="375" y="100" font-size="12" fill="#6b7280" text-anchor="middle">5 月</text>
+    <text x="450" y="100" font-size="12" fill="#6b7280" text-anchor="middle">6 月</text>
+    <text x="524" y="100" font-size="12" fill="#6b7280" text-anchor="middle">7 月</text>
+    <text x="599" y="100" font-size="12" fill="#6b7280" text-anchor="middle">8 月</text>
+    <text x="673" y="100" font-size="12" fill="#6b7280" text-anchor="middle">9 月</text>
+    <text x="748" y="100" font-size="12" fill="#6b7280" text-anchor="middle">10 月</text>
+    <text x="822" y="100" font-size="12" fill="#6b7280" text-anchor="middle">11 月</text>
+
+    <rect x="42" y="110" width="70.5" height="76" rx="6" fill="#dbeafe"/>
+    <rect x="116.5" y="110" width="70.5" height="76" rx="6" fill="#f3f4f6"/>
+    <rect x="191" y="110" width="70.5" height="76" rx="6" fill="#dbeafe"/>
+    <rect x="265.5" y="110" width="70.5" height="76" rx="6" fill="#dbeafe"/>
+    <rect x="340" y="110" width="70.5" height="76" rx="6" fill="#f3f4f6"/>
+    <rect x="414.5" y="110" width="70.5" height="76" rx="6" fill="#dbeafe"/>
+    <rect x="489" y="110" width="70.5" height="76" rx="6" fill="#f3f4f6"/>
+    <rect x="563.5" y="110" width="70.5" height="76" rx="6" fill="#dbeafe"/>
+    <rect x="638" y="110" width="70.5" height="76" rx="6" fill="#ffedd5"/>
+    <rect x="712.5" y="110" width="70.5" height="76" rx="6" fill="#ffedd5"/>
+    <rect x="787" y="110" width="70.5" height="76" rx="6" fill="#ffedd5"/>
+
+    <text x="77" y="155" font-size="13" font-weight="500" fill="#0c447c" text-anchor="middle">18、19</text>
+    <text x="152" y="155" font-size="13" fill="#9ca3af" text-anchor="middle">—</text>
+    <text x="226" y="155" font-size="13" font-weight="500" fill="#0c447c" text-anchor="middle">20</text>
+    <text x="301" y="155" font-size="13" font-weight="500" fill="#0c447c" text-anchor="middle">21</text>
+    <text x="375" y="155" font-size="13" fill="#9ca3af" text-anchor="middle">—</text>
+    <text x="450" y="155" font-size="13" font-weight="500" fill="#0c447c" text-anchor="middle">22</text>
+    <text x="524" y="155" font-size="13" fill="#9ca3af" text-anchor="middle">—</text>
+    <text x="599" y="155" font-size="13" font-weight="500" fill="#0c447c" text-anchor="middle">23、24</text>
+    <text x="673" y="155" font-size="13" font-weight="500" fill="#9a3412" text-anchor="middle">25、26</text>
+    <text x="748" y="155" font-size="13" font-weight="500" fill="#9a3412" text-anchor="middle">27、28</text>
+    <text x="822" y="155" font-size="13" font-weight="500" fill="#9a3412" text-anchor="middle">29</text>
+
+    <text x="40" y="224" font-size="12" fill="#6b7280">最近四次：9 月 23 日 → 10 月 10 日 → 10 月 25 日 → 11 月 9 日，间隔 17、15、15 天</text>
+    <text x="40" y="248" font-size="12" fill="#6b7280">火箭以长征十二号与长征八号甲轮换；21 组例外，4 月 9 日在太原用长征六号改</text>
+    <text x="40" y="272" font-size="12" fill="#6b7280">航天科技集团五院 2026 年低轨卫星发射任务在 29 组收官</text>
+  </g>
+</svg>
